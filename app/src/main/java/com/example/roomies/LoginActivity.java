@@ -3,6 +3,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,7 +20,7 @@ public class LoginActivity extends AppCompatActivity {
         final EditText passwordEditText = findViewById(R.id.password);
         final Button loginButton = findViewById(R.id.login);
         final ProgressBar loadingProgressBar = findViewById(R.id.loading);
-        TextView registrazione = findViewById(R.id.Registrazione_login);
+        final TextView registrazione = findViewById(R.id.Registrazione_login);
 
 
         registrazione.setOnClickListener(new View.OnClickListener() {
@@ -29,6 +30,29 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String snome = usernameEditText.getText().toString().trim();
+                String spass = passwordEditText.getText().toString().trim();
+
+                if(TextUtils.isEmpty(snome))
+                {
+                    usernameEditText.setError("Inserisci il nome");
+                    return;
+                }
+
+                if(TextUtils.isEmpty(spass))
+                {
+                    passwordEditText.setError("Inserisci la password");
+                    return;
+                }
+                loadingProgressBar.setVisibility(View.VISIBLE);
+
+            }
+        });
+
 
 
     }
