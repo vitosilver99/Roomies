@@ -61,10 +61,20 @@ public class RegistrazioneActivity extends AppCompatActivity {
                     return;
                 }
 
+                if(!email_reg.contains("@"))
+                {
+                    email.setError("Inserisci una mail valida");
+                    return;
+                }
+
                 if(TextUtils.isEmpty(pass_reg))
                 {
                     password.setError("Inserisci la password");
                     return;
+                }
+                if(pass_reg.length()<6)
+                {
+                    password.setError("Inserisci una password di almeno 6 cifre");
                 }
 
                 load.setVisibility(View.VISIBLE);
@@ -75,7 +85,10 @@ public class RegistrazioneActivity extends AppCompatActivity {
                         if(task.isSuccessful())
                         {
                             Toast.makeText(RegistrazioneActivity.this,"Utente creato",Toast.LENGTH_LONG).show();
+                            load.setVisibility(View.INVISIBLE);
                             startActivity(new Intent(getApplicationContext(),MainActivity.class));
+                            RegistrazioneActivity.super.finish();
+                            LoginActivity.getInstance().finish();
                         }
                         else
                         {

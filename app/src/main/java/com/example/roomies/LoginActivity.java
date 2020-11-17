@@ -12,6 +12,8 @@ import android.widget.TextView;
 
 public class LoginActivity extends AppCompatActivity {
 
+    static LoginActivity activityA;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,11 +24,13 @@ public class LoginActivity extends AppCompatActivity {
         final ProgressBar loadingProgressBar = findViewById(R.id.loading);
         final TextView registrazione = findViewById(R.id.Registrazione_login);
 
+        activityA = this;
 
         registrazione.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), RegistrazioneActivity.class);
+
                 startActivity(intent);
             }
         });
@@ -53,7 +57,10 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-
-
     }
+
+    public static LoginActivity getInstance(){
+        return   activityA;
+    }
+
 }
