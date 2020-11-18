@@ -18,9 +18,9 @@ public class LoginActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        final EditText usernameEditText = findViewById(R.id.username);
-        final EditText passwordEditText = findViewById(R.id.password);
-        final Button loginButton = findViewById(R.id.login);
+        final EditText emailEditText = findViewById(R.id.Email_login);
+        final EditText passwordEditText = findViewById(R.id.Password_login);
+        final Button loginButton = findViewById(R.id.btn_login);
         final ProgressBar loadingProgressBar = findViewById(R.id.loading);
         final TextView registrazione = findViewById(R.id.Registrazione_login);
 
@@ -40,16 +40,16 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String snome = usernameEditText.getText().toString().trim();
-                String spass = passwordEditText.getText().toString().trim();
+                String email = emailEditText.getText().toString().trim();
+                String pass = passwordEditText.getText().toString().trim();
 
-                if(TextUtils.isEmpty(snome))
+                if(TextUtils.isEmpty(email))
                 {
-                    usernameEditText.setError("Inserisci il nome");
+                    emailEditText.setError("Inserisci l'email");
                     return;
                 }
 
-                if(TextUtils.isEmpty(spass))
+                if(TextUtils.isEmpty(pass))
                 {
                     passwordEditText.setError("Inserisci la password");
                     return;

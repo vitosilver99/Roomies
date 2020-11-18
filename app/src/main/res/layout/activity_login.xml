@@ -12,7 +12,7 @@
     tools:context=".LoginActivity">
 
     <EditText
-        android:id="@+id/username"
+        android:id="@+id/Email_login"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
@@ -26,7 +26,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/password"
+        android:id="@+id/Password_login"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
@@ -39,10 +39,10 @@
         android:selectAllOnFocus="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/username" />
+        app:layout_constraintTop_toBottomOf="@+id/Email_login" />
 
     <Button
-        android:id="@+id/login"
+        android:id="@+id/btn_login"
         android:layout_width="169dp"
         android:layout_height="44dp"
         android:layout_gravity="start"
@@ -55,7 +55,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/password"
+        app:layout_constraintTop_toBottomOf="@+id/Password_login"
         app:layout_constraintVertical_bias="0.369" />
 
     <ProgressBar
@@ -69,16 +69,10 @@
         android:layout_marginBottom="64dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/password"
-        app:layout_constraintStart_toStartOf="@+id/password"
+        app:layout_constraintEnd_toEndOf="@+id/Password_login"
+        app:layout_constraintStart_toStartOf="@+id/Password_login"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.3" />
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:layout_editor_absoluteX="201dp"
-        tools:layout_editor_absoluteY="526dp"/>
 
     <TextView
         android:id="@+id/Registrazione_login"
@@ -88,15 +82,17 @@
         android:text="Crea account"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/login" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_login" />
 
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="56dp"
         android:text="LOGO"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        tools:layout_editor_absoluteX="160dp"
-        tools:layout_editor_absoluteY="64dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
