@@ -125,7 +125,7 @@ public class RegistrazioneActivity extends AppCompatActivity {
                         }
                         else
                         {
-                            Toast.makeText(RegistrazioneActivity.this, "Errore di autenticazione: "+task.getException().getMessage(),Toast.LENGTH_LONG);
+                            Toast.makeText(RegistrazioneActivity.this, "Errore di autenticazione: "+task.getException().getMessage(),Toast.LENGTH_LONG).show();
                         }
 
                     }
