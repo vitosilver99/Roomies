@@ -74,9 +74,9 @@
         android:id="@+id/btn_registrazione"
         android:layout_width="145dp"
         android:layout_height="45dp"
-        android:layout_marginTop="88dp"
         android:text="Registrati"
         app:backgroundTint="#F18C40"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/Password_registrazione" />
@@ -88,9 +88,11 @@
         android:layout_marginTop="88dp"
         android:text="LOGO"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        app:layout_constraintBottom_toTopOf="@+id/Nome_registrazione"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
     <ProgressBar
         android:id="@+id/progressBar_reg"
