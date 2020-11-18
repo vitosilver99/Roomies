@@ -27,6 +27,8 @@ import org.w3c.dom.Document;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class RegistrazioneActivity extends AppCompatActivity {
 
@@ -58,7 +60,6 @@ public class RegistrazioneActivity extends AppCompatActivity {
                 String nome_reg = nome.getText().toString();
                 String cognome_reg = cognome.getText().toString();
 
-                //controlli(nome_reg,cognome_reg,email_reg,pass_reg,nome,cognome,email,password);
                 if(TextUtils.isEmpty(nome_reg))
                 {
                     nome.setError("Inserisci il nome");
@@ -71,13 +72,7 @@ public class RegistrazioneActivity extends AppCompatActivity {
                     return;
                 }
 
-                if(TextUtils.isEmpty(email_reg))
-                {
-                    email.setError("Inserisci l'email");
-                    return;
-                }
-
-                if(!email_reg.contains("@"))
+                if(!isEmailValid(email_reg))
                 {
                     email.setError("Inserisci una mail valida");
                     return;
@@ -91,6 +86,7 @@ public class RegistrazioneActivity extends AppCompatActivity {
                 if(pass_reg.length()<6)
                 {
                     password.setError("Inserisci una password di almeno 6 cifre");
+                    return;
                 }
 
                 load.setVisibility(View.VISIBLE);
@@ -125,7 +121,7 @@ public class RegistrazioneActivity extends AppCompatActivity {
                         }
                         else
                         {
-                            Toast.makeText(RegistrazioneActivity.this, "Errore di autenticazione: "+task.getException().getMessage(),Toast.LENGTH_LONG);
+                            Toast.makeText(RegistrazioneActivity.this, "Errore di autenticazione: "+task.getException().getMessage(),Toast.LENGTH_LONG).show();
                         }
 
                     }
@@ -136,10 +132,11 @@ public class RegistrazioneActivity extends AppCompatActivity {
 
     }
 
- /*   private void controlli(String nome_reg, String cognome_reg, String email_reg, String pass_reg, EditText nome,
-                           EditText cognome, EditText email, EditText password )
-    {
-
-    }*/
+    public static boolean isEmailValid(String email) {
+        String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
+        Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
+    }
 
 }

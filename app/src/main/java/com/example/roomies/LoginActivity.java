@@ -33,6 +33,7 @@ public class LoginActivity extends AppCompatActivity {
         final TextView registrazione = findViewById(R.id.Registrazione_login);
 
         activityA = this;
+        fAuth = FirebaseAuth.getInstance();
 
         registrazione.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,6 +70,7 @@ public class LoginActivity extends AppCompatActivity {
                         if(task.isSuccessful()){
                             Toast.makeText(LoginActivity.this,"Utente autenticato correttamente",Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(getApplicationContext(),MainActivity.class));
+                            finish();
                         }
                         else {
                             Toast.makeText(LoginActivity.this, "Errore di autenticazione: "+task.getException().getMessage(),Toast.LENGTH_LONG).show();
@@ -78,8 +80,6 @@ public class LoginActivity extends AppCompatActivity {
 
             }
         });
-
-
     }
 
     public static LoginActivity getInstance(){
