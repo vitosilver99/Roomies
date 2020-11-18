@@ -27,6 +27,8 @@ import org.w3c.dom.Document;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class RegistrazioneActivity extends AppCompatActivity {
 
@@ -71,13 +73,8 @@ public class RegistrazioneActivity extends AppCompatActivity {
                     return;
                 }
 
-                if(TextUtils.isEmpty(email_reg))
-                {
-                    email.setError("Inserisci l'email");
-                    return;
-                }
 
-                if(!email_reg.contains("@"))
+                if(!isEmailValid(email_reg))
                 {
                     email.setError("Inserisci una mail valida");
                     return;
@@ -91,6 +88,7 @@ public class RegistrazioneActivity extends AppCompatActivity {
                 if(pass_reg.length()<6)
                 {
                     password.setError("Inserisci una password di almeno 6 cifre");
+                    return;
                 }
 
                 load.setVisibility(View.VISIBLE);
@@ -98,35 +96,39 @@ public class RegistrazioneActivity extends AppCompatActivity {
                 mAuth.createUserWithEmailAndPassword(email_reg,pass_reg).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(task.isSuccessful())
-                        {
-                            Toast.makeText(RegistrazioneActivity.this,"Utente creato",Toast.LENGTH_LONG).show();
-                            userID= mAuth.getCurrentUser().getUid();
-                            DocumentReference documentReference = fStore.collection("utenti").document(userID);
-                            Map<String,Object> user = new HashMap<>();
-                            user.put("nome",nome_reg);
-                            user.put("cognome",cognome_reg);
-                            documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    Log.d("Op.Successo" ,"l'utente è stato creato con lo UserId: "+ userID);
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.d("Op.Negata" ,"l'utente non è stato creato: "+e.toString());
-                                }
-                            });
+                        task.addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                            @Override
+                            public void onSuccess(AuthResult authResult) {
+                                Toast.makeText(RegistrazioneActivity.this,"Utente creato",Toast.LENGTH_LONG).show();
+                                userID= mAuth.getCurrentUser().getUid();
+                                DocumentReference documentReference = fStore.collection("utenti").document(userID);
+                                Map<String,Object> user = new HashMap<>();
+                                user.put("nome",nome_reg);
+                                user.put("cognome",cognome_reg);
+                                documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Log.d("Op.Successo" ,"l'utente è stato creato con lo UserId: "+ userID);
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.d("Op.Negata" ,"l'utente non è stato creato: "+e.toString());
+                                    }
+                                });
 
-                            load.setVisibility(View.INVISIBLE);
-                            startActivity(new Intent(getApplicationContext(),MainActivity.class));
-                            RegistrazioneActivity.super.finish();
-                            LoginActivity.getInstance().finish();
-                        }
-                        else
-                        {
-                            Toast.makeText(RegistrazioneActivity.this, "Errore di autenticazione: "+task.getException().getMessage(),Toast.LENGTH_LONG);
-                        }
+                                load.setVisibility(View.INVISIBLE);
+                                startActivity(new Intent(getApplicationContext(),MainActivity.class));
+                                RegistrazioneActivity.super.finish();
+                                LoginActivity.getInstance().finish();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(RegistrazioneActivity.this, "Errore di autenticazione: "+task.getException().getMessage(),Toast.LENGTH_LONG);
+                            }
+                        });
+
 
                     }
                 });
@@ -136,6 +138,12 @@ public class RegistrazioneActivity extends AppCompatActivity {
 
     }
 
+    public static boolean isEmailValid(String email) {
+        String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
+        Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
+    }
  /*   private void controlli(String nome_reg, String cognome_reg, String email_reg, String pass_reg, EditText nome,
                            EditText cognome, EditText email, EditText password )
     {
