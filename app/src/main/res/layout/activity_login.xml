@@ -90,7 +90,7 @@
         android:layout_height="wrap_content"
         android:text="LOGO"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        tools:layout_editor_absoluteX="160dp"
-        tools:layout_editor_absoluteY="64dp" />
+        tools:layout_editor_absoluteX="200dp"
+        tools:layout_editor_absoluteY="84dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

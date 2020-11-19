@@ -8,8 +8,10 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Roomies">
-        <activity android:name=".MainActivity"></activity>
+        android:theme="@style/Theme.Design.Light.NoActionBar">
+
+        <activity android:name=".CheckCasaActivity"></activity>
+        <activity android:name=".MainActivity" />
         <activity android:name=".RegistrazioneActivity" />
         <activity
             android:name=".LoginActivity"

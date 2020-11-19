@@ -106,6 +106,8 @@ public class RegistrazioneActivity extends AppCompatActivity {
                                 @Override
                                 public void onSuccess(Void aVoid) {
                                     Log.d("Op.Successo" ,"l'utente è stato creato con lo UserId: "+ userID);
+                                    Intent intent=new Intent(getApplicationContext(),CheckCasaActivity.class);
+                                    startActivity(intent);
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
@@ -113,6 +115,7 @@ public class RegistrazioneActivity extends AppCompatActivity {
                                     Log.d("Op.Negata" ,"l'utente non è stato creato: "+e.toString());
                                 }
                             });
+
 
                             load.setVisibility(View.INVISIBLE);
                             startActivity(new Intent(getApplicationContext(),MainActivity.class));

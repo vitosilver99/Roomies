@@ -38,7 +38,7 @@ public class LoginActivity extends AppCompatActivity {
         registrazione.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), RegistrazioneActivity.class);
+                Intent intent = new Intent(getApplicationContext(), CheckCasaActivity.class);
                 startActivity(intent);
             }
         });
