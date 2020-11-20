@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -12,42 +13,86 @@
         android:layout_margin="8dp"
         app:cardCornerRadius="20dp">
 
-        <RelativeLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <ImageView
-                android:id="@+id/image"
-                android:layout_width="match_parent"
-                android:layout_height="263dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ic_phone" />
-
             <TextView
                 android:id="@+id/title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="287dp"
+                android:layout_height="37dp"
                 android:layout_below="@id/image"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="10dp"
-                android:text="Partecipa ad una casa"
+                android:layout_marginTop="252dp"
+                android:text="Cosa deve fare"
                 android:textColor="#262626"
-                android:textSize="30" />
+                android:textSize="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/image"
+                android:layout_width="392dp"
+                android:layout_height="235dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_phone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/desc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/title"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="37dp"
-                android:layout_marginRight="16dp"
                 android:drawablePadding="10dp"
                 android:ellipsize="end"
                 android:maxLines="3"
-                android:text="Description" />
+                android:text="Description"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/image"
+                app:layout_constraintVertical_bias="0.341" />
 
-        </RelativeLayout>
+            <EditText
+                android:id="@+id/textView_indirizzo_Casa"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPersonName"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.497"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/image"
+                app:layout_constraintVertical_bias="0.692" />
+
+            <Button
+                android:id="@+id/btn_aggiungi_coinquilino"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Partecipa"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.505"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView_indirizzo_Casa"
+                app:layout_constraintVertical_bias="0.828" />
+
+            <Button
+                android:id="@+id/btn_crea_casa"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Crea casa"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/image"
+                app:layout_constraintVertical_bias="0.801" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     </androidx.cardview.widget.CardView>

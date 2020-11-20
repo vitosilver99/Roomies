@@ -5,6 +5,9 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.animation.ArgbEvaluator;
 import android.os.Bundle;
+import android.util.Log;
+
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,24 +15,33 @@ import java.util.List;
 public class CheckCasaActivity extends AppCompatActivity {
 
     ViewPager viewPager;
-    Adapter adapter;
-    List<Model> models;
+    AdapterCheckCasa adapterCheckCasa;
+    List<ModelCheckCasa> modelCheckCasas;
     Integer[] colors = null;
     ArgbEvaluator argbEvaluator = new ArgbEvaluator();
+
+    String userID;
+    FirebaseFirestore fStore;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_check_casa);
+        Bundle b = new Bundle();
+        b = getIntent().getExtras();
+        userID = b.getString("UserId");
+        Log.d("errrrrrrrrrrrorrreeeee", userID);
+        fStore = FirebaseFirestore.getInstance();
 
-        models = new ArrayList<>();
-        models.add(new Model(R.drawable.ic_phone, "Brochure", "Brochure is an informative paper document (often also used for advertising) that can be folded into a template"));
-        models.add(new Model(R.drawable.ic_person, "Sticker", "Sticker is a type of label: a piece of printed paper, plastic, vinyl, or other material with pressure sensitive adhesive on one side"));
+        modelCheckCasas = new ArrayList<>();
+        modelCheckCasas.add(new ModelCheckCasa(R.drawable.ic_phone, "PARTECIPA A UNA CASA", "Se hai ricevuto una mail di invito da parte di un tuo amico, inserisci il codice qui sotto per poter partecipare alla casa","Inserisci codice di invito"));
+        modelCheckCasas.add(new ModelCheckCasa(R.drawable.ic_person, "CREA UNA CASA", "Crea subito una casa se non ne possiedi già una e invita tutti i tuoi amici",""));
 
-        adapter = new Adapter(models, this);
+        adapterCheckCasa = new AdapterCheckCasa(modelCheckCasas, this);
 
         viewPager = findViewById(R.id.viewPager);
-        viewPager.setAdapter(adapter);
+        viewPager.setAdapter(adapterCheckCasa);
         viewPager.setPadding(130, 0, 130, 0);
 
         Integer[] colors_temp = {
@@ -45,7 +57,7 @@ public class CheckCasaActivity extends AppCompatActivity {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
-                if (position < (adapter.getCount() -1) && position < (colors.length - 1)) {
+                if (position < (adapterCheckCasa.getCount() -1) && position < (colors.length - 1)) {
                     viewPager.setBackgroundColor(
 
                             (Integer) argbEvaluator.evaluate(
@@ -72,5 +84,9 @@ public class CheckCasaActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    public CheckCasaActivity getcheckCasaActivity(){
+        return this;
     }
 }

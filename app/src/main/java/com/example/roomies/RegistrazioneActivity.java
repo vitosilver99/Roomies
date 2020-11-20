@@ -46,10 +46,13 @@ public class RegistrazioneActivity extends AppCompatActivity {
         final EditText cognome = findViewById(R.id.Cognome_registrazione);
         final EditText email = findViewById(R.id.Email_registrazione);
         final EditText password = findViewById(R.id.Password_registrazione);
+        final EditText num_telefono = findViewById((R.id.Num_registrazione));
+
         final ProgressBar load = findViewById(R.id.progressBar_reg);
 
         mAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
+
 
         registrati.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,6 +62,7 @@ public class RegistrazioneActivity extends AppCompatActivity {
                 String pass_reg = password.getText().toString();
                 String nome_reg = nome.getText().toString();
                 String cognome_reg = cognome.getText().toString();
+                String num_tel = num_telefono.getText().toString();
 
                 if(TextUtils.isEmpty(nome_reg))
                 {
@@ -69,6 +73,12 @@ public class RegistrazioneActivity extends AppCompatActivity {
                 if(TextUtils.isEmpty(cognome_reg))
                 {
                     cognome.setError("Inserisci la cognome");
+                    return;
+                }
+
+                if(num_tel.isEmpty())
+                {
+                    num_telefono.setError("Inserisci il numero del telefono");
                     return;
                 }
 
@@ -96,18 +106,25 @@ public class RegistrazioneActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful())
                         {
-                            Toast.makeText(RegistrazioneActivity.this,"Utente creato",Toast.LENGTH_LONG).show();
+                            //Toast.makeText(RegistrazioneActivity.this,"Utente creato",Toast.LENGTH_LONG).show();
                             userID= mAuth.getCurrentUser().getUid();
                             DocumentReference documentReference = fStore.collection("utenti").document(userID);
                             Map<String,Object> user = new HashMap<>();
                             user.put("nome",nome_reg);
                             user.put("cognome",cognome_reg);
+                            user.put("casa_id","");
+                            user.put("num_telefono",num_tel);
                             documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
                                     Log.d("Op.Successo" ,"l'utente è stato creato con lo UserId: "+ userID);
                                     Intent intent=new Intent(getApplicationContext(),CheckCasaActivity.class);
+                                    intent.putExtra("UserId", userID);
                                     startActivity(intent);
+
+                                    load.setVisibility(View.INVISIBLE);
+                                    RegistrazioneActivity.super.finish();
+                                    LoginActivity.getInstance().finish();
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
@@ -116,15 +133,11 @@ public class RegistrazioneActivity extends AppCompatActivity {
                                 }
                             });
 
-
-                            load.setVisibility(View.INVISIBLE);
-                            startActivity(new Intent(getApplicationContext(),MainActivity.class));
-                            RegistrazioneActivity.super.finish();
-                            LoginActivity.getInstance().finish();
                         }
                         else
                         {
                             Toast.makeText(RegistrazioneActivity.this, "Errore di autenticazione: "+task.getException().getMessage(),Toast.LENGTH_LONG).show();
+                            load.setVisibility(View.INVISIBLE);
                         }
 
                     }
