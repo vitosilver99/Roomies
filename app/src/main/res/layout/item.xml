@@ -32,7 +32,7 @@
                 android:layout_marginTop="10dp"
                 android:text="Partecipa ad una casa"
                 android:textColor="#262626"
-                android:textSize="30" />
+                android:textSize="30dp" />
 
             <TextView
                 android:id="@+id/desc"
