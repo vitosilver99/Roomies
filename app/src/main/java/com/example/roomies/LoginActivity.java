@@ -19,6 +19,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class LoginActivity extends AppCompatActivity {
     FirebaseAuth fAuth;
     static LoginActivity activityA;
@@ -52,9 +55,9 @@ public class LoginActivity extends AppCompatActivity {
                 String email = emailEditText.getText().toString().trim();
                 String password = passwordEditText.getText().toString().trim();
 
-                if(TextUtils.isEmpty(email))
+                if(!isEmailValid(email))
                 {
-                    emailEditText.setError("Inserisci l'email");
+                    emailEditText.setError("Inserisci una mail valida");
                     return;
                 }
 
@@ -90,6 +93,13 @@ public class LoginActivity extends AppCompatActivity {
 
     public static LoginActivity getInstance(){
         return   activityA;
+    }
+
+    public static boolean isEmailValid(String email) {
+        String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
+        Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
     }
 
 }

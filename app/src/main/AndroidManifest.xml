@@ -9,8 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Design.Light.NoActionBar">
-
-        <activity android:name=".CheckCasaActivity"></activity>
+        <activity android:name=".CheckCasaActivity" />
         <activity android:name=".MainActivity" />
         <activity android:name=".RegistrazioneActivity" />
         <activity
