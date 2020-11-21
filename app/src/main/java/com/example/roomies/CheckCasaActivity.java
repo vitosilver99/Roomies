@@ -86,7 +86,4 @@ public class CheckCasaActivity extends AppCompatActivity {
 
     }
 
-    public CheckCasaActivity getcheckCasaActivity(){
-        return this;
-    }
 }

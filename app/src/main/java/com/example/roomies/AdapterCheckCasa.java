@@ -18,6 +18,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -68,6 +69,7 @@ public class AdapterCheckCasa extends PagerAdapter {
         partecipa_casa = view.findViewById(R.id.btn_aggiungi_coinquilino);
         aggiungi_casa = view.findViewById(R.id.btn_crea_casa);
 
+        String RaccoltaCase ="case";
 
 
         imageView.setImageResource(modelCheckCasas.get(position).getImage());
@@ -87,23 +89,97 @@ public class AdapterCheckCasa extends PagerAdapter {
         partecipa_casa.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*Map<String, Object> dataUtenti = new HashMap<>();
-                dataUtenti.put("u",context.userID);*/
-
                 String indirizzo = indirizzo_casa.getText().toString();
 
-                Log.d("indirizzo casa:",indirizzo);
-                Task<Void> aggiungiUtenteCasa = context.fStore.collection("casa").document(indirizzo)
-                        .update(
-                                "utenti.utente3", context.userID
-                        ).addOnSuccessListener(new OnSuccessListener<Void>() {
+                //fare get per il numero di utenti
+                Task<DocumentSnapshot> getNumeroUtenti = context.fStore.collection(RaccoltaCase).document(indirizzo)
+                        .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                             @Override
-                            public void onSuccess(Void aVoid) {
-                                Intent intent = new Intent(context.getApplicationContext(), MainActivity.class);
-                                intent.putExtra("UserId",context.userID);
-                                context.startActivity(intent);
+                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                int numUtenti = Integer.parseInt(documentSnapshot.get("numero_utenti").toString());
+                                numUtenti++;
+                                Log.d("indirizzo casa:",indirizzo);
+                                Task<Void> aggiungiUtenteCasa = context.fStore.collection(RaccoltaCase).document(indirizzo)
+                                        .update(
+                                                "utenti.utente"+numUtenti, context.userID,
+                                                "numero_utenti", numUtenti
+                                        ).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+
+                                                //aggiungere all'utente la casa appena creata
+                                                Task<Void> aggiungiCasaUtente = context.fStore.collection("utenti").document(context.userID)
+                                                        .update(
+                                                                "casa",indirizzo
+                                                        ).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                            @Override
+                                                            public void onSuccess(Void aVoid) {
+                                                                Intent intent = new Intent(context.getApplicationContext(), MainActivity.class);
+                                                                intent.putExtra("UserId",context.userID);
+                                                                context.startActivity(intent);
+                                                                context.finish();
+                                                            }
+                                                        }).addOnFailureListener(new OnFailureListener() {
+                                                            @Override
+                                                            public void onFailure(@NonNull Exception e) {
+                                                                Toast.makeText(context.getApplicationContext(),e.getMessage(),Toast.LENGTH_LONG);
+                                                            }
+                                                        });
+                                            }
+                                        }).addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Toast.makeText(context.getApplicationContext(),e.getMessage(),Toast.LENGTH_LONG);
+                                            }
+                                        });
+
                             }
                         }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                 Toast.makeText(context.getApplicationContext(),e.getMessage(),Toast.LENGTH_LONG);
+                            }
+                        });
+
+            }
+        });
+
+        aggiungi_casa.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Map<String, Object> dataUtenti = new HashMap<>();
+                dataUtenti.put("utente1",context.userID);
+
+                Map<String, Object> data = new HashMap<>();
+                data.put("utenti", dataUtenti);
+                data.put("numero_utenti", 1);
+
+                context.fStore.collection(RaccoltaCase).add(data)
+                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                            @Override
+                            public void onSuccess(DocumentReference documentReference) {
+                                String IndirizzoCasaAppenaCreata = documentReference.getId();
+                                context.fStore.collection("utenti").document(context.userID)
+                                        .update(
+                                                "casa",IndirizzoCasaAppenaCreata
+                                        ).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
+                                        Intent intent = new Intent(context.getApplicationContext(),MainActivity.class);
+                                        intent.putExtra("UserId",context.userID);
+                                        context.startActivity(intent);
+                                        context.finish();
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(context.getApplicationContext(),e.getMessage(),Toast.LENGTH_LONG);
+                                    }
+                                });
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
                                 Toast.makeText(context.getApplicationContext(),e.getMessage(),Toast.LENGTH_LONG);
@@ -112,50 +188,6 @@ public class AdapterCheckCasa extends PagerAdapter {
             }
         });
 
-        aggiungi_casa.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                CheckCasaActivity checkCasaActivity = context;
-                Map<String, Object> dataUtenti = new HashMap<>();
-                dataUtenti.put("utente1",checkCasaActivity.userID);
-
-                Map<String, Object> data = new HashMap<>();
-                data.put("utenti", dataUtenti);
-                data.put("numero_utenti", 1);
-
-                checkCasaActivity.fStore.collection("casa").add(data)
-                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                            @Override
-                            public void onSuccess(DocumentReference documentReference) {
-                                Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
-                                Intent intent = new Intent(context.getApplicationContext(),MainActivity.class);
-                                intent.putExtra("UserId",context.userID);
-                                context.startActivity(intent);
-                                context.finish();
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.w(TAG, "Error adding document", e);
-                            }
-                        });
-            }
-        });
-
-
-
-
-        /*
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, DetailActivity.class);
-                intent.putExtra("param", models.get(position).getTitle());
-                context.startActivity(intent);
-                // finish();
-            }
-        });*/
 
         container.addView(view, 0);
         return view;

@@ -112,7 +112,6 @@ public class RegistrazioneActivity extends AppCompatActivity {
                             Map<String,Object> user = new HashMap<>();
                             user.put("nome",nome_reg);
                             user.put("cognome",cognome_reg);
-                            user.put("casa_id","");
                             user.put("num_telefono",num_tel);
                             documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override

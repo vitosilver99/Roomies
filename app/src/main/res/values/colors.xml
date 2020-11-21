@@ -8,8 +8,13 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <color name="color1">#FFC107</color>
-    <color name="color2">#FF9C07</color>
+
+    <color name="blue_app">#2D607D</color>
+    <color name="orange_app">#FEBA1B</color>
+    <color name="primary_color">#C3F8DF3D</color>
+
+    <color name="color1">#C3F8CF3D</color>
+    <color name="color2">#C3F8C93D</color>
     <color name="color3">#FF9800</color>
     <color name="color4">#FF9800</color>
 </resources>
