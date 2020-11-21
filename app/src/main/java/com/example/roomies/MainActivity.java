@@ -23,9 +23,9 @@ public class MainActivity extends AppCompatActivity {
 
         Bundle b = new Bundle();
         b = getIntent().getExtras();
-        String parametri = b.getString("UserId");
+        String parametri = b.getString("userID");
 
-        Toast.makeText(getApplicationContext(),"UserId:"+parametri,Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(),"userID:"+parametri,Toast.LENGTH_LONG).show();
     }
 
     BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
