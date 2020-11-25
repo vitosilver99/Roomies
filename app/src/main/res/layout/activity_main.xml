@@ -18,12 +18,11 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
 
-            android:background="@color/color1"
+            android:background="@color/primary_color"
 
             app:itemIconTint="@color/white"
             app:itemTextColor="@color/white"
-            app:menu="@menu/bottom_navigation_menu"
-            />
+            app:menu="@menu/bottom_navigation_menu" />
     </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,35 +9,31 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="485dp"
+        android:layout_height="wrap_content"
         android:layout_margin="8dp"
         app:cardCornerRadius="20dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"><![CDATA[
-
-            android:textSize="20dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-
-
-            ]]>
+            android:layout_height="match_parent">
 
             <TextView
                 android:id="@+id/title"
-                android:layout_width="287dp"
-                android:layout_height="37dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_below="@id/image"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
                 android:text="Cosa deve fare"
                 android:textColor="#262626"
-                android:textSize="30dp"
+                android:textSize="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.314"
                 app:layout_constraintStart_toStartOf="parent"
-                tools:layout_editor_absoluteY="250dp" />
+                app:layout_constraintTop_toBottomOf="@+id/image" />
 
             <ImageView
                 android:id="@+id/image"
@@ -51,55 +47,74 @@
 
             <TextView
                 android:id="@+id/desc"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/title"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="6dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
                 android:drawablePadding="10dp"
                 android:ellipsize="end"
                 android:maxLines="3"
                 android:text="Description"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/image"
-                app:layout_constraintVertical_bias="0.341" />
+                app:layout_constraintTop_toBottomOf="@+id/title" />
 
             <EditText
                 android:id="@+id/textView_indirizzo_Casa"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
                 android:ems="10"
                 android:inputType="textPersonName"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.497"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/image"
-                app:layout_constraintVertical_bias="0.692" />
+                app:layout_constraintTop_toBottomOf="@+id/desc" />
 
             <Button
                 android:id="@+id/btn_aggiungi_coinquilino"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="60dp"
+                android:layout_marginLeft="60dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="60dp"
+                android:layout_marginRight="60dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/input_btn_bd"
                 android:text="Partecipa"
+                android:textColor="#FFFFFF"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.505"
+                android:textAllCaps="false"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView_indirizzo_Casa"
-                app:layout_constraintVertical_bias="0.828" />
+                app:layout_constraintTop_toBottomOf="@+id/textView_indirizzo_Casa" />
 
             <Button
                 android:id="@+id/btn_crea_casa"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="60dp"
+                android:layout_marginLeft="60dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="60dp"
+                android:layout_marginRight="60dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/input_btn_bd"
                 android:text="Crea casa"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
                 android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/image"
-                app:layout_constraintVertical_bias="0.801" />
+                app:layout_constraintTop_toBottomOf="@+id/textView_indirizzo_Casa" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

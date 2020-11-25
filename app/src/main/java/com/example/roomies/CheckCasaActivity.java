@@ -35,8 +35,8 @@ public class CheckCasaActivity extends AppCompatActivity {
         fStore = FirebaseFirestore.getInstance();
 
         modelCheckCasas = new ArrayList<>();
-        modelCheckCasas.add(new ModelCheckCasa(R.drawable.ic_phone, "PARTECIPA A UNA CASA", "Se hai ricevuto una mail di invito da parte di un tuo amico, inserisci il codice qui sotto per poter partecipare alla casa","Inserisci codice di invito"));
-        modelCheckCasas.add(new ModelCheckCasa(R.drawable.ic_person, "CREA UNA CASA", "Crea subito una casa se non ne possiedi già una e invita tutti i tuoi amici",""));
+        modelCheckCasas.add(new ModelCheckCasa(R.drawable.lambrusco, "PARTECIPA A UNA CASA", "Se hai ricevuto una mail di invito da parte di un tuo amico, inserisci il codice qui sotto per poter partecipare","Inserisci codice di invito"));
+        modelCheckCasas.add(new ModelCheckCasa(R.drawable.imm, "CREA UNA CASA", "Crea subito una casa se non ne possiedi già una e invita tutti i tuoi amici",""));
 
         adapterCheckCasa = new AdapterCheckCasa(modelCheckCasas, this);
 
