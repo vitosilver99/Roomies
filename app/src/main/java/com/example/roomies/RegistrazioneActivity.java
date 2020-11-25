@@ -53,7 +53,10 @@ public class RegistrazioneActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
 
-
+        /*
+        crea un Listener sul tasto registrati che ascolta i Click
+        setOnClickListener() ha bisogno come parametro di un Listener particolare
+        */
         registrati.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -67,6 +70,8 @@ public class RegistrazioneActivity extends AppCompatActivity {
                 if(TextUtils.isEmpty(nome_reg))
                 {
                     nome.setError("Inserisci il nome");
+
+                    //in caso di compilazione errata dei campi ritorna all'ascolto di Click sul tasto registrati
                     return;
                 }
 
@@ -95,33 +100,56 @@ public class RegistrazioneActivity extends AppCompatActivity {
                 }
                 if(pass_reg.length()<6)
                 {
-                    password.setError("Inserisci una password di almeno 6 cifre");
+                    password.setError("Inserisci una password di almeno 6 caratteri");
                     return;
                 }
 
                 load.setVisibility(View.VISIBLE);
 
+                 /*
+                creazione utente in caso di compilazione corretta dei campi
+                crea un Listener sul completamento (onComplete) dell'operazione di registrazione che ascolta
+                setOnCompleteListener() ha bisogno come parametro di un Listener particolare
+                */
+
                 mAuth.createUserWithEmailAndPassword(email_reg,pass_reg).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
+
+                    //onComplete ha come parametro un Task, in questo caso un risultato di autenticazione
                     public void onComplete(@NonNull Task<AuthResult> task) {
+
+                        //se l'utente è stato registrato
                         if(task.isSuccessful())
                         {
                             //Toast.makeText(RegistrazioneActivity.this,"Utente creato",Toast.LENGTH_LONG).show();
+
+                            //mAuth può restituire ID dell'utente creato. L'ID viene generato automaticamente in FireBase
                             userID= mAuth.getCurrentUser().getUid();
+
+                            //crea un riferimento al documento relativo al nuovo utente
                             DocumentReference documentReference = fStore.collection("utenti").document(userID);
+
+                            //crea una mappa che contenga tutte le informazioni relative al nuovo utente
                             Map<String,Object> user = new HashMap<>();
                             user.put("nome",nome_reg);
                             user.put("cognome",cognome_reg);
                             user.put("num_telefono",num_tel);
+
+                            //aggiorna il documento relativo al nuovo utente
                             documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
-                                    Log.d("Op.Successo" ,"l'utente è stato creato con lo UserId: "+ userID);
+                                    Log.d("Op.Successo" ,"L'utente è stato creato con lo UserId: "+ userID);
                                     Intent intent=new Intent(getApplicationContext(),CheckCasaActivity.class);
-                                    intent.putExtra("UserId", userID);
+
+                                    //passare l'identificatore utente all'activity relativa al controllo della casa
+                                    intent.putExtra("userID", userID);
                                     startActivity(intent);
 
+                                    //nascondi barra di caricamento
                                     load.setVisibility(View.INVISIBLE);
+
+                                    //chiudi l'attività di registrazione e di login
                                     RegistrazioneActivity.super.finish();
                                     LoginActivity.getInstance().finish();
                                 }
@@ -147,6 +175,7 @@ public class RegistrazioneActivity extends AppCompatActivity {
 
     }
 
+    //controlla che la stringa inserita come email sia corretta
     public static boolean isEmailValid(String email) {
         String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
         Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);

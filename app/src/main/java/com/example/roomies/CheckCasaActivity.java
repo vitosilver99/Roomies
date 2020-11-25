@@ -30,8 +30,10 @@ public class CheckCasaActivity extends AppCompatActivity {
         setContentView(R.layout.activity_check_casa);
         Bundle b = new Bundle();
         b = getIntent().getExtras();
-        userID = b.getString("UserId");
-        Log.d("errrrrrrrrrrrorrreeeee", userID);
+
+        //ottieni identificatore utente dall'activity registrazione
+        userID = b.getString("userID");
+        Log.d("userID restituito", userID);
         fStore = FirebaseFirestore.getInstance();
 
         modelCheckCasas = new ArrayList<>();

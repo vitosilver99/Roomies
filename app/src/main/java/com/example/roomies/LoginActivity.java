@@ -77,7 +77,7 @@ public class LoginActivity extends AppCompatActivity {
                             Toast.makeText(LoginActivity.this,"Utente autenticato correttamente",Toast.LENGTH_SHORT).show();
                             Intent intent =new Intent(getApplicationContext(),MainActivity.class);
                             //Log.d("user id :",task.getResult().getUser().getUid());
-                            intent.putExtra("UserId",task.getResult().getUser().getUid());
+                            intent.putExtra("userID",task.getResult().getUser().getUid());
                             startActivity(intent);
                             finish();
                         }
