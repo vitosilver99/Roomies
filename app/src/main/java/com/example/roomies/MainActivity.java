@@ -1,10 +1,8 @@
 package com.example.roomies;
 
-import androidx.appcompat.app.ActionBar;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -14,47 +12,49 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
-    BottomNavigationView bottomNavigation;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        bottomNavigation = findViewById(R.id.bottom_navigation);
 
         Bundle b = new Bundle();
         b = getIntent().getExtras();
         String parametri = b.getString("userID");
 
-        Toast.makeText(getApplicationContext(),"userID:"+parametri,Toast.LENGTH_LONG).show();
+        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
+        bottomNav.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
+
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new HomeFragment()).commit();
+
+        Toast.makeText(getApplicationContext(), "userID:" + parametri, Toast.LENGTH_LONG).show();
     }
 
-    BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
-            new BottomNavigationView.OnNavigationItemSelectedListener() {
-                @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                    switch (item.getItemId()) {
-                        case R.id.navigation_home:
-                            openFragment(HomeFragment.newInstance("", ""));
-                            return true;
-                        case R.id.navigation_spesa:
-                            openFragment(SpesaFragment.newInstance("", ""));
-                            return true;
-                        case R.id.navigation_pagamenti:
-                            openFragment(PagamentiFragment.newInstance("", ""));
-                            return true;
-                        case R.id.navigation_chat:
-                            openFragment(ChatFragment.newInstance("", ""));
-                            return true;
+    private BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
+                new BottomNavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                        Fragment selectedFragment = null;
+
+                        switch (item.getItemId()) {
+                            case R.id.navigation_home:
+                                selectedFragment = new HomeFragment();
+                                break;
+                            case R.id.navigation_spesa:
+                                selectedFragment = new SpesaFragment();
+                                break;
+                            case R.id.navigation_pagamenti:
+                                selectedFragment = new PagamentiFragment();
+                                break;
+                            case R.id.navigation_chat:
+                                selectedFragment = new ChatFragment();
+                                break;
+                            case R.id.navigation_calendario:
+                                selectedFragment = new CalendarFragment();
+                                break;
+                        }
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,selectedFragment).commit();
+                        return true;
                     }
-                    return false;
-                }
-            };
-
-    public void openFragment(Fragment fragment) {
-        //ho importato la prima classe Fragment che mi indicava l'aiuto
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.container, fragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
-    }
+    };
 
 }

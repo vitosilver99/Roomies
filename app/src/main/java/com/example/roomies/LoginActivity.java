@@ -83,6 +83,7 @@ public class LoginActivity extends AppCompatActivity {
                         }
                         else {
                             Toast.makeText(LoginActivity.this, "Errore di autenticazione: "+task.getException().getMessage(),Toast.LENGTH_LONG).show();
+                            loadingProgressBar.setVisibility(View.INVISIBLE);
                         }
                     }
                 });

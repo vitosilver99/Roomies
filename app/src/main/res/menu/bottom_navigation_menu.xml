@@ -17,5 +17,8 @@
             android:id="@+id/navigation_chat"
             android:icon="@drawable/icon_chat"
             android:title="Chat" />
-
+        <item
+            android:id="@+id/navigation_calendario"
+            android:icon="@drawable/calendar"
+            android:title="Calendario" />
 </menu>
