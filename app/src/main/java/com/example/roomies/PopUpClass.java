@@ -1,5 +1,6 @@
 package com.example.roomies;
 
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -10,12 +11,26 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class PopUpClass {
+import androidx.cardview.widget.CardView;
+
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+
+import java.util.ArrayList;
+
+public class PopUpClass{
+
+    ArrayList<UtentiClass> utentiClasses;
+    ArrayList<MansioniClass> mansioniClasses;
 
     //PopupWindow display method
+    public  PopUpClass(ArrayList<UtentiClass> utentiClasses,ArrayList<MansioniClass> mansioniClasses)
+    {
+        this.mansioniClasses = mansioniClasses;
+        this.utentiClasses = utentiClasses;
+    }
 
     public void showPopupWindow(final View view) {
-
 
         //Create a View object yourself through inflater
         LayoutInflater inflater = (LayoutInflater) view.getContext().getSystemService(view.getContext().LAYOUT_INFLATER_SERVICE);
@@ -31,37 +46,39 @@ public class PopUpClass {
         //Create a window with our parameters
         final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
 
+        popupWindow.setTouchable(true);
+        popupWindow.setFocusable(true);
+
         //Set the location of the window on the screen
         popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
 
         //Initialize the elements of our window, install the handler
 
-        TextView test2 = popupView.findViewById(R.id.popup_text);
+        Button buttonMansione = popupView.findViewById(R.id.button_mansione_popup);
+        Button buttonClose = popupView.findViewById(R.id.button_chiudi_popup);
 
-        Button buttonEdit = popupView.findViewById(R.id.btn_popup);
-        buttonEdit.setOnClickListener(new View.OnClickListener() {
+
+        //Log.d("POPUP: ",""+documentoCasa.get("numero_utenti"));
+
+        buttonMansione.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                //As an example, display the message
-                Toast.makeText(view.getContext(), "Wow, popup action button", Toast.LENGTH_SHORT).show();
-
-            }
-        });
-
-
-
-        //Handler for clicking on the inactive zone of the window
-
-        popupView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-
-                //Close the window when clicked
                 popupWindow.dismiss();
-                return true;
+                PopUpMansioneClass popUpClass = new PopUpMansioneClass(utentiClasses,mansioniClasses);
+                popUpClass.showPopupWindow(view);
             }
         });
+
+        buttonClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+            }
+        });
+
+
+
+
     }
 
 }

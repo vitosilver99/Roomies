@@ -18,7 +18,10 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +33,7 @@ public class AdapterCheckCasa extends PagerAdapter {
     private List<ModelCheckCasa> modelCheckCasas;
     private LayoutInflater layoutInflater;
     private CheckCasaActivity context;
+    String nome_cognome;
 
     public AdapterCheckCasa(List<ModelCheckCasa> modelCheckCasas, CheckCasaActivity context) {
         this.modelCheckCasas = modelCheckCasas;
@@ -93,48 +97,31 @@ public class AdapterCheckCasa extends PagerAdapter {
                 e aggiungere l'id della casa all'utente
                 */
 
-                Task<DocumentSnapshot> getNumeroUtenti = context.fStore.collection(raccoltaCase).document(casaID)
-                        .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                Map<String, Object> map = new HashMap<>();
+                map.put("nome_cognome",context.nomeUser + " " + context.cognomeUser);
+                map.put("user_id",context.userID);
+                //inserisci il nuovo utente nella raccolta utenti della casa e aggiorna il numero di partecipanti
+                Task<Void> aggiungiUtenteCasa = context.fStore.collection(raccoltaCase).document(casaID)
+                        .update(
+                                "utenti", FieldValue.arrayUnion(map),
+                                "numero_utenti" , FieldValue.increment(1)
+                        ).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
-                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            public void onSuccess(Void aVoid) {
 
-                                //ottieni il numero di utenti della casa prima dell'aggiunta di un nuovo partecipante
-                                int numUtenti = Integer.parseInt(documentSnapshot.get("numero_utenti").toString());
-
-                                //incrementalo per ottenere il valore aggiornato
-                                numUtenti++;
-
-                                Log.d("casaID:",casaID);
-
-                                //inserisci il nuovo utente nella raccolta utenti della casa e aggiorna il numero di partecipanti
-                                Task<Void> aggiungiUtenteCasa = context.fStore.collection(raccoltaCase).document(casaID)
+                                //aggiungere all'utente la casa appena creata
+                                Task<Void> aggiungiCasaUtente = context.fStore.collection(raccoltaUtenti).document(context.userID)
                                         .update(
-                                                "utenti.utente"+numUtenti, context.userID,
-                                                "numero_utenti", numUtenti
+                                                "casa",casaID
                                         ).addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void aVoid) {
+                                                Intent intent = new Intent(context.getApplicationContext(), MainActivity.class);
+                                                intent.putExtra("userID",context.userID);
+                                                context.startActivity(intent);
 
-                                                //aggiungere all'utente la casa appena creata
-                                                Task<Void> aggiungiCasaUtente = context.fStore.collection(raccoltaUtenti).document(context.userID)
-                                                        .update(
-                                                                "casa",casaID
-                                                        ).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                            @Override
-                                                            public void onSuccess(Void aVoid) {
-                                                                Intent intent = new Intent(context.getApplicationContext(), MainActivity.class);
-                                                                intent.putExtra("userID",context.userID);
-                                                                context.startActivity(intent);
-
-                                                                //termina activity corrente
-                                                                context.finish();
-                                                            }
-                                                        }).addOnFailureListener(new OnFailureListener() {
-                                                            @Override
-                                                            public void onFailure(@NonNull Exception e) {
-                                                                Toast.makeText(context.getApplicationContext(),e.getMessage(),Toast.LENGTH_LONG);
-                                                            }
-                                                        });
+                                                //termina activity corrente
+                                                context.finish();
                                             }
                                         }).addOnFailureListener(new OnFailureListener() {
                                             @Override
@@ -142,7 +129,6 @@ public class AdapterCheckCasa extends PagerAdapter {
                                                 Toast.makeText(context.getApplicationContext(),e.getMessage(),Toast.LENGTH_LONG);
                                             }
                                         });
-
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
@@ -150,7 +136,6 @@ public class AdapterCheckCasa extends PagerAdapter {
                                 Toast.makeText(context.getApplicationContext(),e.getMessage(),Toast.LENGTH_LONG);
                             }
                         });
-
             }
         });
 
@@ -159,17 +144,23 @@ public class AdapterCheckCasa extends PagerAdapter {
             @Override
             public void onClick(View v) {
                 CheckCasaActivity checkCasaActivity = context;
-                Map<String, Object> utente1 = new HashMap<>();
-                utente1.put("utente1",context.userID);
+
+                Map<String, Object> map = new HashMap<>();
+
+                String nome_cognome = context.nomeUser + " " + context.cognomeUser;
+                Log.d("nome dentro l'adapter :",nome_cognome);
+
+                map.put("nome_cognome",nome_cognome);
+                map.put("user_id",context.userID);
 
                 Map<String, Object> data = new HashMap<>();
 
                 //crea una sottoraccolta composta da un solo utente
-                data.put("utenti", utente1);
-
+                data.put("utenti", Arrays.asList(map));
                 data.put("numero_utenti", 1);
+                data.put("lista_mansioni", Arrays.asList("Lavare bagno","Lavare cucina","Lavare soggiorno","Lavare corridoio"));
 
-                //aggiungi l'utente alla casa
+                //aggiungi l'utente alla casa e crea il documento casa
                 context.fStore.collection(raccoltaCase).add(data)
                         .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                             @Override

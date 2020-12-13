@@ -21,6 +21,8 @@ public class CheckCasaActivity extends AppCompatActivity {
     ArgbEvaluator argbEvaluator = new ArgbEvaluator();
 
     String userID;
+    String nomeUser;
+    String cognomeUser;
     FirebaseFirestore fStore;
 
 
@@ -33,6 +35,11 @@ public class CheckCasaActivity extends AppCompatActivity {
 
         //ottieni identificatore utente dall'activity registrazione
         userID = b.getString("userID");
+        nomeUser = b.getString("nome");
+        cognomeUser = b.getString("cognome");
+        Log.d("nome utente", nomeUser);
+        Log.d("cognome utente", cognomeUser);
+
         Log.d("userID restituito", userID);
         fStore = FirebaseFirestore.getInstance();
 

@@ -15,9 +15,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -25,12 +29,14 @@ import java.util.regex.Pattern;
 public class LoginActivity extends AppCompatActivity {
     FirebaseAuth fAuth;
     static LoginActivity activityA;
+    FirebaseFirestore fStore;
     private String userID;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
         final EditText emailEditText = findViewById(R.id.Email_login);
         final EditText passwordEditText = findViewById(R.id.Password_login);
         final Button loginButton = findViewById(R.id.btn_login);
@@ -40,6 +46,7 @@ public class LoginActivity extends AppCompatActivity {
 
         activityA = this;
         fAuth = FirebaseAuth.getInstance();
+        fStore = FirebaseFirestore.getInstance();
 
         registrazione.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,12 +81,32 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
-                            Toast.makeText(LoginActivity.this,"Utente autenticato correttamente",Toast.LENGTH_SHORT).show();
-                            Intent intent =new Intent(getApplicationContext(),MainActivity.class);
-                            //Log.d("user id :",task.getResult().getUser().getUid());
-                            intent.putExtra("userID",task.getResult().getUser().getUid());
-                            startActivity(intent);
-                            finish();
+
+                            //Prelevo il codice della casa dell'utente
+                            fStore.collection("utenti").document(task.getResult().getUser().getUid()).get()
+                                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                            String UdCasa = documentSnapshot.get("casa").toString();
+
+                                            Toast.makeText(LoginActivity.this,"Utente autenticato correttamente",Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(getApplicationContext(), "casaId:" + UdCasa, Toast.LENGTH_LONG).show();
+
+                                            Intent intent =new Intent(getApplicationContext(),MainActivity.class);
+                                            //Log.d("user id :",task.getResult().getUser().getUid());
+                                            intent.putExtra("userID",task.getResult().getUser().getUid());
+                                            intent.putExtra("casaID",UdCasa);
+
+                                            startActivity(intent);
+                                            finish();
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(getApplicationContext(), "Errore: " +e.getMessage(), Toast.LENGTH_LONG).show();
+                                    loadingProgressBar.setVisibility(View.INVISIBLE);
+                                }
+                            });
                         }
                         else {
                             Toast.makeText(LoginActivity.this, "Errore di autenticazione: "+task.getException().getMessage(),Toast.LENGTH_LONG).show();

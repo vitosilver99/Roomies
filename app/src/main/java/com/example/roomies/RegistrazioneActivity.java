@@ -144,6 +144,8 @@ public class RegistrazioneActivity extends AppCompatActivity {
 
                                     //passare l'identificatore utente all'activity relativa al controllo della casa
                                     intent.putExtra("userID", userID);
+                                    intent.putExtra("nome", nome_reg);
+                                    intent.putExtra("cognome",cognome_reg);
                                     startActivity(intent);
 
                                     //nascondi barra di caricamento

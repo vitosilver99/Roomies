@@ -7,10 +7,20 @@ import androidx.fragment.app.Fragment;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
+
+    //FirebaseAuth fAuth;
+    FirebaseFirestore fStore;
+    String UdCasa;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,6 +30,9 @@ public class MainActivity extends AppCompatActivity {
         Bundle b = new Bundle();
         b = getIntent().getExtras();
         String parametri = b.getString("userID");
+        UdCasa = b.getString("casaID");
+
+        fStore = FirebaseFirestore.getInstance();
 
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
         bottomNav.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
@@ -27,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new HomeFragment()).commit();
 
         Toast.makeText(getApplicationContext(), "userID:" + parametri, Toast.LENGTH_LONG).show();
+
+
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
@@ -49,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
                                 selectedFragment = new ChatFragment();
                                 break;
                             case R.id.navigation_calendario:
-                                selectedFragment = new CalendarFragment();
+                                selectedFragment = new CalendarFragment(UdCasa);
                                 break;
                         }
                         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,selectedFragment).commit();
