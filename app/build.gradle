@@ -55,4 +55,11 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
+    // aggiunto da alessandro per la classe PagamentiFragment (FirestoreRecyclerOptions)
+    implementation 'com.firebaseui:firebase-ui-firestore:7.1.1'
+
+    //per la paginazione in PagamentiFragment
+    implementation 'android.arch.paging:runtime:2.1.1'
+    //fino qui
+
 }
