@@ -1,7 +1,6 @@
 package com.example.roomies;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,35 +12,37 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.MyViewHolder> {
+public class RecyclerViewAdapterEvento extends RecyclerView.Adapter<RecyclerViewAdapterMansione.MyViewHolder> {
 
     private Context mContext ;
     private List<UtentiClass> mData ;
+    private PopUpEventoClass popUpEventoClass;
 
 
-    public RecyclerViewAdapter(Context mContext, List<UtentiClass> mData) {
+    public RecyclerViewAdapterEvento(Context mContext, List<UtentiClass> mData, PopUpEventoClass popUpEventoClass) {
         this.mContext = mContext;
         this.mData = mData;
+        this.popUpEventoClass = popUpEventoClass;
     }
 
+
     @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerViewAdapterMansione.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View view ;
         LayoutInflater mInflater = LayoutInflater.from(mContext);
         view = mInflater.inflate(R.layout.add_utent_spinner,parent,false);
-        return new MyViewHolder(view);
+        return new RecyclerViewAdapterMansione.MyViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, final int position) {
+    public void onBindViewHolder(RecyclerViewAdapterMansione.MyViewHolder holder, final int position) {
 
         holder.nome_selezionato.setText(mData.get(position).getNome_cognome());
-        holder.cardView.setOnClickListener(new View.OnClickListener() {
+        holder.elimina.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("card view","sono nella card view dello spinner");
+                popUpEventoClass.eliminaElementoSelezionato(position);
             }
         });
 
@@ -64,7 +65,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             nome_selezionato = (TextView) itemView.findViewById(R.id.nome_add_spinner) ;
             elimina = (Button) itemView.findViewById(R.id.btn_elimina_add_spinner);
             cardView = (CardView) itemView.findViewById(R.id.CardViewUtenteSpinner);
-
         }
     }
 

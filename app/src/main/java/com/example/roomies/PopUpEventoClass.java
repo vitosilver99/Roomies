@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
@@ -25,8 +26,6 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -36,7 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PopUpMansioneClass implements DatePickerDialog.OnDateSetListener {
+public class PopUpEventoClass implements DatePickerDialog.OnDateSetListener{
 
     ArrayList<UtentiClass> utentiClasses;
     ArrayList<MansioniClass> mansioniClasses;
@@ -45,16 +44,15 @@ public class PopUpMansioneClass implements DatePickerDialog.OnDateSetListener {
     FirebaseFirestore fStore;
 
     List<UtentiClass> utentiSelezionati;
-    RecyclerViewAdapterMansione myAdapter;
+    RecyclerViewAdapterEvento myAdapter;
     RecyclerView myrv;
 
     View popupView;
 
     String UdCasa;
 
-    public PopUpMansioneClass(ArrayList<UtentiClass> utentiClasses,ArrayList<MansioniClass> mansioniClasses, String UdCasa)
+    public PopUpEventoClass(ArrayList<UtentiClass> utentiClasses, String UdCasa)
     {
-        this.mansioniClasses = mansioniClasses;
         this.utentiClasses = utentiClasses;
         this.UdCasa = UdCasa;
     }
@@ -64,7 +62,7 @@ public class PopUpMansioneClass implements DatePickerDialog.OnDateSetListener {
 
         //Create a View object yourself through inflater
         LayoutInflater inflater = (LayoutInflater) view.getContext().getSystemService(view.getContext().LAYOUT_INFLATER_SERVICE);
-        popupView = inflater.inflate(R.layout.popup_crea_mansione, null);
+        popupView = inflater.inflate(R.layout.popup_crea_evento, null);
 
         fStore = FirebaseFirestore.getInstance();
 
@@ -84,19 +82,9 @@ public class PopUpMansioneClass implements DatePickerDialog.OnDateSetListener {
         popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
 
         //Initialize the elements of our window, install the handler
-        Spinner spinner = popupView.findViewById(R.id.spinner_mansioni);
 
-        Log.d("sono nel popup",mansioniClasses.size()+"");
-        List<String> mansioni = new ArrayList<String>();
-        for(int i = 0; i< mansioniClasses.size();i++)
-        {
-            mansioni.add(mansioniClasses.get(i).getNome());
-        }
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(view.getContext(), android.R.layout.simple_spinner_item, mansioni);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(dataAdapter);
 
-        Spinner spinner_utenti = popupView.findViewById(R.id.spinner_utenti);
+        Spinner spinner_utenti = popupView.findViewById(R.id.spinner_utenti_evento);
 
         List<String> utenti = new ArrayList<String>();
         for(int i = 0; i< utentiClasses.size();i++)
@@ -104,10 +92,10 @@ public class PopUpMansioneClass implements DatePickerDialog.OnDateSetListener {
             utenti.add(utentiClasses.get(i).getNome_cognome());
         }
         ArrayAdapter<String> dataAdapter_utenti = new ArrayAdapter<String>(view.getContext(), android.R.layout.simple_spinner_item, utenti);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        dataAdapter_utenti.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner_utenti.setAdapter(dataAdapter_utenti);
 
-        seleziona_giorno = popupView.findViewById(R.id.seleziona_data);
+        seleziona_giorno = popupView.findViewById(R.id.seleziona_data_evento);
         seleziona_giorno.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -128,23 +116,22 @@ public class PopUpMansioneClass implements DatePickerDialog.OnDateSetListener {
                 {
                     utentiSelezionati.add(utentiClasses.get(position));
                     aggiornaAdapter();
-                    /*
-                    utentiSelezionati.add(utentiClasses.get(position));
-                    myAdapter = new RecyclerViewAdapter(popupView.getContext(),utentiSelezionati,PopUpMansioneClass.this);
-                    myrv.setLayoutManager(new GridLayoutManager(popupView.getContext(),2));
-                    myrv.setAdapter(myAdapter);*/
                 }
 
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
+                // your code here
             }
 
         });
 
 
-        Button btn_aggiungi = popupView.findViewById(R.id.btn_aggiungi);
+        Button btn_aggiungi = popupView.findViewById(R.id.button_aggiungi_evento);
+        EditText descrizione = popupView.findViewById(R.id.descrizione_evento_popup);
+        EditText nome = popupView.findViewById(R.id.nome_evento_popup);
+
         btn_aggiungi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -158,18 +145,17 @@ public class PopUpMansioneClass implements DatePickerDialog.OnDateSetListener {
 
 
                 singolo_evento.put("giorno",data);
-                singolo_evento.put("nome",spinner.getSelectedItem().toString());
-                singolo_evento.put("descrizione","");
+                singolo_evento.put("nome",nome.getText().toString());
+                singolo_evento.put("descrizione",descrizione.getText().toString());
                 singolo_evento.put("coinquilini", utentiSelezionati);
 
 
                 //aggiungo l'evento appena creato alla collezione Eventi
                 Date finalData = data;
-                fStore.collection("case").document(UdCasa).collection("eventi")
-                        .add(singolo_evento).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                fStore.collection("eventi").add(singolo_evento).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
-                        /*Map<String, Object> map = new HashMap<>();
+                        Map<String, Object> map = new HashMap<>();
                         map.put("evento_id",documentReference.getId());
                         map.put("data" , finalData);
 
@@ -178,11 +164,9 @@ public class PopUpMansioneClass implements DatePickerDialog.OnDateSetListener {
                         ).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-
+                                popupWindow.dismiss();
                             }
-                        });*/
-
-                        popupWindow.dismiss();
+                        });
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -194,16 +178,6 @@ public class PopUpMansioneClass implements DatePickerDialog.OnDateSetListener {
         });
 
 
-        //Handler for clicking on the inactive zone of the window
-        /*
-        popupView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                //Close the window when clicked
-                popupWindow.dismiss();
-                return true;
-            }
-        });*/
     }
 
     private void showDatePickerDailog(View PopupView){
@@ -220,10 +194,8 @@ public class PopUpMansioneClass implements DatePickerDialog.OnDateSetListener {
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-            month++;
-            NumberFormat f = new DecimalFormat("00");
-            String date = dayOfMonth + "/" + f.format(month) + "/" + year;
-            seleziona_giorno.setText(date);
+        String date = dayOfMonth + "/" + month + "/" + year;
+        seleziona_giorno.setText(date);
     }
 
     public void eliminaElementoSelezionato(int position)
@@ -235,11 +207,9 @@ public class PopUpMansioneClass implements DatePickerDialog.OnDateSetListener {
 
     public void aggiornaAdapter()
     {
-        myAdapter = new RecyclerViewAdapterMansione(popupView.getContext(),utentiSelezionati,PopUpMansioneClass.this);
+        myAdapter = new RecyclerViewAdapterEvento(popupView.getContext(),utentiSelezionati,PopUpEventoClass.this);
         myrv.setLayoutManager(new GridLayoutManager(popupView.getContext(),2));
         myrv.setAdapter(myAdapter);
     }
-
-
 
 }
