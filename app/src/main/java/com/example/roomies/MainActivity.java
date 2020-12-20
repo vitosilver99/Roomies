@@ -1,5 +1,6 @@
 package com.example.roomies;
 
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -12,6 +13,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import android.widget.Toast;
+import com.example.roomies.calendario.*;
+import com.example.roomies.pagamenti.*;
 
 public class MainActivity extends AppCompatActivity {
 
