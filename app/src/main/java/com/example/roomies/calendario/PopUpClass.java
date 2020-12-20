@@ -1,20 +1,13 @@
-package com.example.roomies;
+package com.example.roomies.calendario;
 
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.cardview.widget.CardView;
-
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
+import com.example.roomies.R;
 
 import java.util.ArrayList;
 
@@ -22,12 +15,14 @@ public class PopUpClass{
 
     ArrayList<UtentiClass> utentiClasses;
     ArrayList<MansioniClass> mansioniClasses;
+    String UdCasa;
 
     //PopupWindow display method
-    public  PopUpClass(ArrayList<UtentiClass> utentiClasses,ArrayList<MansioniClass> mansioniClasses)
+    public  PopUpClass(ArrayList<UtentiClass> utentiClasses,ArrayList<MansioniClass> mansioniClasses, String UdCasa)
     {
         this.mansioniClasses = mansioniClasses;
         this.utentiClasses = utentiClasses;
+        this.UdCasa =UdCasa;
     }
 
     public void showPopupWindow(final View view) {
@@ -55,6 +50,7 @@ public class PopUpClass{
         //Initialize the elements of our window, install the handler
 
         Button buttonMansione = popupView.findViewById(R.id.button_mansione_popup);
+        Button buttonEvento = popupView.findViewById(R.id.button_evento_popup);
         Button buttonClose = popupView.findViewById(R.id.button_chiudi_popup);
 
 
@@ -64,7 +60,16 @@ public class PopUpClass{
             @Override
             public void onClick(View v) {
                 popupWindow.dismiss();
-                PopUpMansioneClass popUpClass = new PopUpMansioneClass(utentiClasses,mansioniClasses);
+                PopUpMansioneClass popUpClass = new PopUpMansioneClass(utentiClasses,mansioniClasses,UdCasa);
+                popUpClass.showPopupWindow(view);
+            }
+        });
+
+        buttonEvento.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+                PopUpEventoClass popUpClass = new PopUpEventoClass(utentiClasses,UdCasa);
                 popUpClass.showPopupWindow(view);
             }
         });

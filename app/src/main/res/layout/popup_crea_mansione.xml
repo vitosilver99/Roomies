@@ -52,6 +52,8 @@
                     android:layout_marginEnd="32dp"
                     android:layout_marginRight="32dp"
                     android:text="Inserisci mansione"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -74,6 +76,7 @@
                     android:layout_marginEnd="80dp"
                     android:layout_marginRight="80dp"
                     android:text="Seleziona la mansione"
+                    android:textColor="@color/black"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textView4" />
@@ -84,6 +87,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
                     android:text="Seleziona il giorno"
+                    android:textColor="@color/black"
                     app:layout_constraintStart_toStartOf="@+id/spinner_mansioni"
                     app:layout_constraintTop_toBottomOf="@+id/spinner_mansioni" />
 
@@ -93,25 +97,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:text="Seleziona  i coinquilini"
+                    android:textColor="@color/black"
                     app:layout_constraintStart_toStartOf="@+id/seleziona_data"
                     app:layout_constraintTop_toBottomOf="@+id/seleziona_data" />
-
-                <Spinner
-                    android:id="@+id/spinner_utenti"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    app:layout_constraintStart_toStartOf="@+id/textView7"
-                    app:layout_constraintTop_toBottomOf="@+id/textView7" />
-
-                <TextView
-                    android:id="@+id/textView8"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/spinner_utenti"
-                    app:layout_constraintTop_toBottomOf="@+id/spinner_utenti" />
 
                 <Button
                     android:id="@+id/seleziona_data"
@@ -127,35 +115,35 @@
                     app:layout_constraintStart_toStartOf="@+id/textView6"
                     app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/RecyclerView_spinner"
+                    android:layout_width="0dp"
+                    android:layout_height="100dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginRight="10dp"
+                    android:isScrollContainer="false"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="@+id/spinner_utenti"
+                    app:layout_constraintTop_toBottomOf="@+id/spinner_utenti" />
+
+                <Spinner
+                    android:id="@+id/spinner_utenti"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintStart_toStartOf="@+id/textView7"
+                    app:layout_constraintTop_toBottomOf="@+id/textView7" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <TableLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-            </TableLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
                 <Button
-                    android:id="@+id/button5"
+                    android:id="@+id/btn_aggiungi"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"

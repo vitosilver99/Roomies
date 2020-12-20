@@ -8,7 +8,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.MenuItem;
 
-import com.example.roomies.pagamenti.PagamentiFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -27,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     FirebaseFirestore fStore;
     String userID;
     String casaID;
+
 
 
     @Override

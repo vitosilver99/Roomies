@@ -1,7 +1,6 @@
-package com.example.roomies;
+package com.example.roomies.calendario;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,19 +10,24 @@ import android.widget.TextView;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.roomies.R;
+
 import java.util.List;
 
 
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.MyViewHolder> {
+public class RecyclerViewAdapterMansione extends RecyclerView.Adapter<RecyclerViewAdapterMansione.MyViewHolder> {
 
     private Context mContext ;
     private List<UtentiClass> mData ;
+    private PopUpMansioneClass popUpMansioneClass;
 
 
-    public RecyclerViewAdapter(Context mContext, List<UtentiClass> mData) {
+    public RecyclerViewAdapterMansione(Context mContext, List<UtentiClass> mData, PopUpMansioneClass popUpMansioneClass) {
         this.mContext = mContext;
         this.mData = mData;
+        this.popUpMansioneClass = popUpMansioneClass;
     }
+
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -38,10 +42,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public void onBindViewHolder(MyViewHolder holder, final int position) {
 
         holder.nome_selezionato.setText(mData.get(position).getNome_cognome());
-        holder.cardView.setOnClickListener(new View.OnClickListener() {
+        holder.elimina.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("card view","sono nella card view dello spinner");
+                popUpMansioneClass.eliminaElementoSelezionato(position);
             }
         });
 
