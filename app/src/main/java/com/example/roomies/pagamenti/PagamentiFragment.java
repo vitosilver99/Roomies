@@ -1,6 +1,7 @@
-package com.example.roomies;
+package com.example.roomies.pagamenti;
 
-import android.content.Intent;
+import android.app.Activity;
+import android.app.Dialog;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -15,7 +16,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 
+import com.example.roomies.R;
 import com.firebase.ui.firestore.SnapshotParser;
 import com.firebase.ui.firestore.paging.FirestorePagingOptions;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -31,18 +35,27 @@ import com.google.firebase.firestore.Query;
 public class PagamentiFragment extends Fragment implements FirestoreAdapterPagamento.OnListaPagamentoClick {
 
 
+    //casa di riferimento per i test: p60qZKwoxHmFn8KXYzEG
+
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_USER_ID = "param1";
     private static final String ARG_CASA_ID = "param2";
+    private static final String ARG_PAGAMENTO_ID = "param3";
 
 
-    private String casaID;
-    private String userID;
+
+    private String casaId;
+    private String userId;
 
 
     private RecyclerView listaPagamenti;
     private FirebaseFirestore firebaseFirestore;
     private FirestoreAdapterPagamento adapter;
+
+    Activity main;
+
+    //creare dialogbox relativa ai dettagli di un pagamento
+
 
     public PagamentiFragment() {
         // Required empty public constructor
@@ -54,7 +67,7 @@ public class PagamentiFragment extends Fragment implements FirestoreAdapterPagam
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment com.example.roomies.PagamentiFragment.
+     * @return A new instance of fragment com.example.roomies.pagamenti.PagamentiFragment.
      */
     // TODO: Rename and change types and number of parameters
     public static PagamentiFragment newInstance(String param1, String param2) {
@@ -70,12 +83,10 @@ public class PagamentiFragment extends Fragment implements FirestoreAdapterPagam
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            userID = getArguments().getString(ARG_USER_ID);
-            casaID = getArguments().getString(ARG_CASA_ID);
+            userId = getArguments().getString(ARG_USER_ID);
+            casaId = getArguments().getString(ARG_CASA_ID);
 
         }
-
-
     }
 
     @Override
@@ -83,9 +94,11 @@ public class PagamentiFragment extends Fragment implements FirestoreAdapterPagam
                              Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
+
+        //TODO ATTENZIONE HO MODIFICATO attachtoRoot a true (default false)
         View view = inflater.inflate(R.layout.fragment_pagamenti, container, false);
 
-        Log.d("CASA_ID", casaID);
+        Log.d("CASA_ID", casaId);
         firebaseFirestore = FirebaseFirestore.getInstance();
 
         //cast in RecyclerView necessario?
@@ -98,9 +111,10 @@ public class PagamentiFragment extends Fragment implements FirestoreAdapterPagam
                 .build();
 
         //query da firestore
-        Query query= firebaseFirestore.collection("case").document(casaID).collection("pagamenti").limit(10);
+        Query query= firebaseFirestore.collection("case").document(casaId).collection("pagamenti").limit(10);
 
-        //opzioni del recycler
+        //opzioni del FirestorePagingAdapter customizzato cioè del FirestoreAdapterPagamento
+
         FirestorePagingOptions<ModelloPagamento> options = new FirestorePagingOptions.Builder<ModelloPagamento>()
 
                 //imposta l'adapter in modo che esso si fermi quando il fragment si ferma e parta quando il fragment parte
@@ -121,23 +135,41 @@ public class PagamentiFragment extends Fragment implements FirestoreAdapterPagam
 
         adapter = new FirestoreAdapterPagamento(options,this);
 
-      listaPagamenti.setHasFixedSize(true);
-      listaPagamenti.setLayoutManager(new LinearLayoutManager(this.getContext()));
-      listaPagamenti.setAdapter(adapter);
-      return view;
+        listaPagamenti.setHasFixedSize(true);
+        listaPagamenti.setLayoutManager(new LinearLayoutManager(this.getContext()));
+        listaPagamenti.setAdapter(adapter);
+        return view;
     }
 
-
+    //implemento l'interfaccia all'interno di FirestoreAdapterPagamento
     @Override
     public void onPagamentoClick(DocumentSnapshot snapshot, int position) {
-        Log.d("PAGAMENTO_CLICK","click su elemento numero" + position + " con id uguale a " + snapshot.getId());
+        Log.d("PAGAMENTO_CLICK","click su elemento numero" + position + " con id uguale a " + snapshot.getId()+snapshot.getString("nome_pagamento"));
 
-        //passa all'activity che contiene i dettagli del pagamento
-        Intent intent =new Intent(getContext(),ModelloPagamento.class);
-        //Log.d("user id :",task.getResult().getUser().getUid());
-        //intent.putExtra("userID",task.getResult().getUser().getUid());
+        //inserisco una finestra di dialogo che mi fornisce i dettagli di un pagamento
+        Dialog dialog = new Dialog(getContext());
+        dialog.setContentView(R.layout.dialog_dettagli_pagamento);
+
+        //TODO: forse non bisogna mettere final
+        final TextView nomePagamento = dialog.findViewById(R.id.dettaglio_nome_pagamento);
+        final TextView scadenzaPagamento = dialog.findViewById(R.id.dettaglio_data_scadenza);
+        final TextView importoTotalePagamento = dialog.findViewById(R.id.dettaglio_importo_totale);
+        final TextView importoSingoloPagamento = dialog.findViewById(R.id.dettaglio_importo_singolo);
+        final Button confermaPagamento = dialog.findViewById(R.id.dettaglio_conferma_pagamento_button);
+        final RecyclerView listaInteressati = dialog.findViewById(R.id.dettaglio_lista_interessati_pagamento);
+
+        nomePagamento.setText(snapshot.getString("nome_pagamento"));
+        scadenzaPagamento.setText(snapshot.get("scadenza_pagamento").toString());
+        importoTotalePagamento.setText(snapshot.get("importo_totale").toString());
+        importoSingoloPagamento.setText(snapshot.get("importo_singolo").toString());
+        Log.d("ARRAY",snapshot.get("interessati").toString());
+
+        //se non funziona this.getContext() prova getActivity();
+        InteressatiAdapter interessatiAdapter = new InteressatiAdapter(this.getContext(),snapshot.getData());
+        listaInteressati.setAdapter(interessatiAdapter);
+        listaInteressati.setLayoutManager(new LinearLayoutManager(this.getContext()));
+        dialog.show();
 
 
-        startActivity(intent);
     }
 }

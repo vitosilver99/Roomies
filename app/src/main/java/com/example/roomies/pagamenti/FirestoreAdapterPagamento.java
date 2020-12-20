@@ -1,4 +1,4 @@
-package com.example.roomies;
+package com.example.roomies.pagamenti;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.roomies.R;
 import com.firebase.ui.firestore.paging.FirestorePagingAdapter;
 import com.firebase.ui.firestore.paging.FirestorePagingOptions;
 import com.firebase.ui.firestore.paging.LoadingState;
@@ -49,7 +50,7 @@ public class FirestoreAdapterPagamento extends FirestorePagingAdapter<ModelloPag
     @NonNull
     @Override
     public PagamentoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.pagamento_singolo_modello,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.modello_riga_pagamento,parent,false);
 
         //return new PagamentiFragment.PagamentoViewHolder(view) diventa return new PagamentoViewHolder(view)
         return new PagamentoViewHolder(view);
@@ -104,7 +105,7 @@ public class FirestoreAdapterPagamento extends FirestorePagingAdapter<ModelloPag
         }
     }
 
-    //creo un'interfaccia che utilizzerà PagamentiFragment
+    //creo un'interfaccia che verrà implementata da PagamentiFragment
     public interface OnListaPagamentoClick {
          void onPagamentoClick(DocumentSnapshot snapshot, int position);
 

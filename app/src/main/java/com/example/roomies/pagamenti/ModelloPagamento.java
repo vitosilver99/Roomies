@@ -1,4 +1,4 @@
-package com.example.roomies;
+package com.example.roomies.pagamenti;
 
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -22,6 +22,8 @@ public class ModelloPagamento {
         this.nome_pagamento = nome;
         this.non_pagato = non_pagato;
         this.scadenza_pagamento = scadenza;
+
+
         this.pagamento_id=pagamento_id;
     }
 
