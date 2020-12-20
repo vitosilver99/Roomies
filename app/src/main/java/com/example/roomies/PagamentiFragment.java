@@ -1,28 +1,48 @@
 package com.example.roomies;
 
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.paging.PagedList;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+//aggiunto io
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.firebase.ui.firestore.SnapshotParser;
+import com.firebase.ui.firestore.paging.FirestorePagingOptions;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link PagamentiFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PagamentiFragment extends Fragment {
+public class PagamentiFragment extends Fragment implements FirestoreAdapterPagamento.OnListaPagamentoClick {
 
-    // TODO: Rename parameter arguments, choose names that match
+
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String ARG_USER_ID = "param1";
+    private static final String ARG_CASA_ID = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+
+    private String casaID;
+    private String userID;
+
+
+    private RecyclerView listaPagamenti;
+    private FirebaseFirestore firebaseFirestore;
+    private FirestoreAdapterPagamento adapter;
 
     public PagamentiFragment() {
         // Required empty public constructor
@@ -40,8 +60,8 @@ public class PagamentiFragment extends Fragment {
     public static PagamentiFragment newInstance(String param1, String param2) {
         PagamentiFragment fragment = new PagamentiFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putString(ARG_USER_ID, param1);
+        args.putString(ARG_CASA_ID, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -50,15 +70,74 @@ public class PagamentiFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            userID = getArguments().getString(ARG_USER_ID);
+            casaID = getArguments().getString(ARG_CASA_ID);
+
         }
+
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_pagamenti, container, false);
+        View view = inflater.inflate(R.layout.fragment_pagamenti, container, false);
+
+        Log.d("CASA_ID", casaID);
+        firebaseFirestore = FirebaseFirestore.getInstance();
+
+        //cast in RecyclerView necessario?
+        listaPagamenti = (RecyclerView) view.findViewById(R.id.lista_pagamenti);
+
+        //configurazione per la paginazione
+        PagedList.Config config = new PagedList.Config.Builder()
+                .setInitialLoadSizeHint(2)
+                .setPageSize(2)
+                .build();
+
+        //query da firestore
+        Query query= firebaseFirestore.collection("case").document(casaID).collection("pagamenti").limit(10);
+
+        //opzioni del recycler
+        FirestorePagingOptions<ModelloPagamento> options = new FirestorePagingOptions.Builder<ModelloPagamento>()
+
+                //imposta l'adapter in modo che esso si fermi quando il fragment si ferma e parta quando il fragment parte
+                .setLifecycleOwner(this)
+                .setQuery(query, config, new SnapshotParser<ModelloPagamento>() {
+                    @NonNull
+                    @Override
+                    public ModelloPagamento parseSnapshot(@NonNull DocumentSnapshot snapshot) {
+                        //prendi un documento dallo snapshot e inseriscilo in una riga
+                        ModelloPagamento pagamentoRiga = snapshot.toObject(ModelloPagamento.class);
+                        String pagamento_id = snapshot.getId();
+                        pagamentoRiga.setPagamento_id(pagamento_id);
+                        return pagamentoRiga;
+                    }
+                })
+                .build();
+
+
+        adapter = new FirestoreAdapterPagamento(options,this);
+
+      listaPagamenti.setHasFixedSize(true);
+      listaPagamenti.setLayoutManager(new LinearLayoutManager(this.getContext()));
+      listaPagamenti.setAdapter(adapter);
+      return view;
+    }
+
+
+    @Override
+    public void onPagamentoClick(DocumentSnapshot snapshot, int position) {
+        Log.d("PAGAMENTO_CLICK","click su elemento numero" + position + " con id uguale a " + snapshot.getId());
+
+        //passa all'activity che contiene i dettagli del pagamento
+        Intent intent =new Intent(getContext(),ModelloPagamento.class);
+        //Log.d("user id :",task.getResult().getUser().getUid());
+        //intent.putExtra("userID",task.getResult().getUser().getUid());
+
+
+        startActivity(intent);
     }
 }

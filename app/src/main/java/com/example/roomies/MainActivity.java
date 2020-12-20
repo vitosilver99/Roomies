@@ -15,9 +15,19 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
+
+    // parametri inizializzazione PagamentiFragment
+    private static final String ARG_USER_ID = "param1";
+    private static final String ARG_CASA_ID = "param2";
+
+
+
     //FirebaseAuth fAuth;
     FirebaseFirestore fStore;
-    String UdCasa;
+    String userID;
+    String casaID;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,8 +36,8 @@ public class MainActivity extends AppCompatActivity {
 
         Bundle b = new Bundle();
         b = getIntent().getExtras();
-        String parametri = b.getString("userID");
-        UdCasa = b.getString("casaID");
+        userID = b.getString("userID");
+        casaID = b.getString("casaID");
 
         fStore = FirebaseFirestore.getInstance();
 
@@ -36,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new HomeFragment()).commit();
 
-        Toast.makeText(getApplicationContext(), "userID:" + parametri, Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), "userID:" + userID, Toast.LENGTH_LONG).show();
 
 
     }
@@ -55,17 +65,25 @@ public class MainActivity extends AppCompatActivity {
                                 selectedFragment = new SpesaFragment();
                                 break;
                             case R.id.navigation_pagamenti:
+
+                                //devo passare al nuovo fragment casaID cioè l'ID della casa (lo passo in param1)
+                                Bundle args= new Bundle();
+                                args.putCharSequence(ARG_USER_ID, userID);
+                                args.putCharSequence(ARG_CASA_ID, casaID);
                                 selectedFragment = new PagamentiFragment();
+                                selectedFragment.setArguments(args);
+
                                 break;
                             case R.id.navigation_chat:
                                 selectedFragment = new ChatFragment();
                                 break;
                             case R.id.navigation_calendario:
-                                selectedFragment = new CalendarFragment(UdCasa);
+                                selectedFragment = new CalendarFragment(casaID);
                                 break;
                         }
                         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,selectedFragment).commit();
                         return true;
+
                     }
     };
 
