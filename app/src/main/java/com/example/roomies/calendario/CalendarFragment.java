@@ -1,4 +1,4 @@
-package com.example.roomies;
+package com.example.roomies.calendario;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -6,48 +6,37 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.CalendarView;
 import android.widget.Toast;
 
+import com.example.roomies.MainActivity;
+import com.example.roomies.R;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.common.base.MoreObjects;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.type.Color;
-import com.google.type.DateTime;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
-import com.prolificinteractive.materialcalendarview.DayViewDecorator;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
+import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 import com.prolificinteractive.materialcalendarview.OnMonthChangedListener;
-import com.prolificinteractive.materialcalendarview.format.DateFormatDayFormatter;
-import com.prolificinteractive.materialcalendarview.format.DayFormatter;
 
-import java.sql.Time;
-import java.sql.Timestamp;
+import org.joda.time.DateTimeComparator;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.YearMonth;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -68,6 +57,7 @@ public class CalendarFragment extends Fragment {
     ArrayList<EventiClass> eventiClasses;
     ArrayList<CalendarDay> dates;
     MaterialCalendarView calendarView;
+    List<EventiRecyclerView> eventiList;
 
     public CalendarFragment(String UdCasa) {
         this.UdCasa = UdCasa;
@@ -94,6 +84,7 @@ public class CalendarFragment extends Fragment {
         Log.d("Casa id: ",""+UdCasa);
         calendarView = view.findViewById(R.id.calendar_event);
 
+
         Date currentTime = Calendar.getInstance().getTime();
         String mm = (String) DateFormat.format("MM", currentTime);
         String yyyy = (String) DateFormat.format("yyyy", currentTime);
@@ -101,53 +92,94 @@ public class CalendarFragment extends Fragment {
         String date_query_first = "01-"+mm+"-"+yyyy;
         String date_query_last = getUltimoGiornoMese(mm,yyyy)+"-"+mm+"-"+yyyy;
 
+        //aggiorno il mese che visualizzo quando apro il fragment calendario
         SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
         try {
-            Date date_q_first = format.parse(date_query_first);
-            Date date_q_last = format.parse(date_query_last);
-            System.out.println(date_q_first);
+                Date date_q_first = format.parse(date_query_first);
+                Date date_q_last = format.parse(date_query_last);
+                System.out.println(date_q_first);
 
-            Query first = fStore.collection("case").document(UdCasa).collection("eventi")
-                    .whereGreaterThanOrEqualTo("giorno", date_q_first)
-                    .whereLessThanOrEqualTo("giorno",date_q_last)
-                    .orderBy("giorno", Query.Direction.ASCENDING);
-
-            first.get()
-                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                        @RequiresApi(api = Build.VERSION_CODES.O)
-                        @Override
-                        public void onSuccess(QuerySnapshot documentSnapshots) {
-                            eventiClasses = new ArrayList<EventiClass>();
-                            dates = new ArrayList<>();
-
-                            Log.d("risultato ",documentSnapshots.getDocuments().size()+"");
-                            for(int i = 0; i< documentSnapshots.getDocuments().size();i++) {
-                                //Map<String, Object> map = documentSnapshots.getDocuments().get(i).getData();
-                                // Log.d("giorno",map.get("giorno").toString());
-
-                                Date date_evento = documentSnapshots.getDocuments().get(i).getTimestamp("giorno").toDate();
-
-                                EventiClass evento = new EventiClass(documentSnapshots.getDocuments().get(i).getId(),date_evento);
-                                eventiClasses.add(evento);
-
-                                String dd = (String) DateFormat.format("dd",   date_evento);
-                                String MM = (String) DateFormat.format("MM",   date_evento);
-                                String yyyy = (String) DateFormat.format("yyyy",   date_evento);
-
-                                //mi aggiunge il puntino al calendario
-                                CalendarDay calendarDay =  CalendarDay.from( Integer.parseInt(yyyy),Integer.parseInt(MM),Integer.parseInt(dd));
-                                dates.add(calendarDay);
-                            }
-
-                            calendarView.addDecorator(new EventDecorator( -65536,dates));
-                        }
-                    });
+                queryCalendario(date_q_first,date_q_last);
 
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
 
+
+        RecyclerView recyclerView = view.findViewById(R.id.recyclerview_calendar_eventi);
+        RecyclerviewAdapter recyclerviewAdapter = new RecyclerviewAdapter(view.getContext());
+
+        //evento click su un giorno del calendario
+        calendarView.setOnDateChangedListener(new OnDateSelectedListener() {
+            @Override
+            public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
+                //visualizzazione eventi nella recyclerView
+
+                String date_selezionata = date.getDay()+"-"+date.getMonth()+"-"+date.getYear();
+
+                DateTimeComparator dateTimeComparator = DateTimeComparator.getDateOnlyInstance();
+                //Log.d("struttura data", eventiClasses.get(0).getData()+"");
+
+                try {
+                    Date d_selezionata = format.parse(date_selezionata);
+                    Log.d("num", eventiClasses.size()+"");
+                    int check =0;
+                    eventiList = new ArrayList<>();
+                    for( int i = 0;i<eventiClasses.size();i++) {
+                        //Log.d("struttura data", eventiClasses.get(i).getData()+"");
+                        if(dateTimeComparator.compare(d_selezionata, eventiClasses.get(i).getData())==0){
+                            Log.d("sono dentro l'if", "sono dentro");
+                            EventiRecyclerView eventiRecyclerView = new EventiRecyclerView(eventiClasses.get(i).getIdEvento(),eventiClasses.get(i).getData().toString());
+                            eventiList.add(eventiRecyclerView);
+                            check= 1;
+                        }
+                    }
+                    recyclerviewAdapter.setEventiRecyclerViewList(eventiList);
+                    recyclerView.setAdapter(recyclerviewAdapter);
+
+
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+
+                //click sul singolo evento
+                RecyclerTouchListener touchListener = new RecyclerTouchListener(getActivity(),recyclerView);
+                touchListener.setClickable(new RecyclerTouchListener.OnRowClickListener() {
+                    @Override
+                    public void onRowClicked(int position) {
+                        Toast.makeText(view.getContext(),eventiList.get(position).getName(), Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onIndependentViewClicked(int independentViewID, int position) {
+
+                    }
+                })
+                        .setSwipeOptionViews(R.id.delete_task,R.id.edit_task)
+                        .setSwipeable(R.id.rowFG, R.id.rowBG, new RecyclerTouchListener.OnSwipeOptionsClickListener() {
+                            @Override
+                            public void onSwipeOptionClicked(int viewID, int position) {
+                                switch (viewID){
+                                    case R.id.delete_task:
+                                        eventiList.remove(position);
+                                        recyclerviewAdapter.setEventiRecyclerViewList(eventiList);
+                                        break;
+                                    case R.id.edit_task:
+                                        Toast.makeText(view.getContext(),"Edit Not Available",Toast.LENGTH_SHORT).show();
+                                        break;
+
+                                }
+                            }
+                        });
+                recyclerView.addOnItemTouchListener(touchListener);
+
+            }
+        });
+
+
+        //evento che si verifica quando cambio mese, quando viene eseguito aggiorna il calendario con i loro relativi eventi della casa facendo uscire un puntino
         calendarView.setOnMonthChangedListener(new OnMonthChangedListener() {
             @Override
             public void onMonthChanged(MaterialCalendarView widget, CalendarDay date) {
@@ -162,41 +194,7 @@ public class CalendarFragment extends Fragment {
                         Date date_q_last = format.parse(date_query_last);
                         System.out.println(date_q_first);
 
-                        Query first = fStore.collection("case").document(UdCasa).collection("eventi")
-                                .whereGreaterThanOrEqualTo("giorno", date_q_first)
-                                .whereLessThanOrEqualTo("giorno",date_q_last)
-                                .orderBy("giorno", Query.Direction.ASCENDING);
-
-                                first.get()
-                                        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                            @RequiresApi(api = Build.VERSION_CODES.O)
-                                            @Override
-                                            public void onSuccess(QuerySnapshot documentSnapshots) {
-                                                eventiClasses = new ArrayList<EventiClass>();
-                                                dates = new ArrayList<>();
-
-                                                Log.d("risultato ",documentSnapshots.getDocuments().size()+"");
-                                                for(int i = 0; i< documentSnapshots.getDocuments().size();i++) {
-                                                    //Map<String, Object> map = documentSnapshots.getDocuments().get(i).getData();
-                                                    // Log.d("giorno",map.get("giorno").toString());
-
-                                                    Date date_evento = documentSnapshots.getDocuments().get(i).getTimestamp("giorno").toDate();
-
-                                                    EventiClass evento = new EventiClass(documentSnapshots.getDocuments().get(i).getId(),date_evento);
-                                                    eventiClasses.add(evento);
-
-                                                    String dd = (String) DateFormat.format("dd",   date_evento);
-                                                    String MM = (String) DateFormat.format("MM",   date_evento);
-                                                    String yyyy = (String) DateFormat.format("yyyy",   date_evento);
-
-                                                    //mi aggiunge il puntino al calendario
-                                                    CalendarDay calendarDay =  CalendarDay.from( Integer.parseInt(yyyy),Integer.parseInt(MM),Integer.parseInt(dd));
-                                                    dates.add(calendarDay);
-                                                }
-
-                                                calendarView.addDecorator(new EventDecorator( -65536,dates));
-                                            }
-                                        });
+                        queryCalendario(date_q_first,date_q_last);
 
                 } catch (ParseException e) {
                     e.printStackTrace();
@@ -304,6 +302,7 @@ public class CalendarFragment extends Fragment {
 
     }
 
+    //mi restituisce l'ultimo giorno del mese controllando se l'anno è bisestile o meno
     public int getUltimoGiornoMese(CalendarDay calendarDay) {
         int mese = calendarDay.getMonth();
         int anno = calendarDay.getYear();
@@ -378,6 +377,44 @@ public class CalendarFragment extends Fragment {
         }
 
         return numDays;
+    }
+
+    public void queryCalendario(Date date_q_first , Date date_q_last ) {
+
+        Query first = fStore.collection("case").document(UdCasa).collection("eventi")
+                .whereGreaterThanOrEqualTo("giorno", date_q_first)
+                .whereLessThanOrEqualTo("giorno",date_q_last)
+                .orderBy("giorno", Query.Direction.ASCENDING);
+
+        first.get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @RequiresApi(api = Build.VERSION_CODES.O)
+                    @Override
+                    public void onSuccess(QuerySnapshot documentSnapshots) {
+                        eventiClasses = new ArrayList<EventiClass>();
+                        dates = new ArrayList<>();
+
+                        Log.d("risultato ",documentSnapshots.getDocuments().size()+"");
+                        for(int i = 0; i< documentSnapshots.getDocuments().size();i++) {
+                            // Log.d("giorno",map.get("giorno").toString());
+
+                            Date date_evento = documentSnapshots.getDocuments().get(i).getTimestamp("giorno").toDate();
+
+                            EventiClass evento = new EventiClass(documentSnapshots.getDocuments().get(i).getId(),date_evento);
+                            eventiClasses.add(evento);
+
+                            String dd = (String) DateFormat.format("dd",   date_evento);
+                            String MM = (String) DateFormat.format("MM",   date_evento);
+                            String yyyy = (String) DateFormat.format("yyyy",   date_evento);
+
+                            //mi aggiunge il puntino al calendario
+                            CalendarDay calendarDay =  CalendarDay.from( Integer.parseInt(yyyy),Integer.parseInt(MM),Integer.parseInt(dd));
+                            dates.add(calendarDay);
+                        }
+                        //fa uscire i pallini rossi ai giorni
+                        calendarView.addDecorator(new EventDecorator( -65536,dates));
+                    }
+                });
     }
 
 }

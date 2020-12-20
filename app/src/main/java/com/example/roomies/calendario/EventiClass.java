@@ -1,4 +1,4 @@
-package com.example.roomies;
+package com.example.roomies.calendario;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

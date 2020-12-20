@@ -1,4 +1,4 @@
-package com.example.roomies;
+package com.example.roomies.calendario;
 
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.DayViewDecorator;

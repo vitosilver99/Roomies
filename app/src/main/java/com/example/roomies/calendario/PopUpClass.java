@@ -1,20 +1,13 @@
-package com.example.roomies;
+package com.example.roomies.calendario;
 
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.cardview.widget.CardView;
-
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
+import com.example.roomies.R;
 
 import java.util.ArrayList;
 

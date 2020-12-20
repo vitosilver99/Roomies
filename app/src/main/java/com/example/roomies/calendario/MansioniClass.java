@@ -1,4 +1,4 @@
-package com.example.roomies;
+package com.example.roomies.calendario;
 
 public class MansioniClass {
     private String nome;

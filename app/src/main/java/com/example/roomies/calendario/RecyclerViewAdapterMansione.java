@@ -1,4 +1,4 @@
-package com.example.roomies;
+package com.example.roomies.calendario;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,39 +10,42 @@ import android.widget.TextView;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.roomies.R;
+
 import java.util.List;
 
-public class RecyclerViewAdapterEvento extends RecyclerView.Adapter<RecyclerViewAdapterMansione.MyViewHolder> {
+
+public class RecyclerViewAdapterMansione extends RecyclerView.Adapter<RecyclerViewAdapterMansione.MyViewHolder> {
 
     private Context mContext ;
     private List<UtentiClass> mData ;
-    private PopUpEventoClass popUpEventoClass;
+    private PopUpMansioneClass popUpMansioneClass;
 
 
-    public RecyclerViewAdapterEvento(Context mContext, List<UtentiClass> mData, PopUpEventoClass popUpEventoClass) {
+    public RecyclerViewAdapterMansione(Context mContext, List<UtentiClass> mData, PopUpMansioneClass popUpMansioneClass) {
         this.mContext = mContext;
         this.mData = mData;
-        this.popUpEventoClass = popUpEventoClass;
+        this.popUpMansioneClass = popUpMansioneClass;
     }
 
 
     @Override
-    public RecyclerViewAdapterMansione.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View view ;
         LayoutInflater mInflater = LayoutInflater.from(mContext);
         view = mInflater.inflate(R.layout.add_utent_spinner,parent,false);
-        return new RecyclerViewAdapterMansione.MyViewHolder(view);
+        return new MyViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(RecyclerViewAdapterMansione.MyViewHolder holder, final int position) {
+    public void onBindViewHolder(MyViewHolder holder, final int position) {
 
         holder.nome_selezionato.setText(mData.get(position).getNome_cognome());
         holder.elimina.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                popUpEventoClass.eliminaElementoSelezionato(position);
+                popUpMansioneClass.eliminaElementoSelezionato(position);
             }
         });
 
@@ -65,6 +68,7 @@ public class RecyclerViewAdapterEvento extends RecyclerView.Adapter<RecyclerView
             nome_selezionato = (TextView) itemView.findViewById(R.id.nome_add_spinner) ;
             elimina = (Button) itemView.findViewById(R.id.btn_elimina_add_spinner);
             cardView = (CardView) itemView.findViewById(R.id.CardViewUtenteSpinner);
+
         }
     }
 
