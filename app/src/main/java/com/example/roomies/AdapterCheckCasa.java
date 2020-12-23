@@ -13,9 +13,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
 
+import com.example.roomies.chat.UsersAdapterChat;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
@@ -33,7 +36,6 @@ public class AdapterCheckCasa extends PagerAdapter {
     private List<ModelCheckCasa> modelCheckCasas;
     private LayoutInflater layoutInflater;
     private CheckCasaActivity context;
-    String nome_cognome;
 
     public AdapterCheckCasa(List<ModelCheckCasa> modelCheckCasas, CheckCasaActivity context) {
         this.modelCheckCasas = modelCheckCasas;
@@ -116,12 +118,9 @@ public class AdapterCheckCasa extends PagerAdapter {
                                         ).addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void aVoid) {
-                                                Intent intent = new Intent(context.getApplicationContext(), MainActivity.class);
-                                                intent.putExtra("userID",context.userID);
-                                                context.startActivity(intent);
 
-                                                //termina activity corrente
-                                                context.finish();
+                                                creaCasaRealtime(casaID, context.userID, context.nomeUser + " " + context.cognomeUser);
+
                                             }
                                         }).addOnFailureListener(new OnFailureListener() {
                                             @Override
@@ -143,7 +142,6 @@ public class AdapterCheckCasa extends PagerAdapter {
         crea_casa.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CheckCasaActivity checkCasaActivity = context;
 
                 Map<String, Object> map = new HashMap<>();
 
@@ -168,6 +166,7 @@ public class AdapterCheckCasa extends PagerAdapter {
 
                                 //ottieni casaID dal riferimento al documento appena creato
                                 String casaID = documentReference.getId();
+
                                 context.fStore.collection(raccoltaUtenti).document(context.userID)
                                         .update(
                                                 "casa",casaID
@@ -175,12 +174,11 @@ public class AdapterCheckCasa extends PagerAdapter {
                                     @Override
                                     public void onSuccess(Void aVoid) {
                                         Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
-                                        Intent intent = new Intent(context.getApplicationContext(),MainActivity.class);
-                                        intent.putExtra("userID",context.userID);
 
-                                        //passa alla MainActivity e chiudi CheckCasaActivity
-                                        context.startActivity(intent);
-                                        context.finish();
+                                        //creo l'istanza della casa con all'interno l'utente nel db realtime
+                                        creaCasaRealtime(casaID,context.userID, nome_cognome);
+
+
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {
                                     @Override
@@ -207,5 +205,35 @@ public class AdapterCheckCasa extends PagerAdapter {
     @Override
     public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
         container.removeView((View)object);
+    }
+
+    public void creaCasaRealtime(String casaId, String userID, String nome_cognome) {
+        HashMap<String, String> map = new HashMap<>();
+
+        map.put("nome_cognome",nome_cognome);
+        map.put("user_id",context.userID);
+        map.put("image", "default");
+
+
+        context.dbRef = FirebaseDatabase.getInstance().getReference(casaId).child("utenti").child(userID);
+
+        context.dbRef.setValue(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()){
+
+                    Intent intent = new Intent(context.getApplicationContext(),MainActivity.class);
+                    intent.putExtra("userID",context.userID);
+                    intent.putExtra("casaID",casaId);
+
+                    //passa alla MainActivity e chiudi CheckCasaActivity
+                    context.startActivity(intent);
+                    context.finish();
+                }
+                else{
+                    Toast.makeText(context.getApplicationContext(),"Errore di connessione",Toast.LENGTH_LONG);
+                }
+            }
+        });
     }
 }

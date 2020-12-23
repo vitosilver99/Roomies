@@ -1,5 +1,4 @@
 package com.example.roomies.pagamenti;
-
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,7 +14,6 @@ import com.example.roomies.R;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
-
 public class InteressatiAdapter extends RecyclerView.Adapter<InteressatiAdapter.InteressatoViewHolder> {
 
     Context context;

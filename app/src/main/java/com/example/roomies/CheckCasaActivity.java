@@ -7,6 +7,8 @@ import android.animation.ArgbEvaluator;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -23,8 +25,9 @@ public class CheckCasaActivity extends AppCompatActivity {
     String userID;
     String nomeUser;
     String cognomeUser;
-    FirebaseFirestore fStore;
 
+    FirebaseFirestore fStore;
+    DatabaseReference dbRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

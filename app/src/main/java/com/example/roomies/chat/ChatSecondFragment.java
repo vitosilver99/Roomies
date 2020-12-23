@@ -1,4 +1,4 @@
-package com.example.roomies;
+package com.example.roomies.chat;
 
 import android.os.Bundle;
 
@@ -8,14 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.roomies.calendario.CalendarFragment;
+import com.example.roomies.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ChatFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class ChatFragment extends Fragment {
+public class ChatSecondFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -26,7 +21,7 @@ public class ChatFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public ChatFragment() {
+    public ChatSecondFragment() {
         // Required empty public constructor
     }
 
@@ -36,11 +31,11 @@ public class ChatFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment com.example.roomies.ChatFragment.
+     * @return A new instance of fragment ChatSecondFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ChatFragment newInstance(String param1, String param2) {
-        ChatFragment fragment = new ChatFragment();
+    public static ChatSecondFragment newInstance(String param1, String param2) {
+        ChatSecondFragment fragment = new ChatSecondFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -61,6 +56,6 @@ public class ChatFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_chat, container, false);
+        return inflater.inflate(R.layout.fragment_chat_second, container, false);
     }
 }

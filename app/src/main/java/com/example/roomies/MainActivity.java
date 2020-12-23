@@ -5,10 +5,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import com.example.roomies.chat.ChatFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -78,7 +78,12 @@ public class MainActivity extends AppCompatActivity {
 
                                 break;
                             case R.id.navigation_chat:
+                                Bundle args_chat= new Bundle();
+                                args_chat.putCharSequence(ARG_USER_ID, userID);
+                                args_chat.putCharSequence(ARG_CASA_ID, casaID);
                                 selectedFragment = new ChatFragment();
+                                selectedFragment.setArguments(args_chat);
+
                                 break;
                             case R.id.navigation_calendario:
                                 selectedFragment = new CalendarFragment(casaID);

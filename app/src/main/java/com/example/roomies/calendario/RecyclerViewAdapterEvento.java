@@ -10,7 +10,6 @@ import android.widget.TextView;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.roomies.ChatFragment;
 import com.example.roomies.R;
 
 import java.util.List;

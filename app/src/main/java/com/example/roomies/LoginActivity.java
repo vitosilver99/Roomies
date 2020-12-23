@@ -20,6 +20,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -31,6 +32,35 @@ public class LoginActivity extends AppCompatActivity {
     static LoginActivity activityA;
     FirebaseFirestore fStore;
     private String userID;
+    FirebaseUser firebaseUser;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        /*if(firebaseUser!=null){
+            Intent intent =new Intent(getApplicationContext(),MainActivity.class);
+            //Log.d("user id :",task.getResult().getUser().getUid());
+
+            fStore.collection("utenti").document(fAuth.getCurrentUser().getUid()).get()
+                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            intent.putExtra("userID",fAuth.getCurrentUser().getUid());
+                            intent.putExtra("casaID",documentSnapshot.get("casa").toString());
+
+                            startActivity(intent);
+                            finish();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+
+                }
+            });
+        }*/
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,8 +75,11 @@ public class LoginActivity extends AppCompatActivity {
 
 
         activityA = this;
+
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
+
+
 
         registrazione.setOnClickListener(new View.OnClickListener() {
             @Override
