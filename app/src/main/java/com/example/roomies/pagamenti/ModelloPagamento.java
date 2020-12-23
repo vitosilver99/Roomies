@@ -22,7 +22,7 @@ public class ModelloPagamento {
         this.nome_pagamento = nome;
         this.non_pagato = non_pagato;
         this.scadenza_pagamento = scadenza;
-
+        //TODO AGGIUNGI ATTRIBUTO importo_totale
 
         this.pagamento_id=pagamento_id;
     }

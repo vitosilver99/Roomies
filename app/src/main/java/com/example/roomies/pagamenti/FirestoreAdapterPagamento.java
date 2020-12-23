@@ -41,7 +41,7 @@ public class FirestoreAdapterPagamento extends FirestorePagingAdapter<ModelloPag
     @Override
     protected void onBindViewHolder(@NonNull PagamentoViewHolder holder, int position, @NonNull ModelloPagamento model) {
         holder.nome_pagamento.setText(model.getNome_pagamento());
-        holder.scadenza_pagamento.setText(model.getScadenza_pagamento().toString());
+        holder.scadenza_pagamento.setText(model.getScadenza_pagamento().toLocaleString());
         holder.non_pagato.setText(model.getNon_pagato()+"");
 
         //qui possiamo ricavare anche l'id del pagamento tramite model.getPagamento_id()

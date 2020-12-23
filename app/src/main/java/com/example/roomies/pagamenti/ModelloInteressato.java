@@ -1,5 +1,11 @@
 package com.example.roomies.pagamenti;
 
+import android.util.Log;
+
+import com.example.roomies.calendario.UtentiClass;
+
+import java.util.HashMap;
+
 public class ModelloInteressato {
     private String nome_cognome;
     private String id_utente;
@@ -12,6 +18,11 @@ public class ModelloInteressato {
         this.nome_cognome = nome_cognome;
         this.id_utente = id_utente;
         this.pagato = pagato;
+    }
+    public ModelloInteressato(UtentiClass utente) {
+        this.nome_cognome=utente.getNome_cognome();
+        this.id_utente=utente.getUserId();
+        this.pagato=false;
     }
 
     public String getNome_cognome() {
@@ -38,6 +49,13 @@ public class ModelloInteressato {
         this.pagato = pagato;
     }
 
-
+    public HashMap convertiInHashMap() {
+        HashMap<String,Object> hashMap = new HashMap<>();
+        hashMap.put("nome_cognome",nome_cognome);
+        hashMap.put("id_utente",id_utente);
+        hashMap.put("pagato",pagato);
+        Log.d("convertiInHashMap",hashMap.toString());
+        return hashMap;
+    }
 
 }
