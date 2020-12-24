@@ -2,6 +2,8 @@ package com.example.roomies.pagamenti;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -224,6 +226,7 @@ public class PagamentiFragment extends Fragment implements FirestoreAdapterPagam
         //inserisco una finestra di dialogo che mi fornisce i dettagli di un pagamento
         Dialog dialog = new Dialog(getContext());
         dialog.setContentView(R.layout.dialog_dettagli_pagamento);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
 
         //TODO: forse non bisogna mettere final

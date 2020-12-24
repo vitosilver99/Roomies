@@ -39,7 +39,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onStart();
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        /*if(firebaseUser!=null){
+        if(firebaseUser!=null){
             Intent intent =new Intent(getApplicationContext(),MainActivity.class);
             //Log.d("user id :",task.getResult().getUser().getUid());
 
@@ -59,7 +59,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 }
             });
-        }*/
+        }
     }
 
     @Override
