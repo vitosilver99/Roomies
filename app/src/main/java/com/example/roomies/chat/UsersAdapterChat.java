@@ -1,6 +1,7 @@
 package com.example.roomies.chat;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,11 +19,13 @@ public class UsersAdapterChat extends RecyclerView.Adapter<UsersAdapterChat.View
 
     private Context context;
     private List<UtentiClass> utenti;
+    private String casaId;
 
 
-    public UsersAdapterChat(Context context, List<UtentiClass> utenti) {
+    public UsersAdapterChat(Context context, List<UtentiClass> utenti,String casaId) {
         this.context = context;
         this.utenti = utenti;
+        this.casaId = casaId;
     }
 
 
@@ -40,6 +43,12 @@ public class UsersAdapterChat extends RecyclerView.Adapter<UsersAdapterChat.View
         UtentiClass utentiClass = utenti.get(position);
         holder.nome.setText(utentiClass.getNome_cognome());
 
+        holder.itemView.setOnClickListener((v) -> {
+            Intent i = new Intent(context, MessageActivity.class);
+            i.putExtra("userId",utentiClass.getUserId());
+            i.putExtra("casaId",casaId);
+            context.startActivity(i);
+        });
     }
 
     @Override

@@ -73,7 +73,12 @@ public class ChatFragment extends Fragment {
         UsersFragment usersFragment = new UsersFragment();
         usersFragment.setArguments(args_chat);
 
-        viewPagerAdapter.addFragment(new ChatSecondFragment(),"Chats");
+        Bundle args_chat_fragment = new Bundle();
+        args_chat_fragment.putCharSequence("casaId",casaId);
+        ChatSecondFragment chatSecondFragment = new ChatSecondFragment();
+        chatSecondFragment.setArguments(args_chat_fragment);
+
+        viewPagerAdapter.addFragment(chatSecondFragment,"Chats");
         viewPagerAdapter.addFragment(usersFragment,"Users");
 
         viewPager.setAdapter(viewPagerAdapter);

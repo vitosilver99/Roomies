@@ -2,43 +2,52 @@ package com.example.roomies.chat;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.roomies.R;
+import com.example.roomies.calendario.UtentiClass;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class ChatSecondFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private UsersAdapterChat usersAdapterChat;
+    private List<UtentiClass> mUser;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    FirebaseUser fuser;
+    DatabaseReference reference;
+    public String casaId;
+
+    private List<ChatList> usersList;
+
+    RecyclerView recyclerView;
 
     public ChatSecondFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ChatSecondFragment.
-     */
-    // TODO: Rename and change types and number of parameters
+
+
     public static ChatSecondFragment newInstance(String param1, String param2) {
         ChatSecondFragment fragment = new ChatSecondFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putString("casaId", param1);
         fragment.setArguments(args);
         return fragment;
     }
@@ -47,15 +56,80 @@ public class ChatSecondFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            casaId = getArguments().getString("casaId");
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_chat_second, container, false);
+        View view = inflater.inflate(R.layout.fragment_chat_second,container,false);
+
+        recyclerView = view.findViewById(R.id.recyclerview_chat_utenti);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        fuser = FirebaseAuth.getInstance().getCurrentUser();
+
+        usersList = new ArrayList<>();
+
+        reference = FirebaseDatabase.getInstance().getReference().child(casaId)
+                .child("chatList")
+                .child(fuser.getUid());
+
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                usersList.clear();
+
+                //ciclo per tutti gli utenti
+                for(DataSnapshot snapshot: dataSnapshot.getChildren()){
+                    HashMap<String, Object> hashMap = (HashMap<String, Object>) snapshot.getValue();
+                    ChatList chatList = new ChatList(hashMap.get("id").toString());
+
+                    usersList.add(chatList);
+                }
+
+                chatList();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        return view;
+    }
+
+    public void chatList(){
+        // prendo tutte le chat recenti
+
+        mUser = new ArrayList<>();
+        reference = FirebaseDatabase.getInstance().getReference(casaId).child("utenti");
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                mUser.clear();
+
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    HashMap<String, Object> hashMap = (HashMap<String, Object>) snapshot.getValue();
+                    UtentiClass utente = new UtentiClass(hashMap.get("nome_cognome").toString(),hashMap.get("user_id").toString());
+                    for(ChatList chatList : usersList){
+                        if( utente.getUserId().equals(chatList.getId())){
+                            mUser.add(utente);
+                        }
+                    }
+                }
+
+                usersAdapterChat = new UsersAdapterChat(getContext(),mUser,casaId);
+                recyclerView.setAdapter(usersAdapterChat);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 }

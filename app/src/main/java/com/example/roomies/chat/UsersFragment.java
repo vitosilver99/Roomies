@@ -82,7 +82,7 @@ public class UsersFragment extends Fragment {
     {
         final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference(casaId);
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference(casaId).child("utenti");
 
         reference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -98,7 +98,7 @@ public class UsersFragment extends Fragment {
                             utentiClasses.add(utente);
                         }
 
-                        usersAdapterChat = new UsersAdapterChat(getContext(),utentiClasses);
+                        usersAdapterChat = new UsersAdapterChat(getContext(),utentiClasses,casaId);
                         recyclerView.setAdapter(usersAdapterChat);
                     }
 

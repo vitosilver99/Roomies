@@ -52,7 +52,6 @@ public class PopUpClassNuovoPagamento implements DatePickerDialog.OnDateSetListe
     List<UtentiClass> utentiSelezionati;
     RecyclerViewAdapterNuovoPagamento myAdapter;
     RecyclerView myrv;
-
     View popupView;
 
     String UdCasa;
