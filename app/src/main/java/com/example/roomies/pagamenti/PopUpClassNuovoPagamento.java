@@ -2,6 +2,8 @@ package com.example.roomies.pagamenti;
 
 //codice adattato da PopUpEventoClass
 
+//todo capire come aggiornare l'adapter in pagamentifragment (pagamentiadapter) della lista dei pagamenti dopo averne creato uno
+
 //todo confronta PopUpMansioneClass per utilizzare eliminaElementoSelezionato
 import android.app.DatePickerDialog;
 import android.graphics.drawable.BitmapDrawable;

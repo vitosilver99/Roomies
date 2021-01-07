@@ -12,12 +12,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.roomies.R;
 
 import java.util.ArrayList;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 public class InteressatiAdapter extends RecyclerView.Adapter<InteressatiAdapter.InteressatoViewHolder> {
 
     Context context;
     ArrayList<ModelloInteressato> listaInteressati;
+
 
     public InteressatiAdapter(Context context, Map<String,Object> documentoPagamento){
         this.context=context;
@@ -78,5 +80,21 @@ public class InteressatiAdapter extends RecyclerView.Adapter<InteressatiAdapter.
     //getter per la lista degli interessati
     public ArrayList<ModelloInteressato> getListaInteressati() {
         return listaInteressati;
+    }
+
+    public boolean setPagato(String userId) {
+
+
+
+        ListIterator<ModelloInteressato> iterator = listaInteressati.listIterator();
+        while (iterator.hasNext()) {
+            ModelloInteressato next = iterator.next();
+            if (next.getId_utente().equals(userId)) {
+                next.setPagato(true);
+                iterator.set(next);
+            }
+        }
+        notifyDataSetChanged();
+        return true;
     }
 }

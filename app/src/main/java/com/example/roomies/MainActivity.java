@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import com.example.roomies.spesa.SpesaFragment;
 import com.example.roomies.chat.ChatFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -65,16 +66,20 @@ public class MainActivity extends AppCompatActivity {
                                 selectedFragment = new HomeFragment();
                                 break;
                             case R.id.navigation_spesa:
+                                Bundle args= new Bundle();
+                                args.putCharSequence(ARG_USER_ID, userID);
+                                args.putCharSequence(ARG_CASA_ID, casaID);
                                 selectedFragment = new SpesaFragment();
+                                selectedFragment.setArguments(args);
                                 break;
                             case R.id.navigation_pagamenti:
 
                                 //devo passare al nuovo fragment casaID cioè l'ID della casa (lo passo in param1)
-                                Bundle args= new Bundle();
-                                args.putCharSequence(ARG_USER_ID, userID);
-                                args.putCharSequence(ARG_CASA_ID, casaID);
+                                Bundle args2= new Bundle();
+                                args2.putCharSequence(ARG_USER_ID, userID);
+                                args2.putCharSequence(ARG_CASA_ID, casaID);
                                 selectedFragment = new PagamentiFragment();
-                                selectedFragment.setArguments(args);
+                                selectedFragment.setArguments(args2);
 
                                 break;
                             case R.id.navigation_chat:

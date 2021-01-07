@@ -27,6 +27,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
+//TODO creare un package per le classi dell'autenticazione
 public class LoginActivity extends AppCompatActivity {
     FirebaseAuth fAuth;
     static LoginActivity activityA;

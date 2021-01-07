@@ -1,6 +1,5 @@
 package com.example.roomies.pagamenti;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -23,7 +22,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.roomies.R;
-import com.example.roomies.calendario.PopUpClass;
 import com.example.roomies.calendario.UtentiClass;
 import com.firebase.ui.firestore.SnapshotParser;
 import com.firebase.ui.firestore.paging.FirestorePagingOptions;
@@ -36,8 +34,6 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
-import java.sql.Date;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
@@ -50,7 +46,7 @@ import static android.content.ContentValues.TAG;
  * Use the {@link PagamentiFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PagamentiFragment extends Fragment implements FirestoreAdapterPagamento.OnListaPagamentoClick {
+public class PagamentiFragment extends Fragment implements FirestorePagingAdapterPagamenti.OnPagamentoInteraction {
 
 
     //casa di riferimento per i test: p60qZKwoxHmFn8KXYzEG
@@ -68,7 +64,7 @@ public class PagamentiFragment extends Fragment implements FirestoreAdapterPagam
 
     private RecyclerView listaPagamenti;
     private FirebaseFirestore firebaseFirestore;
-    private FirestoreAdapterPagamento pagamentiAdapter;
+    private FirestorePagingAdapterPagamenti pagamentiAdapter;
 
     //Activity main;
     
@@ -155,7 +151,7 @@ public class PagamentiFragment extends Fragment implements FirestoreAdapterPagam
                 .build();
 
 
-        pagamentiAdapter = new FirestoreAdapterPagamento(options,this);
+        pagamentiAdapter = new FirestorePagingAdapterPagamenti(options,this);
 
         listaPagamenti.setHasFixedSize(true);
         listaPagamenti.setLayoutManager(new LinearLayoutManager(this.getContext()));
@@ -201,7 +197,6 @@ public class PagamentiFragment extends Fragment implements FirestoreAdapterPagam
 
                                         PopUpClassNuovoPagamento popUpClassNuovoPagamento = new PopUpClassNuovoPagamento(listaUtentiPagamento,casaId);
                                         popUpClassNuovoPagamento.showPopupWindow(view);
-
                                     } else {
                                         Toast.makeText(view.getContext(),"Errore di connessione", Toast.LENGTH_LONG);
                                     }
@@ -248,7 +243,9 @@ public class PagamentiFragment extends Fragment implements FirestoreAdapterPagam
         InteressatiAdapter interessatiAdapter = new InteressatiAdapter(this.getContext(),snapshot.getData());
         listaInteressati.setAdapter(interessatiAdapter);
         listaInteressati.setLayoutManager(new LinearLayoutManager(this.getContext()));
-        dialog.show();
+
+
+
         confermaPagamento.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -284,13 +281,15 @@ public class PagamentiFragment extends Fragment implements FirestoreAdapterPagam
                                     //probabilmente verranno aggiornati solo gli elementi nel fragment perchè paga fa riferimento ai dati di firestore
                                     //mentre interessatiAdapter è un adapter che fa riferimento a dati contenuti al suo interno e che quindi non vengono più aggiornati dopo la sua creazione
 
-                                    //forse si aggiorna interessatiAdapter in questo modo
-                                    InteressatiAdapter interessatiAdapterAggiornato=new InteressatiAdapter(getContext(),snapshot.getData());
-                                    listaInteressati.setAdapter(interessatiAdapterAggiornato);
-                                    interessatiAdapter.notifyDataSetChanged();
 
-                                    //inizia a controllare variazioni sull'adapter
-                                    pagamentiAdapter.startListening();
+                                    //aggiorna adapter degli interessati
+                                    interessatiAdapter.setPagato(userId);
+
+                                    //aggiorna adapter pagamenti in background
+                                    pagamentiAdapter.refresh();
+
+
+
                                 }
                             });
                         }
@@ -304,8 +303,30 @@ public class PagamentiFragment extends Fragment implements FirestoreAdapterPagam
             }
         });
 
-
+        //ATTENZIONE RICORDATI SEMPRE DI MOSTRARE IL DIALOGO
+        dialog.show();
     }
-    
-    
+
+    @Override
+    public void onPagamentoLongClick(DocumentSnapshot snapshot, int position) {
+        Log.d("PAGAMENTO_LONG_CLICK","long click su elemento numero" + position + " con id uguale a " + snapshot.getId()+snapshot.getString("nome_pagamento"));
+
+        //inserisco una finestra di dialogo che mi fornisce i dettagli di un pagamento
+        Dialog dialog = new Dialog(getContext());
+        dialog.setContentView(R.layout.dialog_rimuovi_pagamento);
+
+        Button rimuovi_pagamento= dialog.findViewById(R.id.rimuovi_pagamento);
+        rimuovi_pagamento.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                snapshot.getReference().delete();
+                dialog.hide();
+                pagamentiAdapter.refresh();
+            }
+        });
+
+        dialog.show();
+    }
+
+
 }
