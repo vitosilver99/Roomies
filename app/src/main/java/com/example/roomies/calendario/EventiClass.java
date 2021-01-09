@@ -3,12 +3,20 @@ package com.example.roomies.calendario;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 public class EventiClass {
     private String idEvento;
     private Date data;
+    private String nome;
+    private List<UtentiClass> partecipanti;
 
     public EventiClass() {
+    }
+
+    public EventiClass(String nome,List<UtentiClass> partecipanti){
+        this.nome = nome;
+        this.partecipanti = partecipanti;
     }
 
     public EventiClass(String idEvento, String data) {
@@ -19,6 +27,22 @@ public class EventiClass {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public List<UtentiClass> getPartecipanti() {
+        return partecipanti;
+    }
+
+    public void setPartecipanti(List<UtentiClass> partecipanti) {
+        this.partecipanti = partecipanti;
     }
 
     public EventiClass(String idEvento, Date data) {

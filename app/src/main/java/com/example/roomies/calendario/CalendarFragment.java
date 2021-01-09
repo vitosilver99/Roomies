@@ -185,6 +185,7 @@ public class CalendarFragment extends Fragment {
             public void onMonthChanged(MaterialCalendarView widget, CalendarDay date) {
                 // Do something here
                 Log.d("mese","01-"+date.getMonth()+"-"+date.getYear());
+
                 String date_query_first = "01-"+date.getMonth()+"-"+date.getYear();
                 String date_query_last = getUltimoGiornoMese(date)+"-"+date.getMonth()+"-"+date.getYear();
 

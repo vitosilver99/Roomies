@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import com.example.roomies.home.HomeFragment;
 import com.example.roomies.spesa.SpesaFragment;
 import com.example.roomies.chat.ChatFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -48,7 +49,11 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
         bottomNav.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new HomeFragment()).commit();
+        HomeFragment homeFragment = new HomeFragment();
+        Bundle bundle = new Bundle();
+        bundle.putCharSequence("casaId",casaID);
+        homeFragment.setArguments(bundle);
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,homeFragment).commit();
 
         Toast.makeText(getApplicationContext(), "userID:" + userID, Toast.LENGTH_LONG).show();
 
@@ -63,7 +68,11 @@ public class MainActivity extends AppCompatActivity {
 
                         switch (item.getItemId()) {
                             case R.id.navigation_home:
-                                selectedFragment = new HomeFragment();
+                                Bundle bundle = new Bundle();
+                                bundle.putCharSequence("casaId",casaID);
+                                HomeFragment homeFragment = new HomeFragment();
+                                homeFragment.setArguments(bundle);
+                                selectedFragment = homeFragment;
                                 break;
                             case R.id.navigation_spesa:
                                 Bundle args= new Bundle();

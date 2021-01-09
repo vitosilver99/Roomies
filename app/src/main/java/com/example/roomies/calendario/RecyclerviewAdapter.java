@@ -31,12 +31,14 @@ public class RecyclerviewAdapter extends RecyclerView.Adapter<RecyclerviewAdapte
         View view = LayoutInflater.from(mContext).inflate(R.layout.task_item,parent,false);
         return new MyViewHolder(view);
     }
+
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         EventiRecyclerView eventiRecyclerView = eventiRecyclerViewList.get(position);
         holder.tvTaskName.setText(eventiRecyclerView.getName());
         holder.tvTaskDesc.setText(eventiRecyclerView.getDesc());
     }
+
     @Override
     public int getItemCount() {
         return eventiRecyclerViewList.size();
@@ -45,7 +47,8 @@ public class RecyclerviewAdapter extends RecyclerView.Adapter<RecyclerviewAdapte
         this.eventiRecyclerViewList = eventiRecyclerViewList;
         notifyDataSetChanged();
     }
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+
+    public static class MyViewHolder extends RecyclerView.ViewHolder {
         private TextView tvTaskName;
         private TextView tvTaskDesc;
         public MyViewHolder(View itemView) {

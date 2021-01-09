@@ -27,6 +27,8 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -144,7 +146,6 @@ public class PopUpEventoClass implements DatePickerDialog.OnDateSetListener{
                     e.printStackTrace();
                 }
 
-
                 singolo_evento.put("giorno",data);
                 singolo_evento.put("nome",nome.getText().toString());
                 singolo_evento.put("descrizione",descrizione.getText().toString());
@@ -153,10 +154,13 @@ public class PopUpEventoClass implements DatePickerDialog.OnDateSetListener{
 
                 //aggiungo l'evento appena creato alla collezione Eventi
                 Date finalData = data;
-                fStore.collection("eventi").add(singolo_evento).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+
+                fStore.collection("case").document(UdCasa).collection("eventi")
+                        .add(singolo_evento).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
-                        Map<String, Object> map = new HashMap<>();
+                        popupWindow.dismiss();
+                        /*Map<String, Object> map = new HashMap<>();
                         map.put("evento_id",documentReference.getId());
                         map.put("data" , finalData);
 
@@ -167,7 +171,7 @@ public class PopUpEventoClass implements DatePickerDialog.OnDateSetListener{
                             public void onSuccess(Void aVoid) {
                                 popupWindow.dismiss();
                             }
-                        });
+                        });*/
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -195,7 +199,9 @@ public class PopUpEventoClass implements DatePickerDialog.OnDateSetListener{
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-        String date = dayOfMonth + "/" + month + "/" + year;
+        month++;
+        NumberFormat f = new DecimalFormat("00");
+        String date = dayOfMonth + "/" + f.format(month) + "/" + year;
         seleziona_giorno.setText(date);
     }
 
