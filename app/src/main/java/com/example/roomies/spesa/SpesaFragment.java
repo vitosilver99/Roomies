@@ -49,9 +49,6 @@ public class SpesaFragment extends Fragment implements FirestoreRecyclerAdapterS
     private RecyclerView listaSpesa;
     private FirebaseFirestore firebaseFirestore;
     private FirestoreRecyclerAdapterSpesa spesaAdapter;
-
-
-
     public SpesaFragment() {
         // Required empty public constructor
     }

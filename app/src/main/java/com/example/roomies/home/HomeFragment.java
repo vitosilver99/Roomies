@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,6 +20,9 @@ import com.example.roomies.calendario.EventiClass;
 import com.example.roomies.calendario.MansioniClass;
 import com.example.roomies.calendario.UtentiClass;
 import com.example.roomies.spesa.FirestoreRecyclerAdapterSpesa;
+import com.example.roomies.spesa.ModelloArticolo;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.firebase.ui.firestore.SnapshotParser;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -38,7 +42,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements FirestoreRecyclerAdapterSpesaHome.OnArticoloInteraction{
 
 
     private static final String ARG_PARAM1 = "casaId";
@@ -47,7 +51,12 @@ public class HomeFragment extends Fragment {
     private String casaId;
 
     private FirebaseFirestore firebaseFirestore;
-    private FirestoreRecyclerAdapterSpesa spesaAdapter;
+
+    //non è stato aggiunto da me ma serve nella parte che devo implementare
+    private FirestoreRecyclerAdapterSpesaHome spesaAdapter;
+
+
+    private RecyclerView listaSpesa;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -76,6 +85,15 @@ public class HomeFragment extends Fragment {
 
         firebaseFirestore = FirebaseFirestore.getInstance();
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+
+
+
+
+
+
+
+
+
 
 
         //prendo tutti gli utenti presenti nella casa cosi da inserirli nella recyclerView profili della home
@@ -191,8 +209,72 @@ public class HomeFragment extends Fragment {
 
 
 
+        listaSpesa = (RecyclerView) view.findViewById(R.id.recyclerView_lista_spesa_home);
+        firebaseFirestore = FirebaseFirestore.getInstance();
+
+        //query per ottenere la lista della spesa
+        Query querySpesa = firebaseFirestore.collection("case").document(casaId).collection("lista_spesa").whereEqualTo("da_comprare",true).orderBy("nome_articolo");
+
+        /*
+        querySpesa.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                int sizequery = queryDocumentSnapshots.size();
+                Log.d("query numero articoli",sizequery+"");
+            }
+        });
+
+         */
+        FirestoreRecyclerOptions<ModelloArticoloHome> options = new FirestoreRecyclerOptions.Builder<ModelloArticoloHome>()
+                .setLifecycleOwner(this)
+                .setQuery(querySpesa, new SnapshotParser<ModelloArticoloHome>() {
+                    @NonNull
+                    @Override
+                    public ModelloArticoloHome parseSnapshot(@NonNull DocumentSnapshot snapshot) {
+                        //non funziona per via del boolean
+                        //ModelloArticolo articolo = snapshot.toObject(ModelloArticolo.class);
+                        Log.d("ciao boolean",snapshot.get("da_comprare").getClass().getCanonicalName());
+
+                        ModelloArticoloHome articolo = new ModelloArticoloHome(snapshot.getString("nome_articolo"),snapshot.getId());
+                        return articolo;
+                    }
+                })
+                .build();
+
+        spesaAdapter = new FirestoreRecyclerAdapterSpesaHome(options, this);
+        listaSpesa.setHasFixedSize(true);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false);
+        listaSpesa.setLayoutManager(linearLayoutManager);
+        listaSpesa.setAdapter(spesaAdapter);
+        //Log.d("ADAPTER SPESA",listaSpesa.getAdapter().equals(null)+"");
+        Log.d("adapter numero articoli",spesaAdapter.getItemCount()+"");
+
+
+
+
+
+
+
+
+
 
         // Inflate the layout for this fragment
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+    }
+
+    @Override
+    public void onArticoloClick(ModelloArticoloHome articolo, int position) {
+
+    }
+
+    @Override
+    public void onArticoloLongClick(ModelloArticoloHome articolo, int position) {
+
     }
 }
