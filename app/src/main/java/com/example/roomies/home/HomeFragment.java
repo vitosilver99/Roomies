@@ -1,43 +1,44 @@
 package com.example.roomies.home;
 
-import android.graphics.Color;
+import android.app.Dialog;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.paging.PagedList;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.roomies.R;
 import com.example.roomies.calendario.EventiClass;
-import com.example.roomies.calendario.MansioniClass;
 import com.example.roomies.calendario.UtentiClass;
-import com.example.roomies.spesa.FirestoreRecyclerAdapterSpesa;
 import com.example.roomies.spesa.ModelloArticolo;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.firebase.ui.firestore.SnapshotParser;
+import com.firebase.ui.firestore.paging.FirestorePagingOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.WriteBatch;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -45,10 +46,14 @@ import java.util.Map;
 public class HomeFragment extends Fragment implements FirestoreRecyclerAdapterSpesaHome.OnArticoloInteraction{
 
 
-    private static final String ARG_PARAM1 = "casaId";
 
+
+    private static final String ARG_USER_ID = "param1";
+    private static final String ARG_CASA_ID = "param2";
 
     private String casaId;
+    private String userId;
+
 
     private FirebaseFirestore firebaseFirestore;
 
@@ -62,10 +67,11 @@ public class HomeFragment extends Fragment implements FirestoreRecyclerAdapterSp
         // Required empty public constructor
     }
 
-    public static HomeFragment newInstance(String param1) {
+    public static HomeFragment newInstance(String param1, String param2) {
         HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_USER_ID, param1);
+        args.putString(ARG_CASA_ID, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -74,9 +80,16 @@ public class HomeFragment extends Fragment implements FirestoreRecyclerAdapterSp
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            casaId = getArguments().getString(ARG_PARAM1);
+            casaId = getArguments().getString(ARG_CASA_ID);
+            userId = getArguments().getString(ARG_USER_ID);
         }
+
+
+
+
     }
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -84,7 +97,6 @@ public class HomeFragment extends Fragment implements FirestoreRecyclerAdapterSp
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         firebaseFirestore = FirebaseFirestore.getInstance();
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
 
 
@@ -95,7 +107,7 @@ public class HomeFragment extends Fragment implements FirestoreRecyclerAdapterSp
 
 
 
-
+        Log.d("CASAID",casaId);
         //prendo tutti gli utenti presenti nella casa cosi da inserirli nella recyclerView profili della home
         firebaseFirestore.collection("case").document(casaId).get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -113,7 +125,7 @@ public class HomeFragment extends Fragment implements FirestoreRecyclerAdapterSp
                             for(int i=0; i<arrayList.size(); i++ )
                             {
                                 Map<String, Object> map_utenti = (Map<String, Object>) arrayList.get(i);
-                                if(!map_utenti.get("user_id").toString().equals(firebaseAuth.getUid()))
+                                if(!map_utenti.get("user_id").toString().equals(userId))
                                 {
                                     UtentiClass utenti = new UtentiClass(map_utenti.get("nome_cognome").toString(),map_utenti.get("user_id").toString());
                                     utentiClasses.add(utenti);
@@ -209,13 +221,30 @@ public class HomeFragment extends Fragment implements FirestoreRecyclerAdapterSp
 
 
 
-        listaSpesa = (RecyclerView) view.findViewById(R.id.recyclerView_lista_spesa_home);
-        firebaseFirestore = FirebaseFirestore.getInstance();
+
+
+
+
+
+
+
+
+
+        listaSpesa = (RecyclerView) view.findViewById(R.id.lista_spesa_home);
+
+        listaSpesa.setHasFixedSize(true);
+        listaSpesa.setLayoutManager(new LinearLayoutManager(this.getContext()));
+
+
+
+
 
         //query per ottenere la lista della spesa
         Query querySpesa = firebaseFirestore.collection("case").document(casaId).collection("lista_spesa").whereEqualTo("da_comprare",true).orderBy("nome_articolo");
 
+
         /*
+
         querySpesa.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
 
             @Override
@@ -225,7 +254,11 @@ public class HomeFragment extends Fragment implements FirestoreRecyclerAdapterSp
             }
         });
 
-         */
+        */
+
+
+
+
         FirestoreRecyclerOptions<ModelloArticoloHome> options = new FirestoreRecyclerOptions.Builder<ModelloArticoloHome>()
                 .setLifecycleOwner(this)
                 .setQuery(querySpesa, new SnapshotParser<ModelloArticoloHome>() {
@@ -243,24 +276,73 @@ public class HomeFragment extends Fragment implements FirestoreRecyclerAdapterSp
                 .build();
 
         spesaAdapter = new FirestoreRecyclerAdapterSpesaHome(options, this);
-        listaSpesa.setHasFixedSize(true);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false);
-        listaSpesa.setLayoutManager(linearLayoutManager);
+
+
+
+
+
+
+        Log.d("FRAGHOME elementi",spesaAdapter.getItemCount()+"");
         listaSpesa.setAdapter(spesaAdapter);
-        //Log.d("ADAPTER SPESA",listaSpesa.getAdapter().equals(null)+"");
-        Log.d("adapter numero articoli",spesaAdapter.getItemCount()+"");
+        Log.d("FRAGHOME elementi",spesaAdapter.getItemCount()+"");
 
 
 
 
 
+        Button spesa_fatta = view.findViewById(R.id.spesa_fatta);
+        spesa_fatta.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Dialog dialog = new Dialog(getContext());
+
+                dialog.setContentView(R.layout.dialog_conferma_spesa_fatta);
+
+                Button spesa_fatta = dialog.findViewById(R.id.conferma_spesa_fatta);
+                spesa_fatta.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // Get a new write batch
+                        WriteBatch batch = firebaseFirestore.batch();
 
 
 
+
+                        for(int i=0;i<spesaAdapter.getItemCount();i++) {
+                            DocumentReference docRef = firebaseFirestore.collection("case").document(casaId).collection("lista_spesa").document(spesaAdapter.getItem(i).getArticolo_id());
+                            batch.update(docRef,"da_comprare",false);
+                        }
+
+
+
+                        batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                Toast.makeText(getContext(),"Spesa fatta",Toast.LENGTH_LONG).show();
+                                dialog.hide();
+                            }
+                        });
+                    }
+                });
+
+
+                dialog.show();
+
+
+
+            }
+        });
 
 
         // Inflate the layout for this fragment
         return view;
+    }
+
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 
     @Override
@@ -269,12 +351,12 @@ public class HomeFragment extends Fragment implements FirestoreRecyclerAdapterSp
     }
 
     @Override
-    public void onArticoloClick(ModelloArticoloHome articolo, int position) {
+    public void onArticoloClick(ModelloArticoloHome modelloArticoloHome, int position) {
 
     }
 
     @Override
-    public void onArticoloLongClick(ModelloArticoloHome articolo, int position) {
+    public void onArticoloLongClick(ModelloArticoloHome modelloArticoloHome, int position) {
 
     }
 }

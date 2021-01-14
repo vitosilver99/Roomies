@@ -127,6 +127,7 @@ public class PopUpClassNuovoPagamento implements DatePickerDialog.OnDateSetListe
                 {
                     utentiSelezionati.add(listaUtenti.get(position));
                     aggiornaAdapter();
+
                 }
 
             }
@@ -135,6 +136,8 @@ public class PopUpClassNuovoPagamento implements DatePickerDialog.OnDateSetListe
             public void onNothingSelected(AdapterView<?> parentView) {
                 // your code here
             }
+
+
 
         });
 
@@ -222,6 +225,7 @@ public class PopUpClassNuovoPagamento implements DatePickerDialog.OnDateSetListe
 
     public void aggiornaAdapter()
     {
+        
         myAdapter = new RecyclerViewAdapterNuovoPagamento(popupView.getContext(),utentiSelezionati, this);
         myrv.setLayoutManager(new GridLayoutManager(popupView.getContext(),2));
         myrv.setAdapter(myAdapter);

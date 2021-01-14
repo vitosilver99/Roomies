@@ -15,14 +15,17 @@ public class ModelloPagamento {
     //quale classe utilizzare per la data di scadenza
     private java.util.Date scadenza_pagamento;
 
+    private float importo_totale;
+
     public ModelloPagamento() {
     }
 
-    public ModelloPagamento(String nome, int non_pagato, java.util.Date scadenza, String pagamento_id) {
+    public ModelloPagamento(String nome, int non_pagato, java.util.Date scadenza, float importo_totale, String pagamento_id) {
         this.nome_pagamento = nome;
         this.non_pagato = non_pagato;
         this.scadenza_pagamento = scadenza;
         //TODO AGGIUNGI ATTRIBUTO importo_totale
+        this.importo_totale = importo_totale;
 
         this.pagamento_id=pagamento_id;
     }
@@ -57,5 +60,13 @@ public class ModelloPagamento {
 
     public void setPagamento_id(String pagamento_id) {
         this.pagamento_id = pagamento_id;
+    }
+
+    public float getImporto_totale() {
+        return importo_totale;
+    }
+
+    public void setImporto_totale(float importo_totale) {
+        this.importo_totale = importo_totale;
     }
 }

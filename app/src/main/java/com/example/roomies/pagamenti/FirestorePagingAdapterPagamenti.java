@@ -1,5 +1,6 @@
 package com.example.roomies.pagamenti;
 
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,11 +42,20 @@ public class FirestorePagingAdapterPagamenti extends FirestorePagingAdapter<Mode
     @Override
     protected void onBindViewHolder(@NonNull PagamentoViewHolder holder, int position, @NonNull ModelloPagamento model) {
         holder.nome_pagamento.setText(model.getNome_pagamento());
+        //TODO verifica che toGMTString restituisca la data corretta
         holder.scadenza_pagamento.setText(model.getScadenza_pagamento().toLocaleString());
         holder.non_pagato.setText(model.getNon_pagato()+"");
+        if(model.getNon_pagato()>0) {
 
+            holder.itemView.setBackgroundColor(Color.RED);
+        }
+        else {
+            holder.itemView.setBackgroundColor(Color.GREEN);
+        }
 
-        //qui possiamo ricavare anche l'id del pagamento tramite model.getPagamento_id()
+        holder.importo_totale.setText(model.getImporto_totale()+"");
+
+        //qui possiamo ricavare anche l'id del pagamento tramite model.getPagamento_id() se in pagamentoFragment il parser modificato riempie anche quel campo
 
 
     }
@@ -91,12 +101,14 @@ public class FirestorePagingAdapterPagamenti extends FirestorePagingAdapter<Mode
         private TextView nome_pagamento;
         private TextView scadenza_pagamento;
         private TextView non_pagato;
+        private TextView importo_totale;
 
         public PagamentoViewHolder(@NonNull View itemView) {
             super(itemView);
             nome_pagamento = itemView.findViewById(R.id.nome_pagamento);
             scadenza_pagamento = itemView.findViewById(R.id.scadenza_pagamento);
             non_pagato = itemView.findViewById(R.id.non_pagato);
+            importo_totale = itemView.findViewById(R.id.importo_totale);
 
             //qui è possibile implementare i metodi onClick sull'intera View (chiamata in questo caso itemView) o su un singolo TextView (ad esempio nome_pagamento)
             itemView.setOnClickListener(this);

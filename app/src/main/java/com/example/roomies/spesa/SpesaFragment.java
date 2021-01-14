@@ -75,8 +75,8 @@ public class SpesaFragment extends Fragment implements FirestoreRecyclerAdapterS
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            userId = getArguments().getString(ARG_USER_ID);
             casaId = getArguments().getString(ARG_CASA_ID);
+            userId = getArguments().getString(ARG_USER_ID);
         }
     }
 
@@ -109,9 +109,11 @@ public class SpesaFragment extends Fragment implements FirestoreRecyclerAdapterS
                 .build();
 
         spesaAdapter = new FirestoreRecyclerAdapterSpesa(options,this);
+        Log.d("FRAGSPESA elementi",spesaAdapter.getItemCount()+"");
         listaSpesa.setHasFixedSize(true);
         listaSpesa.setLayoutManager(new LinearLayoutManager(this.getContext()));
         listaSpesa.setAdapter(spesaAdapter);
+
 
 
         FloatingActionButton fab = view.findViewById(R.id.add_articolo_floating);

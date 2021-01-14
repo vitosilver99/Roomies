@@ -41,6 +41,7 @@ import java.util.Map;
 import static android.content.ContentValues.TAG;
 
 
+//TODO IL TASTO PER RIMUOVERE UN INTERESSATO NEL POPUP DI CREAZIONE DI UN NUOVO PAGAMENTO VIENE COPERTO DAL NOME TROPPO LUNGO
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link PagamentiFragment#newInstance} factory method to
@@ -129,7 +130,7 @@ public class PagamentiFragment extends Fragment implements FirestorePagingAdapte
                 .build();
 
         //query da firestore
-        Query query= firebaseFirestore.collection("case").document(casaId).collection("pagamenti").limit(10).orderBy("scadenza_pagamento");
+        Query query= firebaseFirestore.collection("case").document(casaId).collection("pagamenti").limit(10).orderBy("non_pagato", Query.Direction.DESCENDING).orderBy("scadenza_pagamento");
 
         //opzioni del FirestorePagingAdapter customizzato cioè del FirestoreAdapterPagamento
 
@@ -198,7 +199,7 @@ public class PagamentiFragment extends Fragment implements FirestorePagingAdapte
                                         PopUpClassNuovoPagamento popUpClassNuovoPagamento = new PopUpClassNuovoPagamento(listaUtentiPagamento,casaId);
                                         popUpClassNuovoPagamento.showPopupWindow(view);
                                     } else {
-                                        Toast.makeText(view.getContext(),"Errore di connessione", Toast.LENGTH_LONG);
+                                        Toast.makeText(view.getContext(),"Errore di connessione", Toast.LENGTH_LONG).show();
                                     }
                                 } else {
                                     Log.d(TAG,"get failed with ", task.getException());
