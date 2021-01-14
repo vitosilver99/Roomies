@@ -1,6 +1,7 @@
 package com.example.roomies.home;
 
 import android.app.Dialog;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -10,6 +11,8 @@ import androidx.paging.PagedList;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.SystemClock;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +22,9 @@ import android.widget.Toast;
 
 import com.example.roomies.R;
 import com.example.roomies.calendario.EventiClass;
+import com.example.roomies.calendario.MansioniClass;
 import com.example.roomies.calendario.UtentiClass;
+import com.example.roomies.spesa.FirestoreRecyclerAdapterSpesa;
 import com.example.roomies.spesa.ModelloArticolo;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.firebase.ui.firestore.SnapshotParser;
@@ -38,13 +43,14 @@ import com.google.firebase.firestore.WriteBatch;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 public class HomeFragment extends Fragment implements FirestoreRecyclerAdapterSpesaHome.OnArticoloInteraction{
-
 
 
 
@@ -83,13 +89,7 @@ public class HomeFragment extends Fragment implements FirestoreRecyclerAdapterSp
             casaId = getArguments().getString(ARG_CASA_ID);
             userId = getArguments().getString(ARG_USER_ID);
         }
-
-
-
-
     }
-
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -99,15 +99,6 @@ public class HomeFragment extends Fragment implements FirestoreRecyclerAdapterSp
         firebaseFirestore = FirebaseFirestore.getInstance();
 
 
-
-
-
-
-
-
-
-
-        Log.d("CASAID",casaId);
         //prendo tutti gli utenti presenti nella casa cosi da inserirli nella recyclerView profili della home
         firebaseFirestore.collection("case").document(casaId).get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -218,18 +209,6 @@ public class HomeFragment extends Fragment implements FirestoreRecyclerAdapterSp
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
         listaSpesa = (RecyclerView) view.findViewById(R.id.lista_spesa_home);
 
         listaSpesa.setHasFixedSize(true);
@@ -254,11 +233,7 @@ public class HomeFragment extends Fragment implements FirestoreRecyclerAdapterSp
             }
         });
 
-        */
-
-
-
-
+         */
         FirestoreRecyclerOptions<ModelloArticoloHome> options = new FirestoreRecyclerOptions.Builder<ModelloArticoloHome>()
                 .setLifecycleOwner(this)
                 .setQuery(querySpesa, new SnapshotParser<ModelloArticoloHome>() {
@@ -276,12 +251,6 @@ public class HomeFragment extends Fragment implements FirestoreRecyclerAdapterSp
                 .build();
 
         spesaAdapter = new FirestoreRecyclerAdapterSpesaHome(options, this);
-
-
-
-
-
-
         Log.d("FRAGHOME elementi",spesaAdapter.getItemCount()+"");
         listaSpesa.setAdapter(spesaAdapter);
         Log.d("FRAGHOME elementi",spesaAdapter.getItemCount()+"");
@@ -338,12 +307,6 @@ public class HomeFragment extends Fragment implements FirestoreRecyclerAdapterSp
         return view;
     }
 
-
-
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {

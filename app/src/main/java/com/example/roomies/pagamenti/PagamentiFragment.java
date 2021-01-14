@@ -125,8 +125,8 @@ public class PagamentiFragment extends Fragment implements FirestorePagingAdapte
 
         //configurazione per la paginazione
         PagedList.Config config = new PagedList.Config.Builder()
-                .setInitialLoadSizeHint(2)
-                .setPageSize(2)
+                .setInitialLoadSizeHint(6)
+                .setPageSize(6)
                 .build();
 
         //query da firestore

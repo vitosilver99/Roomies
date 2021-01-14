@@ -16,23 +16,17 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 
 public class FirestoreRecyclerAdapterSpesaHome extends FirestoreRecyclerAdapter<ModelloArticoloHome, FirestoreRecyclerAdapterSpesaHome.ArticoloHomeViewHolder> {
 
-    /**
-     * Create a new RecyclerView adapter that listens to a Firestore Query.  See {@link
-     * FirestoreRecyclerOptions} for configuration options.
-     *
-     * @param options
-     */
-
-    private FirestoreRecyclerAdapterSpesaHome.OnArticoloInteraction onArticoloInteraction;
+    private OnArticoloInteraction onArticoloInteraction;
 
 
-    public FirestoreRecyclerAdapterSpesaHome(@NonNull FirestoreRecyclerOptions<ModelloArticoloHome> options, FirestoreRecyclerAdapterSpesaHome.OnArticoloInteraction onArticoloInteraction) {
+    public FirestoreRecyclerAdapterSpesaHome(@NonNull FirestoreRecyclerOptions<ModelloArticoloHome> options, OnArticoloInteraction onArticoloInteraction) {
         super(options);
         this.onArticoloInteraction=onArticoloInteraction;
     }
 
+
     @Override
-    protected void onBindViewHolder(@NonNull FirestoreRecyclerAdapterSpesaHome.ArticoloHomeViewHolder holder, int position, @NonNull ModelloArticoloHome model) {
+    protected void onBindViewHolder(@NonNull ArticoloHomeViewHolder holder, int position, @NonNull ModelloArticoloHome model) {
 
         holder.nome_articolo.setText(model.getNome_articolo());
 
@@ -40,15 +34,13 @@ public class FirestoreRecyclerAdapterSpesaHome extends FirestoreRecyclerAdapter<
 
     @NonNull
     @Override
-    public FirestoreRecyclerAdapterSpesaHome.ArticoloHomeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ArticoloHomeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.modello_riga_articolo_home,parent,false);
-        return new FirestoreRecyclerAdapterSpesaHome.ArticoloHomeViewHolder(view);
+        return new ArticoloHomeViewHolder(view);
     }
 
     public class ArticoloHomeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         private TextView nome_articolo;
-
-
 
         public ArticoloHomeViewHolder(@NonNull View itemView) {
             super(itemView);

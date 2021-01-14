@@ -15,12 +15,13 @@ import com.example.roomies.R;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecyclerviewAdapter extends RecyclerView.Adapter<RecyclerviewAdapter.MyViewHolder> {
+public class RecyclerviewAdapterVisualizzaEvento extends RecyclerView.Adapter<RecyclerviewAdapterVisualizzaEvento.MyViewHolder> {
     private Context mContext;
-    private List<EventiRecyclerView> eventiRecyclerViewList;
+    private List<EventiClass> eventiRecyclerViewList;
+    private List<UtentiClass> interessati;
 
 
-    RecyclerviewAdapter(Context context){
+    RecyclerviewAdapterVisualizzaEvento(Context context){
         mContext = context;
         eventiRecyclerViewList = new ArrayList<>();
     }
@@ -34,16 +35,28 @@ public class RecyclerviewAdapter extends RecyclerView.Adapter<RecyclerviewAdapte
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        EventiRecyclerView eventiRecyclerView = eventiRecyclerViewList.get(position);
-        holder.tvTaskName.setText(eventiRecyclerView.getName());
-        holder.tvTaskDesc.setText(eventiRecyclerView.getDesc());
+        EventiClass eventiRecyclerView = eventiRecyclerViewList.get(position);
+        holder.tvTaskName.setText(eventiRecyclerView.getNome());
+
+        interessati =eventiRecyclerView.getPartecipanti();
+        String part="";
+        for(int i = 0; i<interessati.size();i++ ){
+            if(i==interessati.size()-1){
+                part = part + interessati.get(i).getNome_cognome()+"";
+            }
+            else {
+                part = part + interessati.get(i).getNome_cognome()+" - ";
+            }
+        }
+        holder.tvTaskDesc.setText(part);
     }
 
     @Override
     public int getItemCount() {
         return eventiRecyclerViewList.size();
     }
-    public void setEventiRecyclerViewList(List<EventiRecyclerView> eventiRecyclerViewList) {
+
+    public void setEventiRecyclerViewList(List<EventiClass> eventiRecyclerViewList) {
         this.eventiRecyclerViewList = eventiRecyclerViewList;
         notifyDataSetChanged();
     }

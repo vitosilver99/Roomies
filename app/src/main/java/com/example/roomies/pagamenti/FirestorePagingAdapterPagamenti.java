@@ -16,6 +16,10 @@ import com.firebase.ui.firestore.paging.FirestorePagingOptions;
 import com.firebase.ui.firestore.paging.LoadingState;
 import com.google.firebase.firestore.DocumentSnapshot;
 
+import java.text.Format;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 
 //con questa classe è possibile ricavare tutti i dati contenuti nell'adapter (di tipo FirestorePagingAdapter) presente in PagamentiFragment
 
@@ -43,14 +47,20 @@ public class FirestorePagingAdapterPagamenti extends FirestorePagingAdapter<Mode
     protected void onBindViewHolder(@NonNull PagamentoViewHolder holder, int position, @NonNull ModelloPagamento model) {
         holder.nome_pagamento.setText(model.getNome_pagamento());
         //TODO verifica che toGMTString restituisca la data corretta
-        holder.scadenza_pagamento.setText(model.getScadenza_pagamento().toLocaleString());
+
+        Date data_pagamento = model.getScadenza_pagamento();
+        Format formatter = new SimpleDateFormat("dd-MM-yyyy");
+        String scadenza = formatter.format(data_pagamento);
+        holder.scadenza_pagamento.setText(scadenza);
+
         holder.non_pagato.setText(model.getNon_pagato()+"");
         if(model.getNon_pagato()>0) {
-
-            holder.itemView.setBackgroundColor(Color.RED);
+            holder.importo_totale.setTextColor(Color.RED);
+            holder.euro_simbolo.setTextColor(Color.RED);
         }
         else {
-            holder.itemView.setBackgroundColor(Color.GREEN);
+            holder.importo_totale.setTextColor(Color.GREEN);
+            holder.euro_simbolo.setTextColor(Color.GREEN);
         }
 
         holder.importo_totale.setText(model.getImporto_totale()+"");
@@ -102,6 +112,7 @@ public class FirestorePagingAdapterPagamenti extends FirestorePagingAdapter<Mode
         private TextView scadenza_pagamento;
         private TextView non_pagato;
         private TextView importo_totale;
+        private TextView euro_simbolo;
 
         public PagamentoViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -109,6 +120,7 @@ public class FirestorePagingAdapterPagamenti extends FirestorePagingAdapter<Mode
             scadenza_pagamento = itemView.findViewById(R.id.scadenza_pagamento);
             non_pagato = itemView.findViewById(R.id.non_pagato);
             importo_totale = itemView.findViewById(R.id.importo_totale);
+            euro_simbolo = itemView.findViewById(R.id.euro);
 
             //qui è possibile implementare i metodi onClick sull'intera View (chiamata in questo caso itemView) o su un singolo TextView (ad esempio nome_pagamento)
             itemView.setOnClickListener(this);

@@ -9,6 +9,7 @@ public class EventiClass {
     private String idEvento;
     private Date data;
     private String nome;
+    private String descrizione;
     private List<UtentiClass> partecipanti;
 
     public EventiClass() {
@@ -19,14 +20,31 @@ public class EventiClass {
         this.partecipanti = partecipanti;
     }
 
-    public EventiClass(String idEvento, String data) {
+    public EventiClass(String idEvento,String nome, Date data, String descrizione, List<UtentiClass> partecipanti) {
         this.idEvento = idEvento;
-        SimpleDateFormat format = new SimpleDateFormat("dd-MM-YYYY");
+        this.nome = nome;
+        this.descrizione = descrizione;
+        this.partecipanti = partecipanti;
+        this.data =data;
+        /*SimpleDateFormat format = new SimpleDateFormat("dd-MM-YYYY");
         try {
             this.data = format.parse(data);
         } catch (ParseException e) {
             e.printStackTrace();
-        }
+        }*/
+    }
+
+    public EventiClass(String idEvento, Date data) {
+        this.idEvento = idEvento;
+        this.data=data;
+    }
+
+    public String getDescrizione() {
+        return descrizione;
+    }
+
+    public void setDescrizione(String descrizione) {
+        this.descrizione = descrizione;
     }
 
     public String getNome() {
@@ -45,10 +63,6 @@ public class EventiClass {
         this.partecipanti = partecipanti;
     }
 
-    public EventiClass(String idEvento, Date data) {
-        this.idEvento = idEvento;
-        this.data=data;
-    }
 
     public String getIdEvento() {
         return idEvento;

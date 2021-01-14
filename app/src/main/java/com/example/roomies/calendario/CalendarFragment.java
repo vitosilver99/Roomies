@@ -32,6 +32,7 @@ import com.prolificinteractive.materialcalendarview.OnMonthChangedListener;
 
 import org.joda.time.DateTimeComparator;
 
+import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -57,7 +58,7 @@ public class CalendarFragment extends Fragment {
     ArrayList<EventiClass> eventiClasses;
     ArrayList<CalendarDay> dates;
     MaterialCalendarView calendarView;
-    List<EventiRecyclerView> eventiList;
+    List<EventiClass> eventiListGiornoSelezionato;
 
     public CalendarFragment(String UdCasa) {
         this.UdCasa = UdCasa;
@@ -108,7 +109,7 @@ public class CalendarFragment extends Fragment {
 
 
         RecyclerView recyclerView = view.findViewById(R.id.recyclerview_calendar_eventi);
-        RecyclerviewAdapter recyclerviewAdapter = new RecyclerviewAdapter(view.getContext());
+        RecyclerviewAdapterVisualizzaEvento recyclerviewAdapterVisualizzaEvento = new RecyclerviewAdapterVisualizzaEvento(view.getContext());
 
         //evento click su un giorno del calendario
         calendarView.setOnDateChangedListener(new OnDateSelectedListener() {
@@ -125,18 +126,19 @@ public class CalendarFragment extends Fragment {
                     Date d_selezionata = format.parse(date_selezionata);
                     Log.d("num", eventiClasses.size()+"");
                     int check =0;
-                    eventiList = new ArrayList<>();
+                    eventiListGiornoSelezionato = new ArrayList<>();
                     for( int i = 0;i<eventiClasses.size();i++) {
                         //Log.d("struttura data", eventiClasses.get(i).getData()+"");
                         if(dateTimeComparator.compare(d_selezionata, eventiClasses.get(i).getData())==0){
                             Log.d("sono dentro l'if", "sono dentro");
-                            EventiRecyclerView eventiRecyclerView = new EventiRecyclerView(eventiClasses.get(i).getIdEvento(),eventiClasses.get(i).getData().toString());
-                            eventiList.add(eventiRecyclerView);
+                            //EventiRecyclerView eventiRecyclerView = new EventiRecyclerView(eventiClasses.get(i).getIdEvento(),eventiClasses.get(i).getData().toString());
+                            eventiListGiornoSelezionato.add(eventiClasses.get(i));
                             check= 1;
                         }
                     }
-                    recyclerviewAdapter.setEventiRecyclerViewList(eventiList);
-                    recyclerView.setAdapter(recyclerviewAdapter);
+
+                    recyclerviewAdapterVisualizzaEvento.setEventiRecyclerViewList(eventiListGiornoSelezionato);
+                    recyclerView.setAdapter(recyclerviewAdapterVisualizzaEvento);
 
 
                 } catch (ParseException e) {
@@ -149,7 +151,7 @@ public class CalendarFragment extends Fragment {
                 touchListener.setClickable(new RecyclerTouchListener.OnRowClickListener() {
                     @Override
                     public void onRowClicked(int position) {
-                        Toast.makeText(view.getContext(),eventiList.get(position).getName(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(view.getContext(),eventiListGiornoSelezionato.get(position).getNome(), Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
@@ -163,8 +165,8 @@ public class CalendarFragment extends Fragment {
                             public void onSwipeOptionClicked(int viewID, int position) {
                                 switch (viewID){
                                     case R.id.delete_task:
-                                        eventiList.remove(position);
-                                        recyclerviewAdapter.setEventiRecyclerViewList(eventiList);
+                                        eventiListGiornoSelezionato.remove(position);
+                                        recyclerviewAdapterVisualizzaEvento.setEventiRecyclerViewList(eventiListGiornoSelezionato);
                                         break;
                                     case R.id.edit_task:
                                         Toast.makeText(view.getContext(),"Edit Not Available",Toast.LENGTH_SHORT).show();
@@ -258,9 +260,9 @@ public class CalendarFragment extends Fragment {
                                                     UtentiClass utenti = new UtentiClass(map_utenti.get("nome_cognome").toString(),map_utenti.get("user_id").toString());
                                                     utentiClasses.add(utenti);
                                                 }
-                                                Log.d("numero elementi ",""+utentiClasses.size());
-                                                Log.d("elemento 0 ",""+utentiClasses.get(0).getNome_cognome());
-                                                Log.d("elemento 1 ",""+utentiClasses.get(1).getNome_cognome());
+                                                //Log.d("numero elementi ",""+utentiClasses.size());
+                                                //Log.d("elemento 0 ",""+utentiClasses.get(0).getNome_cognome());
+                                                //Log.d("elemento 1 ",""+utentiClasses.get(1).getNome_cognome());
                                             }
                                         }
 
@@ -400,13 +402,25 @@ public class CalendarFragment extends Fragment {
                             // Log.d("giorno",map.get("giorno").toString());
 
                             Date date_evento = documentSnapshots.getDocuments().get(i).getTimestamp("giorno").toDate();
-
-                            EventiClass evento = new EventiClass(documentSnapshots.getDocuments().get(i).getId(),date_evento);
-                            eventiClasses.add(evento);
-
+                            //Log.d("daat_evento_query",""+date_evento.toString());
                             String dd = (String) DateFormat.format("dd",   date_evento);
                             String MM = (String) DateFormat.format("MM",   date_evento);
                             String yyyy = (String) DateFormat.format("yyyy",   date_evento);
+
+                            Map<String, Object> map = documentSnapshots.getDocuments().get(i).getData();
+                            //Log.d("mappa",""+map.toString());
+                            ArrayList map_utenti = (ArrayList) documentSnapshots.getDocuments().get(i).get("coinquilini");
+
+                            List<UtentiClass> utenti_partecipanti = new ArrayList<>();
+
+                            for(int j = 0; j<map_utenti.size(); j++) {
+                                Map<String, Object> app = (Map<String, Object>) map_utenti.get(j);
+                                UtentiClass utente = new UtentiClass(app.get("nome_cognome").toString(),app.get("userId").toString());
+                                utenti_partecipanti.add(utente);
+                            }
+
+                            EventiClass evento = new EventiClass(documentSnapshots.getDocuments().get(i).getId(),map.get("nome").toString(),date_evento,map.get("descrizione").toString(),utenti_partecipanti);
+                            eventiClasses.add(evento);
 
                             //mi aggiunge il puntino al calendario
                             CalendarDay calendarDay =  CalendarDay.from( Integer.parseInt(yyyy),Integer.parseInt(MM),Integer.parseInt(dd));
