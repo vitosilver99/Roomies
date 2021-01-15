@@ -14,13 +14,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.roomies.R;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.firebase.ui.firestore.SnapshotParser;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -49,6 +52,8 @@ public class SpesaFragment extends Fragment implements FirestoreRecyclerAdapterS
     private RecyclerView listaSpesa;
     private FirebaseFirestore firebaseFirestore;
     private FirestoreRecyclerAdapterSpesa spesaAdapter;
+
+    private TextView lista_spesa_vuota;
     public SpesaFragment() {
         // Required empty public constructor
     }
@@ -86,6 +91,7 @@ public class SpesaFragment extends Fragment implements FirestoreRecyclerAdapterS
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_spesa, container, false);
         listaSpesa=(RecyclerView) view.findViewById(R.id.lista_spesa);
+        lista_spesa_vuota = view.findViewById(R.id.lista_spesa_vuota);
 
         firebaseFirestore = FirebaseFirestore.getInstance();
 
@@ -115,6 +121,31 @@ public class SpesaFragment extends Fragment implements FirestoreRecyclerAdapterS
         listaSpesa.setAdapter(spesaAdapter);
 
 
+        //todo controllo lista vuota. se vuota metti immagine di sfondo. capire se fare in questo modo utilizzando un observer o fare override del metodo onattachedtorecyclerview dell'adapter
+        spesaAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+
+            @Override
+            public void onChanged() {
+                super.onChanged();
+                checkEmpty();
+            }
+
+            void checkEmpty() {
+                if(spesaAdapter.getItemCount() == 0) {
+                    lista_spesa_vuota.setVisibility(View.VISIBLE);
+                    listaSpesa.setVisibility(View.GONE);
+                    Log.d("elementi recycler spesa",spesaAdapter.getItemCount()+"");
+                }
+                else {
+                    lista_spesa_vuota.setVisibility(View.GONE);
+                    listaSpesa.setVisibility(View.VISIBLE);
+                    Log.d("elementi recycler spesa",spesaAdapter.getItemCount()+"");
+                }
+
+            }
+        });
+
+
 
         FloatingActionButton fab = view.findViewById(R.id.add_articolo_floating);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -131,7 +162,7 @@ public class SpesaFragment extends Fragment implements FirestoreRecyclerAdapterS
                         if(nome_articolo_inserito.getText().toString().equals("")) {
                             //todo fare un controllo più carino
                             Log.d("ramo no","no");
-                            Toast.makeText(getContext(),"nome articolo vuoto",Toast.LENGTH_LONG);
+                            Toast.makeText(getContext(),"nome articolo vuoto",Toast.LENGTH_LONG).show();
 
                         }
                         else {
@@ -140,6 +171,7 @@ public class SpesaFragment extends Fragment implements FirestoreRecyclerAdapterS
                             nuovoArticolo.put("nome_articolo",nome_articolo_inserito.getText().toString());
                             nuovoArticolo.put("da_comprare",true);
                             firebaseFirestore.collection("case").document(casaId).collection("lista_spesa").add(nuovoArticolo);
+
                             dialog.hide();
                         }
 
@@ -171,6 +203,7 @@ public class SpesaFragment extends Fragment implements FirestoreRecyclerAdapterS
         rimuovi_articolo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //todo notificare observer
                 firebaseFirestore.collection("case").document(casaId).collection("lista_spesa").document(articolo.getArticolo_id()).delete();
                 dialog.hide();
             }

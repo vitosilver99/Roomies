@@ -11,7 +11,7 @@
             android:title="Spesa" />
         <item
             android:id="@+id/navigation_pagamenti"
-            android:icon="@drawable/icon_pagamenti_"
+            android:icon="@drawable/icon_pagamenti"
             android:title="Pagamenti" />
         <item
             android:id="@+id/navigation_chat"

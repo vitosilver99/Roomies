@@ -1,17 +1,22 @@
 package com.example.roomies.spesa;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.roomies.R;
+import com.example.roomies.home.HomeFragment;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.DocumentSnapshot;
+
+
 
 public class FirestoreRecyclerAdapterSpesa extends FirestoreRecyclerAdapter<ModelloArticolo,FirestoreRecyclerAdapterSpesa.ArticoloViewHolder> {
 
@@ -72,10 +77,15 @@ public class FirestoreRecyclerAdapterSpesa extends FirestoreRecyclerAdapter<Mode
 
             //todo se non funziona il long click prova a cambiare in return true
             return false;
+
         }
     }
 
-
+    @Override
+    public void onDataChanged() {
+        //quando cambiano i dati di firestore avvisa gli observer
+        notifyDataSetChanged();
+    }
 
 
     public interface OnArticoloInteraction {

@@ -65,6 +65,7 @@ public class HomeFragment extends Fragment implements FirestoreRecyclerAdapterSp
 
     //non è stato aggiunto da me ma serve nella parte che devo implementare
     private FirestoreRecyclerAdapterSpesaHome spesaAdapter;
+    private FirestoreRecyclerAdapterEventiHome eventiAdapter;
 
 
     private RecyclerView listaSpesa;
@@ -143,6 +144,7 @@ public class HomeFragment extends Fragment implements FirestoreRecyclerAdapterSp
 
         //query per visualizzare gli eventi giornalieri
 
+        /*
         String currentDate = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
         Log.d("data",currentDate);
         SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
@@ -207,7 +209,66 @@ public class HomeFragment extends Fragment implements FirestoreRecyclerAdapterSp
         }
 
 
+         */
 
+        RecyclerView listaEventi = view.findViewById(R.id.recyclerView_eventi_giornalieri_home);
+
+        listaEventi.setHasFixedSize(true);
+        listaEventi.setLayoutManager(new LinearLayoutManager(this.getContext()));
+
+        String currentDate = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
+        Log.d("data",currentDate);
+        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+        try {
+            Date today = format.parse(currentDate);
+            Log.d("data_data", today + "");
+
+            Query queryEventi = firebaseFirestore.collection("case").document(casaId).collection("eventi")
+                    .whereEqualTo("giorno", today);
+
+            queryEventi.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                @Override
+                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                    Log.d("queryeventi",queryDocumentSnapshots.size()+"");
+                }
+            });
+
+            FirestoreRecyclerOptions<ModelloEventoHome> optionsEventi = new FirestoreRecyclerOptions.Builder<ModelloEventoHome>()
+                    .setLifecycleOwner(this)
+                    .setQuery(queryEventi, new SnapshotParser<ModelloEventoHome>() {
+                        @NonNull
+                        @Override
+                        public ModelloEventoHome parseSnapshot(@NonNull DocumentSnapshot snapshot) {
+                            Log.d("parser","sono nel parser");
+
+
+
+                            Map<String, Object> map = snapshot.getData();
+                            String listaUtenti = "";
+                            for(Map.Entry<String, Object> entry : map.entrySet()) {
+                                if (entry.getKey().equals("coinquilini")) {
+                                    ArrayList<Map<String,String>> utentiClassArrayList = (ArrayList<Map<String, String>>) entry.getValue();
+                                    Log.d("parser",utentiClassArrayList.size()+"");
+
+                                    for(int i=0;i<utentiClassArrayList.size()-1;i++) {
+                                        listaUtenti= listaUtenti + (utentiClassArrayList.get(i).get("nome_cognome")+", ");
+                                    }
+                                    listaUtenti= listaUtenti + (utentiClassArrayList.get(utentiClassArrayList.size()-1).get("nome_cognome"));
+                                }
+                            }
+                            ModelloEventoHome modelloEventoHome = new ModelloEventoHome(snapshot.get("nome").toString(),listaUtenti);
+                            Toast.makeText(getContext(),listaUtenti,Toast.LENGTH_LONG).show();
+                            Log.d("parse lista utenti",listaUtenti);
+                            return modelloEventoHome;
+                        }
+                    }).build();
+            eventiAdapter = new FirestoreRecyclerAdapterEventiHome(optionsEventi);
+            listaEventi.setAdapter(eventiAdapter);
+
+        }
+        catch (Exception e) {
+
+        }
 
         listaSpesa = (RecyclerView) view.findViewById(R.id.lista_spesa_home);
 
@@ -234,7 +295,7 @@ public class HomeFragment extends Fragment implements FirestoreRecyclerAdapterSp
         });
 
          */
-        FirestoreRecyclerOptions<ModelloArticoloHome> options = new FirestoreRecyclerOptions.Builder<ModelloArticoloHome>()
+        FirestoreRecyclerOptions<ModelloArticoloHome> optionsSpesa = new FirestoreRecyclerOptions.Builder<ModelloArticoloHome>()
                 .setLifecycleOwner(this)
                 .setQuery(querySpesa, new SnapshotParser<ModelloArticoloHome>() {
                     @NonNull
@@ -250,7 +311,22 @@ public class HomeFragment extends Fragment implements FirestoreRecyclerAdapterSp
                 })
                 .build();
 
-        spesaAdapter = new FirestoreRecyclerAdapterSpesaHome(options, this);
+        spesaAdapter = new FirestoreRecyclerAdapterSpesaHome(optionsSpesa, this);
+
+
+        //todo controllo lista vuota. se vuota metti immagine di sfondo
+        spesaAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onItemRangeChanged(int positionStart, int itemCount) {
+                super.onItemRangeChanged(positionStart, itemCount);
+                Log.d("CHANGE",itemCount+"");
+            }
+        });
+
+
+
+
+
         Log.d("FRAGHOME elementi",spesaAdapter.getItemCount()+"");
         listaSpesa.setAdapter(spesaAdapter);
         Log.d("FRAGHOME elementi",spesaAdapter.getItemCount()+"");
@@ -302,6 +378,9 @@ public class HomeFragment extends Fragment implements FirestoreRecyclerAdapterSp
             }
         });
 
+
+        //todo fare lista pagamenti
+        //modello pagamento nome, importo totale, quanti non hanno ancora pagato
 
         // Inflate the layout for this fragment
         return view;

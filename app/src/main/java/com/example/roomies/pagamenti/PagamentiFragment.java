@@ -157,8 +157,23 @@ public class PagamentiFragment extends Fragment implements FirestorePagingAdapte
         listaPagamenti.setHasFixedSize(true);
         listaPagamenti.setLayoutManager(new LinearLayoutManager(this.getContext()));
         listaPagamenti.setAdapter(pagamentiAdapter);
-        
-        
+
+
+        //todo controllo lista vuota. se vuota metti immagine di sfondo
+        pagamentiAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onChanged() {
+                super.onChanged();
+                Log.d("change",pagamentiAdapter.getItemCount()+"");
+
+            }
+        });
+        Log.d("observers",pagamentiAdapter.hasObservers()+"");
+
+
+
+
+
         //aggiunta button per creare un nuovo documento di pagamento (modifico codice di vito da CalendarFragment)
         FloatingActionButton fab =  view.findViewById(R.id.add_pagamento_floating);
         fab.setOnClickListener(new View.OnClickListener() {

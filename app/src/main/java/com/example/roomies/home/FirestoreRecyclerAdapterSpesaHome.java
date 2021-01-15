@@ -32,6 +32,7 @@ public class FirestoreRecyclerAdapterSpesaHome extends FirestoreRecyclerAdapter<
 
     }
 
+
     @NonNull
     @Override
     public ArticoloHomeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -63,8 +64,11 @@ public class FirestoreRecyclerAdapterSpesaHome extends FirestoreRecyclerAdapter<
 
             //todo se non funziona il long click prova a cambiare in return true
             return false;
+
+
         }
     }
+
 
 
 
