@@ -78,6 +78,9 @@ public class PopUpEventoClass implements DatePickerDialog.OnDateSetListener{
 
         //Create a window with our parameters
         PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+
+        popupWindow.setAnimationStyle(R.style.PopupAnimation);
+
         popupWindow.setBackgroundDrawable(new BitmapDrawable());
         popupWindow.setOutsideTouchable(true) ;
 

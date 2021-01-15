@@ -3,6 +3,7 @@ package com.example.roomies.calendario;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -40,6 +41,8 @@ public class PopUpClass{
 
         //Create a window with our parameters
         final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+
+        popupWindow.setAnimationStyle(R.style.PopupAnimation);
 
         popupWindow.setTouchable(true);
         popupWindow.setFocusable(true);

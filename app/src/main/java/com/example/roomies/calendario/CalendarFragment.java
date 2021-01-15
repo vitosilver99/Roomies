@@ -1,5 +1,6 @@
 package com.example.roomies.calendario;
 
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -13,11 +14,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.roomies.MainActivity;
 import com.example.roomies.R;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -26,6 +30,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
+import com.prolificinteractive.materialcalendarview.DayViewDecorator;
+import com.prolificinteractive.materialcalendarview.DayViewFacade;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 import com.prolificinteractive.materialcalendarview.OnMonthChangedListener;
@@ -59,6 +65,8 @@ public class CalendarFragment extends Fragment {
     ArrayList<CalendarDay> dates;
     MaterialCalendarView calendarView;
     List<EventiClass> eventiListGiornoSelezionato;
+    RecyclerView recyclerView;
+    RecyclerviewAdapterVisualizzaEvento recyclerviewAdapterVisualizzaEvento;
 
     public CalendarFragment(String UdCasa) {
         this.UdCasa = UdCasa;
@@ -102,20 +110,25 @@ public class CalendarFragment extends Fragment {
 
                 queryCalendario(date_q_first,date_q_last);
 
+                calendarView.setDateSelected(CalendarDay.today(),true);
+
+                calendarView.setSelectionColor(Color.parseColor("#F4A261"));
+
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
 
 
-        RecyclerView recyclerView = view.findViewById(R.id.recyclerview_calendar_eventi);
-        RecyclerviewAdapterVisualizzaEvento recyclerviewAdapterVisualizzaEvento = new RecyclerviewAdapterVisualizzaEvento(view.getContext());
+        recyclerView = view.findViewById(R.id.recyclerview_calendar_eventi);
+        recyclerviewAdapterVisualizzaEvento = new RecyclerviewAdapterVisualizzaEvento(view.getContext());
 
         //evento click su un giorno del calendario
         calendarView.setOnDateChangedListener(new OnDateSelectedListener() {
             @Override
             public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
                 //visualizzazione eventi nella recyclerView
+
 
                 String date_selezionata = date.getDay()+"-"+date.getMonth()+"-"+date.getYear();
 
@@ -137,14 +150,26 @@ public class CalendarFragment extends Fragment {
                         }
                     }
 
-                    recyclerviewAdapterVisualizzaEvento.setEventiRecyclerViewList(eventiListGiornoSelezionato);
-                    recyclerView.setAdapter(recyclerviewAdapterVisualizzaEvento);
+                    ImageView imageView = view.findViewById(R.id.empty_calendario);
+                    TextView textView = view.findViewById(R.id.empty_text_calendario);
+
+                    if(eventiListGiornoSelezionato.size()==0){
+                        imageView.setVisibility(View.VISIBLE);
+                        textView.setVisibility(View.VISIBLE);
+                        recyclerView.setVisibility(View.INVISIBLE);
+                    }else{
+                        recyclerviewAdapterVisualizzaEvento.setEventiRecyclerViewList(eventiListGiornoSelezionato);
+                        recyclerView.setAdapter(recyclerviewAdapterVisualizzaEvento);
+                        recyclerView.setVisibility(View.VISIBLE);
+                        imageView.setVisibility(View.INVISIBLE);
+                        textView.setVisibility(View.INVISIBLE);
+                    }
+
 
 
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-
 
                 //click sul singolo evento
                 RecyclerTouchListener touchListener = new RecyclerTouchListener(getActivity(),recyclerView);
@@ -165,8 +190,62 @@ public class CalendarFragment extends Fragment {
                             public void onSwipeOptionClicked(int viewID, int position) {
                                 switch (viewID){
                                     case R.id.delete_task:
-                                        eventiListGiornoSelezionato.remove(position);
-                                        recyclerviewAdapterVisualizzaEvento.setEventiRecyclerViewList(eventiListGiornoSelezionato);
+
+                                        //query per eliminare l'evento che l'utente vuole eliminare
+                                        fStore.collection("case").document(UdCasa).collection("eventi").document(eventiListGiornoSelezionato.get(position).getIdEvento())
+                                                .delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                Date data_selezionata = eventiListGiornoSelezionato.get(position).getData();
+
+                                                //rimuovo l'evento che l'utente vuole eliminare e in più controllo se in quel giorno ci sono altri eventi
+                                                //se non ci sono tolgo il pallino rosso dal calendario e faccio uscire l'immagine con il testo al posto della recyclerview
+
+                                                int num_giorni=0;
+                                                for(int i=0;i<eventiClasses.size();i++){
+                                                    if(eventiClasses.get(i).getIdEvento().equals(eventiListGiornoSelezionato.get(position).getIdEvento())){
+                                                        eventiClasses.remove(i);
+                                                        //Log.d("numero degli eventi",""+eventiClasses.size());
+                                                        synchronized(recyclerView){
+                                                            recyclerView.notify();
+                                                        }
+                                                    }
+                                                    else{
+                                                        if(eventiClasses.get(i).getData().equals(data_selezionata)){
+                                                            num_giorni++;
+                                                        }
+                                                    }
+                                                }
+                                                //Log.d("num_giorni",""+num_giorni);
+
+                                                String day = (String) DateFormat.format("dd",data_selezionata);
+                                                String month = (String) DateFormat.format("MM",data_selezionata);
+                                                String year = (String) DateFormat.format("yyyy",data_selezionata);
+
+                                                CalendarDay calendarDay =  CalendarDay.from( Integer.parseInt(year),Integer.parseInt(month),Integer.parseInt(day));
+
+                                                if(num_giorni==0){
+                                                    for (int i = 0;i<dates.size();i++){
+                                                        if(dates.get(i).equals(calendarDay)){
+                                                            //Log.d("calendar day","dates"+dates.size());
+                                                            dates.remove(i);
+                                                            //Log.d("calendar day","dates"+dates.size());
+                                                        }
+                                                    }
+                                                    calendarView.removeDecorators();
+                                                    calendarView.addDecorator(new EventDecorator( -65536,dates));
+
+                                                    //TODO aggiungere l'immagine con il testo se non ci sono più eventi da visualizzare
+                                                }
+                                                eventiListGiornoSelezionato.remove(position);
+                                                recyclerviewAdapterVisualizzaEvento.setEventiRecyclerViewList(eventiListGiornoSelezionato);
+                                            }
+                                        }).addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Toast.makeText(getContext(),""+e.getMessage(),Toast.LENGTH_LONG);
+                                            }
+                                        });
                                         break;
                                     case R.id.edit_task:
                                         Toast.makeText(view.getContext(),"Edit Not Available",Toast.LENGTH_SHORT).show();
@@ -265,26 +344,6 @@ public class CalendarFragment extends Fragment {
                                                 //Log.d("elemento 1 ",""+utentiClasses.get(1).getNome_cognome());
                                             }
                                         }
-
-                                        //da togliere
-                                        /*
-                                        eventiClasses = new ArrayList<EventiClass>();
-                                        for (Map.Entry<String, Object> entry : map.entrySet()) {
-                                            if (entry.getKey().equals("eventi")) {
-                                                ArrayList arrayList = (ArrayList) entry.getValue();
-                                                for(int i=0; i<arrayList.size(); i++ )
-                                                {
-                                                    Map<String, Object> map_eventi = (Map<String, Object>) arrayList.get(i);
-                                                    Timestamp timestamp = (Timestamp) map_eventi.get("data");
-                                                    //DateTime myDateTime = DateTime.parser().parse;
-                                                    //Log.d("data",date+"");
-                                                    EventiClass evento = new EventiClass(map_eventi.get("evento_id").toString(), map_eventi.get("data").toString());
-                                                    eventiClasses.add(evento);
-                                                }
-                                                Log.d("numero elementi ",""+eventiClasses.size());
-                                                Log.d("elemento 0 ",""+eventiClasses.get(0).getIdEvento());
-                                            }
-                                        }*/
 
                                         PopUpClass popUpClass = new PopUpClass(utentiClasses,mansioniClasses,UdCasa);
                                         popUpClass.showPopupWindow(view);
@@ -427,9 +486,11 @@ public class CalendarFragment extends Fragment {
                             dates.add(calendarDay);
                         }
                         //fa uscire i pallini rossi ai giorni
-                        calendarView.addDecorator(new EventDecorator( -65536,dates));
+                        calendarView.addDecorator(new EventDecorator( Color.parseColor("black"),dates));
+                        //-65536 colore rosso che stava prima
                     }
                 });
     }
+
 
 }

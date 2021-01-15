@@ -143,74 +143,6 @@ public class HomeFragment extends Fragment implements FirestoreRecyclerAdapterSp
         });
 
         //query per visualizzare gli eventi giornalieri
-
-        /*
-        String currentDate = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
-        Log.d("data",currentDate);
-        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
-        try {
-            Date today = format.parse(currentDate);
-            Log.d("data_data",today+"");
-            Query query = firebaseFirestore.collection("case").document(casaId).collection("eventi")
-                    .whereEqualTo("giorno",today);
-
-            Log.d("giorno", today+"");
-            query.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                @Override
-                public void onSuccess(QuerySnapshot documentSnapshots) {
-                    if(!documentSnapshots.isEmpty()){
-                        List<EventiClass> eventi = new ArrayList<>();
-                        List<UtentiClass> utenti = new ArrayList<>();
-
-                        Log.d("grandezza documenti", documentSnapshots.size()+"");
-                        int i;
-                        for( i =0; i<documentSnapshots.size();i++) {
-                            Map<String, Object> map = documentSnapshots.getDocuments().get(i).getData();
-                            String nome = "";
-                            for(Map.Entry<String, Object> entry : map.entrySet()){
-                                if(entry.getKey().equals("coinquilini")){
-                                    ArrayList arrayList = (ArrayList) entry.getValue();
-                                    UtentiClass utenti_partecipanti;
-                                    for(int j=0; j<arrayList.size(); j++ )
-                                    {
-                                        Map<String, Object> map_utenti = (Map<String, Object>) arrayList.get(j);
-                                        utenti_partecipanti = new UtentiClass(map_utenti.get("nome_cognome").toString(),map_utenti.get("userId").toString());
-                                        utenti.add(utenti_partecipanti);
-                                    }
-                                }
-                                if(entry.getKey().equals("nome")){
-
-                                    nome = (String) entry.getValue();
-                                }
-                            }
-                            System.out.println("numero for"+i);
-                            EventiClass eventi_giornalieri = new EventiClass(nome,utenti);
-
-
-                            eventi.add(eventi_giornalieri);
-                        }
-
-                        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
-                        RecyclerViewAdapterEventoGironaliero recyclerViewAdapter = new RecyclerViewAdapterEventoGironaliero(getContext(),eventi);
-                        RecyclerView recyclerView = view.findViewById(R.id.recyclerView_eventi_giornalieri_home);
-
-                        recyclerView.setLayoutManager(layoutManager);
-                        recyclerView.setAdapter(recyclerViewAdapter);
-
-
-                    }else{
-                        //TODO disattivare la recyclerview e fare uscire un messaggio di incitare ad aggiungere un evento, oppure che non ci sono eventi da mostrare
-                    }
-                }
-            });
-
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-
-         */
-
         RecyclerView listaEventi = view.findViewById(R.id.recyclerView_eventi_giornalieri_home);
 
         listaEventi.setHasFixedSize(true);
@@ -240,8 +172,6 @@ public class HomeFragment extends Fragment implements FirestoreRecyclerAdapterSp
                         @Override
                         public ModelloEventoHome parseSnapshot(@NonNull DocumentSnapshot snapshot) {
                             Log.d("parser","sono nel parser");
-
-
 
                             Map<String, Object> map = snapshot.getData();
                             String listaUtenti = "";
@@ -277,10 +207,9 @@ public class HomeFragment extends Fragment implements FirestoreRecyclerAdapterSp
 
 
 
-
-
         //query per ottenere la lista della spesa
-        Query querySpesa = firebaseFirestore.collection("case").document(casaId).collection("lista_spesa").whereEqualTo("da_comprare",true).orderBy("nome_articolo");
+        Query querySpesa = firebaseFirestore.collection("case").document(casaId)
+                .collection("lista_spesa").whereEqualTo("da_comprare",true).orderBy("nome_articolo");
 
 
         /*
@@ -324,14 +253,9 @@ public class HomeFragment extends Fragment implements FirestoreRecyclerAdapterSp
         });
 
 
-
-
-
         Log.d("FRAGHOME elementi",spesaAdapter.getItemCount()+"");
         listaSpesa.setAdapter(spesaAdapter);
         Log.d("FRAGHOME elementi",spesaAdapter.getItemCount()+"");
-
-
 
 
 

@@ -46,4 +46,9 @@ public class FirestoreRecyclerAdapterEventiHome extends FirestoreRecyclerAdapter
             coinquilini = itemView.findViewById(R.id.coinuquilini_evento_giornaliero);
         }
     }
+
+    @Override
+    public void onDataChanged(){
+        notifyDataSetChanged();
+    }
 }

@@ -77,6 +77,28 @@
             app:backgroundTint="@color/primary_color"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
+
+        <ImageView
+            android:id="@+id/empty_calendario"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@drawable/icon_aggiungi_evento_empty"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/recyclerview_calendar_eventi"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cardView4" />
+
+        <TextView
+            android:id="@+id/empty_text_calendario"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Aggiungi subito un evento\nper visualizzarlo nella bacheca"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/empty_calendario" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>

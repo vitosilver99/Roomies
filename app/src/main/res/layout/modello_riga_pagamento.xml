@@ -56,21 +56,21 @@
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/importo_totale"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/importo_totale"
                 app:layout_constraintTop_toTopOf="@+id/importo_totale" />
 
             <TextView
                 android:id="@+id/importo_totale"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginLeft="16dp"
+                android:layout_marginEnd="4dp"
+                android:layout_marginRight="4dp"
                 android:text="TextView"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/scadenza_pagamento"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintEnd_toStartOf="@+id/euro"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.553" />
 
             <TextView
                 android:id="@+id/textView12"
@@ -87,14 +87,14 @@
                 android:id="@+id/scadenza_pagamento"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="168dp"
-                android:layout_marginLeft="168dp"
+                android:layout_marginStart="100dp"
+                android:layout_marginLeft="100dp"
                 android:text="TextView"
                 android:textColor="#000000"
                 app:layout_constraintBottom_toBottomOf="@+id/textView11"
                 app:layout_constraintStart_toEndOf="@+id/textView11"
                 app:layout_constraintTop_toTopOf="@+id/textView11"
-                app:layout_constraintVertical_bias="0.0" />
+                app:layout_constraintVertical_bias="1.0" />
 
             <TextView
                 android:id="@+id/nome_pagamento"
