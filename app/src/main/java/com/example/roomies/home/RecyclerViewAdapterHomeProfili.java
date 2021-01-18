@@ -69,7 +69,6 @@ public class RecyclerViewAdapterHomeProfili  extends RecyclerView.Adapter<Recycl
 
             char[] nome_char = utentiClassList.get(position).getNome_cognome().toCharArray();
             String nome="";
-            String Cognome;
 
             for(int i=0;i<nome_char.length;i++){
                 if(!(nome_char[i]==' ')){

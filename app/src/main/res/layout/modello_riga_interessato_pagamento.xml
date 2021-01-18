@@ -32,9 +32,11 @@
                 android:layout_marginEnd="32dp"
                 android:layout_marginRight="32dp"
                 android:text="TextView"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toBottomOf="@+id/interessato_nome_cognome"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toEndOf="@+id/interessato_nome_cognome"
+                app:layout_constraintTop_toTopOf="@+id/interessato_nome_cognome" />
 
             <TextView
                 android:id="@+id/interessato_nome_cognome"

@@ -86,11 +86,16 @@ public class PopUpClassNuovoPagamento implements DatePickerDialog.OnDateSetListe
 
         //Create a window with our parameters
         PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+        popupWindow.setAnimationStyle(R.style.PopupAnimation);
+
         popupWindow.setBackgroundDrawable(new BitmapDrawable());
         popupWindow.setOutsideTouchable(true) ;
 
         //Set the location of the window on the screen
         popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+
+
+
 
         //Initialize the elements of our window, install the handler
 
