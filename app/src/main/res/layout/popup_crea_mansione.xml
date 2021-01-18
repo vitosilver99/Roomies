@@ -35,7 +35,7 @@
                 app:layout_constraintTop_toTopOf="@+id/spinner_mansioni" />
 
             <TextView
-                android:id="@+id/textView4"
+                android:id="@+id/textview_nome_evento_popup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
@@ -71,7 +71,7 @@
                 android:textColor="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView4" />
+                app:layout_constraintTop_toBottomOf="@+id/textview_nome_evento_popup" />
 
             <TextView
                 android:id="@+id/textView6"
@@ -93,6 +93,21 @@
                 app:layout_constraintStart_toStartOf="@+id/seleziona_data"
                 app:layout_constraintTop_toBottomOf="@+id/seleziona_data" />
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/RecyclerView_spinner"
+                android:layout_width="0dp"
+                android:layout_height="100dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginRight="15dp"
+                android:isScrollContainer="false"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/spinner_utenti" />
+
             <Button
                 android:id="@+id/seleziona_data"
                 android:layout_width="wrap_content"
@@ -107,19 +122,7 @@
                 app:layout_constraintStart_toStartOf="@+id/textView6"
                 app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/RecyclerView_spinner"
-                android:layout_width="0dp"
-                android:layout_height="100dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="20dp"
-                android:layout_marginRight="20dp"
-                android:isScrollContainer="false"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/seleziona_data"
-                app:layout_constraintTop_toBottomOf="@+id/spinner_utenti" />
-
-            <Spinner
+            <com.example.roomies.calendario.NDSpinner
                 android:id="@+id/spinner_utenti"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -135,12 +138,12 @@
 
             <Button
                 android:id="@+id/btn_aggiungi"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="85dp"
+                android:layout_height="35dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="24dp"
                 android:background="@drawable/input_bd"
-                android:text="Inserisci"
+                android:text="Aggiungi"
                 android:textAllCaps="false"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

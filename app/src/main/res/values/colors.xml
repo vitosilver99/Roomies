@@ -11,11 +11,14 @@
     <color name="grey">#D2494949</color>
     <color name="blue_app">#2391CC</color>
     <color name="btn_app">#4183CA</color>
-    <color name="primary_color">#E9C46A</color>
-    <color name="secondary_color">#F4A261</color>
+    <color name="primary_color">#2391CC</color>
+    <color name="secondary_color">#2566AA</color>
 
-    <color name="color1">#E9C46A</color>
-    <color name="color2">#E5BB52</color>
-    <color name="color3">#F0A261</color>
-    <color name="color4">#F0A261</color>
+    <color name="primary_color_sfondo">#2391CC</color>
+    <color name="secondary_color_sfondo">#163E68</color>
+
+    <color name="color1">#2391CC</color>
+    <color name="color2">#207FB3</color>
+    <color name="color3">#196188</color>
+    <color name="color4">#11425C</color>
 </resources>

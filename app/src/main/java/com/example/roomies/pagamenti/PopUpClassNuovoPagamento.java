@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.roomies.R;
+import com.example.roomies.calendario.NDSpinner;
 import com.example.roomies.calendario.RecyclerViewAdapterEvento;
 import com.example.roomies.calendario.UtentiClass;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -93,7 +94,7 @@ public class PopUpClassNuovoPagamento implements DatePickerDialog.OnDateSetListe
         //ATTENZIONE HO PROVATO A CAMBIARE R.id.spinner_utenti_pagamento con R.id.spinner_utenti per vedere cosa succedeva
         //il modo corretto è con R.id.spinner_utenti_pagamento
         //non funziona con spinner presenti in altri layout
-        Spinner spinner_utenti = popupView.findViewById(R.id.spinner_utenti_pagamento);
+        NDSpinner spinner_utenti = popupView.findViewById(R.id.spinner_utenti_pagamento);
 
         List<String> listaNomiCognomi = new ArrayList<String>();
         for(int i = 0; i< listaUtenti.size(); i++)

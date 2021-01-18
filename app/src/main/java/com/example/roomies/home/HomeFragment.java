@@ -1,11 +1,13 @@
 package com.example.roomies.home;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.paging.PagedList;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -18,8 +20,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.roomies.LoginActivity;
+import com.example.roomies.MainActivity;
 import com.example.roomies.R;
 import com.example.roomies.calendario.EventiClass;
 import com.example.roomies.calendario.MansioniClass;
@@ -98,6 +103,18 @@ public class HomeFragment extends Fragment implements FirestoreRecyclerAdapterSp
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         firebaseFirestore = FirebaseFirestore.getInstance();
+
+        //logout
+        ImageView btn_logout = view.findViewById(R.id.btn_logoout);
+        btn_logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(getContext(), LoginActivity.class);
+                startActivity(intent);
+                getActivity().finish();
+            }
+        });
 
 
         //prendo tutti gli utenti presenti nella casa cosi da inserirli nella recyclerView profili della home
@@ -199,6 +216,26 @@ public class HomeFragment extends Fragment implements FirestoreRecyclerAdapterSp
         catch (Exception e) {
 
         }
+
+        eventiAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onChanged() {
+                super.onChanged();
+                checkEmpty();
+            }
+
+            public void checkEmpty(){
+                ConstraintLayout constraintLayout = view.findViewById(R.id.empty_eventi_home);
+                if(eventiAdapter.getItemCount() == 0) {
+                    constraintLayout.setVisibility(View.VISIBLE);
+                    listaEventi.setVisibility(View.INVISIBLE);
+                }
+                else {
+                    constraintLayout.setVisibility(View.INVISIBLE);
+                    listaEventi.setVisibility(View.VISIBLE);
+                }
+            }
+        });
 
         listaSpesa = (RecyclerView) view.findViewById(R.id.lista_spesa_home);
 

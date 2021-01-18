@@ -23,7 +23,7 @@
 
 
             <TextView
-                android:id="@+id/textView4"
+                android:id="@+id/textview_nome_evento_popup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
@@ -103,7 +103,7 @@
                 android:text="Nome pagamento"
                 android:textColor="@color/black"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView4" />
+                app:layout_constraintTop_toBottomOf="@+id/textview_nome_evento_popup" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/RecyclerView_spinner"
@@ -130,7 +130,7 @@
                 app:layout_constraintStart_toStartOf="@+id/textView6"
                 app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
-            <Spinner
+            <com.example.roomies.calendario.NDSpinner
                 android:id="@+id/spinner_utenti_pagamento"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

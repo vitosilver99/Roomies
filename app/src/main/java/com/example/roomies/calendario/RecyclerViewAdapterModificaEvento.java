@@ -14,31 +14,31 @@ import com.example.roomies.R;
 
 import java.util.List;
 
-public class RecyclerViewAdapterEvento extends RecyclerView.Adapter<RecyclerViewAdapterEvento.MyViewHolder> {
+public class RecyclerViewAdapterModificaEvento extends RecyclerView.Adapter<RecyclerViewAdapterModificaEvento.MyViewHolder>{
 
     private Context mContext ;
     private List<UtentiClass> mData ;
-    private PopUpEventoClass popUpEventoClass;
+    private PopUpModificaEvento popUpEventoClass;
 
 
-    public RecyclerViewAdapterEvento(Context mContext, List<UtentiClass> mData, PopUpEventoClass popUpEventoClass) {
+    public RecyclerViewAdapterModificaEvento(Context mContext, List<UtentiClass> mData, PopUpModificaEvento popUpModificaEvento) {
         this.mContext = mContext;
         this.mData = mData;
-        this.popUpEventoClass = popUpEventoClass;
+        this.popUpEventoClass = popUpModificaEvento;
     }
 
 
     @Override
-    public RecyclerViewAdapterEvento.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View view ;
         LayoutInflater mInflater = LayoutInflater.from(mContext);
         view = mInflater.inflate(R.layout.add_utent_spinner,parent,false);
-        return new RecyclerViewAdapterEvento.MyViewHolder(view);
+        return new MyViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(RecyclerViewAdapterEvento.MyViewHolder holder, final int position) {
+    public void onBindViewHolder(MyViewHolder holder, final int position) {
 
         holder.nome_selezionato.setText(mData.get(position).getNome_cognome());
         holder.elimina.setOnClickListener(new View.OnClickListener() {
@@ -69,6 +69,5 @@ public class RecyclerViewAdapterEvento extends RecyclerView.Adapter<RecyclerView
             cardView = (CardView) itemView.findViewById(R.id.CardViewUtenteSpinner);
         }
     }
-
 
 }

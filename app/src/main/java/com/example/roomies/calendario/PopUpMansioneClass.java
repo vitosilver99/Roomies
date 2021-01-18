@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -99,7 +100,7 @@ public class PopUpMansioneClass implements DatePickerDialog.OnDateSetListener {
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(dataAdapter);
 
-        Spinner spinner_utenti = popupView.findViewById(R.id.spinner_utenti);
+        NDSpinner spinner_utenti = popupView.findViewById(R.id.spinner_utenti);
 
         List<String> utenti = new ArrayList<String>();
         for(int i = 0; i< utentiClasses.size();i++)

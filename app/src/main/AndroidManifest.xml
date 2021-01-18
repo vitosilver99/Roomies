@@ -10,9 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Design.Light.NoActionBar">
 
-        <activity android:name=".chat.MessageActivity"></activity>
+        <activity android:name=".chat.MessageActivity" />
         <activity android:name=".CheckCasaActivity" />
-        <activity android:name=".MainActivity" />
+        <activity android:name=".MainActivity" android:windowSoftInputMode="adjustPan"/>
         <activity android:name=".RegistrazioneActivity" />
         <activity
             android:name=".LoginActivity"

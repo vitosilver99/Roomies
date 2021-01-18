@@ -15,7 +15,7 @@
         android:layout_marginRight="16dp"
         android:layout_marginBottom="16dp"
         android:clickable="true"
-        android:src="@drawable/ic_baseline_add"
+        android:src="@drawable/ic_baseline_add_fab_button"
         app:backgroundTint="@color/primary_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />

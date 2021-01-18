@@ -1,7 +1,9 @@
 package com.example.roomies.pagamenti;
 
-import java.sql.Date;
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class ModelloPagamento {
 
@@ -20,9 +22,11 @@ public class ModelloPagamento {
     public ModelloPagamento() {
     }
 
-    public ModelloPagamento(String nome, int non_pagato, java.util.Date scadenza, float importo_totale, String pagamento_id) {
+    public ModelloPagamento(String nome, int non_pagato, java.util.Date scadenza, float importo_totale, String pagamento_id){
         this.nome_pagamento = nome;
         this.non_pagato = non_pagato;
+
+
         this.scadenza_pagamento = scadenza;
         //TODO AGGIUNGI ATTRIBUTO importo_totale
         this.importo_totale = importo_totale;

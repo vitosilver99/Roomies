@@ -59,7 +59,7 @@ public class MessageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message);
 
-        imageView = findViewById(R.id.imageview_profile);
+        //imageView = findViewById(R.id.imageview_profile);
         username = findViewById(R.id.username_chat);
 
         sendBtn = findViewById(R.id.btn_send);
