@@ -28,7 +28,6 @@ public class ModelloPagamento {
 
 
         this.scadenza_pagamento = scadenza;
-        //TODO AGGIUNGI ATTRIBUTO importo_totale
         this.importo_totale = importo_totale;
 
         this.pagamento_id=pagamento_id;

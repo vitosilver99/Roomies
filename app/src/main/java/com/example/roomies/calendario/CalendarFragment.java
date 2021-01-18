@@ -221,7 +221,6 @@ public class CalendarFragment extends Fragment {
                                                     calendarView.removeDecorators();
                                                     calendarView.addDecorator(new EventDecorator( -65536,dates));
 
-                                                    //TODO aggiungere l'immagine con il testo se non ci sono più eventi da visualizzare
                                                 }
                                                 eventiListGiornoSelezionato.remove(position);
                                                 recyclerviewAdapterVisualizzaEvento.setEventiRecyclerViewList(eventiListGiornoSelezionato);

@@ -95,7 +95,7 @@ public class PagamentiFragment extends Fragment implements FirestorePagingAdapte
      * @param param2 Parameter 2.
      * @return A new instance of fragment com.example.roomies.pagamenti.PagamentiFragment.
      */
-    // TODO: Rename and change types and number of parameters
+
     public static PagamentiFragment newInstance(String param1, String param2) {
         PagamentiFragment fragment = new PagamentiFragment();
         Bundle args = new Bundle();
@@ -121,7 +121,7 @@ public class PagamentiFragment extends Fragment implements FirestorePagingAdapte
 
         // Inflate the layout for this fragment
 
-        //TODO ATTENZIONE HO MODIFICATO attachtoRoot a true (default false)
+        // ATTENZIONE HO MODIFICATO attachtoRoot a true (default false)
         View view = inflater.inflate(R.layout.fragment_pagamenti, container, false);
 
         Log.d("CASA_ID", casaId);
@@ -167,7 +167,6 @@ public class PagamentiFragment extends Fragment implements FirestorePagingAdapte
 
         //mettendo un ascoltatore sulla query è possibile osservare eventuali variazioni
 
-        //todo controllo lista vuota. se vuota metti immagine di sfondo
 
         //se utilizziamo il firestorepagingadapter (e non il firestorerecycleradapter) non è possibile fare l'override del metodo
         //ondatachanged dell'adapter (perchè questo metodo esiste solo per il firestorerecycleradapter)
@@ -210,7 +209,6 @@ public class PagamentiFragment extends Fragment implements FirestorePagingAdapte
             }
         });
 
-        //todo nella popupclass bisogna aggiustare lo spinner non perfettamente funzionante
 
         //aggiunta button per creare un nuovo documento di pagamento (modifico codice di vito da CalendarFragment)
         FloatingActionButton fab =  view.findViewById(R.id.add_pagamento_floating);
@@ -278,7 +276,7 @@ public class PagamentiFragment extends Fragment implements FirestorePagingAdapte
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
 
-        //TODO: forse non bisogna mettere final
+
         final TextView nomePagamento = dialog.findViewById(R.id.dettaglio_nome_pagamento);
         final TextView scadenzaPagamento = dialog.findViewById(R.id.dettaglio_data_scadenza);
         final TextView importoTotalePagamento = dialog.findViewById(R.id.dettaglio_importo_totale);
@@ -314,6 +312,8 @@ public class PagamentiFragment extends Fragment implements FirestorePagingAdapte
         boolean utentePresente=false;
         Log.d("LISTAINTERESSTI",interessatiAdapter.getListaInteressati().toString());
 
+
+        //todo nascondere il pulsante pagato se non si deve pagare
         //controllo se l'utente è interessato
         ModelloInteressato interessato;
         Iterator<ModelloInteressato> iterator = interessatiAdapter.getListaInteressati().iterator();

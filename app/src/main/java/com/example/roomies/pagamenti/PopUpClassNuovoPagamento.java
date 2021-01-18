@@ -2,9 +2,8 @@ package com.example.roomies.pagamenti;
 
 //codice adattato da PopUpEventoClass
 
-//todo capire come aggiornare l'adapter in pagamentifragment (pagamentiadapter) della lista dei pagamenti dopo averne creato uno
 
-//todo confronta PopUpMansioneClass per utilizzare eliminaElementoSelezionato
+
 import android.app.DatePickerDialog;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.Log;
@@ -58,6 +57,7 @@ public class PopUpClassNuovoPagamento implements DatePickerDialog.OnDateSetListe
 
     String casaId;
 
+    //todo mettere i controlli sui campi prima di aggiungere un nuovo pagamento
 
     FirestorePagingAdapterPagamenti pagamentiAdapter;
 
@@ -119,7 +119,7 @@ public class PopUpClassNuovoPagamento implements DatePickerDialog.OnDateSetListe
 
         //gestione aggiunta utente all'evento
 
-        //todo capire se serve rinominare RecyclerView_spinnner in RecyclerView_spinnner_pagamento
+
         myrv = (RecyclerView) popupView.findViewById(R.id.RecyclerView_spinner);
         utentiSelezionati= new ArrayList<>();
 
@@ -179,7 +179,7 @@ public class PopUpClassNuovoPagamento implements DatePickerDialog.OnDateSetListe
 
 
 
-                //todo verifica se da problemi con toString()
+
                 mappaPagamento.put("importo_totale",Float.parseFloat( importo_totale.getText().toString()));
                 mappaPagamento.put("importo_singolo",Float.parseFloat( importo_totale.getText().toString())/utentiSelezionati.size());
                 //modifica mappa

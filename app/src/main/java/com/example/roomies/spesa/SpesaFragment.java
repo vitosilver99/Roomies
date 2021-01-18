@@ -40,12 +40,10 @@ import java.util.Map;
  */
 public class SpesaFragment extends Fragment implements FirestoreRecyclerAdapterSpesa.OnArticoloInteraction{
 
-    // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_USER_ID = "param1";
     private static final String ARG_CASA_ID = "param2";
 
-    // TODO: Rename and change types of parameters
     private String casaId;
     private String userId;
 
@@ -66,7 +64,6 @@ public class SpesaFragment extends Fragment implements FirestoreRecyclerAdapterS
      * @param param2 Parameter 2.
      * @return A new instance of fragment com.example.roomies.spesa.SpesaFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static SpesaFragment newInstance(String param1, String param2) {
         SpesaFragment fragment = new SpesaFragment();
         Bundle args = new Bundle();
@@ -120,7 +117,6 @@ public class SpesaFragment extends Fragment implements FirestoreRecyclerAdapterS
         listaSpesa.setAdapter(spesaAdapter);
 
 
-        //todo controllo lista vuota. se vuota metti immagine di sfondo. capire se fare in questo modo utilizzando un observer o fare override del metodo onattachedtorecyclerview dell'adapter
         //lista spesa vuota
         ImageView lista_spesa_vuota = view.findViewById(R.id.lista_spesa_vuota);
         TextView lista_spesa_vuota_text = view.findViewById(R.id.lista_spesa_vuota_text);
@@ -164,9 +160,7 @@ public class SpesaFragment extends Fragment implements FirestoreRecyclerAdapterS
                     public void onClick(View v) {
                         Log.d("ciaos",nome_articolo_inserito.getText().toString());
                         if(nome_articolo_inserito.getText().toString().equals("")) {
-                            //todo fare un controllo più carino
-                            Log.d("ramo no","no");
-                            Toast.makeText(getContext(),"nome articolo vuoto",Toast.LENGTH_LONG).show();
+                            
 
                         }
                         else {
@@ -211,7 +205,6 @@ public class SpesaFragment extends Fragment implements FirestoreRecyclerAdapterS
         rimuovi_articolo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //todo notificare observer
                 firebaseFirestore.collection("case").document(casaId).collection("lista_spesa").document(articolo.getArticolo_id()).delete();
                 dialog.hide();
             }

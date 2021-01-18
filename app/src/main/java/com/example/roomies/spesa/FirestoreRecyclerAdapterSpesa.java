@@ -76,7 +76,6 @@ public class FirestoreRecyclerAdapterSpesa extends FirestoreRecyclerAdapter<Mode
 
             onArticoloInteraction.onArticoloLongClick(getItem(getAdapterPosition()),getAdapterPosition());
 
-            //todo se non funziona il long click prova a cambiare in return true
             return false;
 
         }

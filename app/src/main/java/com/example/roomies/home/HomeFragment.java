@@ -295,7 +295,6 @@ public class HomeFragment extends Fragment implements FirestoreRecyclerAdapterSp
         spesaAdapter = new FirestoreRecyclerAdapterSpesaHome(optionsSpesa, this);
         listaSpesa.setAdapter(spesaAdapter);
 
-        //todo togli la scritta articolo dal modello del singolo articolo (chiedi a vito)
 
         //lista spesa vuota
         ImageView lista_spesa_vuota = view.findViewById(R.id.lista_spesa_vuota_home);
@@ -377,7 +376,6 @@ public class HomeFragment extends Fragment implements FirestoreRecyclerAdapterSp
         });
 
 
-        //todo fare lista pagamenti
         //modello pagamento nome, importo totale, quanti non hanno ancora pagato
 
 
@@ -400,7 +398,7 @@ public class HomeFragment extends Fragment implements FirestoreRecyclerAdapterSp
                 .whereNotEqualTo("non_pagato",0)
                 .orderBy("non_pagato", Query.Direction.DESCENDING)
                 .orderBy("scadenza_pagamento");
-        //todo modificare il layout con vito in modo che si capisca che i pagamenti sono solo quelli che interessano all'utente
+
 
 
         queryPagamenti.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {

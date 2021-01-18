@@ -28,7 +28,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-//TODO creare un package per le classi dell'autenticazione
+
 public class LoginActivity extends AppCompatActivity {
 
     private static final String ARG_USER_ID = "param1";
@@ -54,7 +54,7 @@ public class LoginActivity extends AppCompatActivity {
 
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        /*
+
         if(firebaseUser!=null){
 
             userId=fAuth.getCurrentUser().getUid();
@@ -84,7 +84,7 @@ public class LoginActivity extends AppCompatActivity {
             });
         }
 
-         */
+
     }
 
     @Override

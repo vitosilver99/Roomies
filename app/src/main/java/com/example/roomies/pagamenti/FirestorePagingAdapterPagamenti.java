@@ -46,7 +46,6 @@ public class FirestorePagingAdapterPagamenti extends FirestorePagingAdapter<Mode
     @Override
     protected void onBindViewHolder(@NonNull PagamentoViewHolder holder, int position, @NonNull ModelloPagamento model) {
         holder.nome_pagamento.setText(model.getNome_pagamento());
-        //TODO verifica che toGMTString restituisca la data corretta
 
         Date scadenza_pagamento = model.getScadenza_pagamento();
         Format formatter = new SimpleDateFormat("dd-MM-yyyy");
