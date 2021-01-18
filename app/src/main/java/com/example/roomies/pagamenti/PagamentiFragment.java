@@ -6,6 +6,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.paging.PagedList;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -18,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,11 +32,17 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -73,7 +81,6 @@ public class PagamentiFragment extends Fragment implements FirestorePagingAdapte
     DocumentSnapshot documentoCasa;
     ArrayList<UtentiClass> listaUtentiPagamento;
 
-    //TODO creare dialogbox relativa ai dettagli di un pagamento
 
 
     public PagamentiFragment() {
@@ -130,7 +137,7 @@ public class PagamentiFragment extends Fragment implements FirestorePagingAdapte
                 .build();
 
         //query da firestore
-        Query query= firebaseFirestore.collection("case").document(casaId).collection("pagamenti").limit(10).orderBy("non_pagato", Query.Direction.DESCENDING).orderBy("scadenza_pagamento");
+        Query query = firebaseFirestore.collection("case").document(casaId).collection("pagamenti").limit(10).orderBy("non_pagato", Query.Direction.DESCENDING).orderBy("scadenza_pagamento");
 
         //opzioni del FirestorePagingAdapter customizzato cioè del FirestoreAdapterPagamento
 
@@ -158,21 +165,52 @@ public class PagamentiFragment extends Fragment implements FirestorePagingAdapte
         listaPagamenti.setLayoutManager(new LinearLayoutManager(this.getContext()));
         listaPagamenti.setAdapter(pagamentiAdapter);
 
+        //mettendo un ascoltatore sulla query è possibile osservare eventuali variazioni
 
         //todo controllo lista vuota. se vuota metti immagine di sfondo
+
+        //se utilizziamo il firestorepagingadapter (e non il firestorerecycleradapter) non è possibile fare l'override del metodo
+        //ondatachanged dell'adapter (perchè questo metodo esiste solo per il firestorerecycleradapter)
+        /**
+         * quindi bisogna notificare gli observer manualmente ogni volta che viene effettuata una modifica
+         * sui dati
+         */
+        ImageView lista_pagamenti_vuota = view.findViewById(R.id.lista_pagamenti_vuota);
+        TextView lista_pagamenti_vuota_text = view.findViewById(R.id.lista_pagamenti_vuota_text);
         pagamentiAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+
             @Override
             public void onChanged() {
                 super.onChanged();
-                Log.d("change",pagamentiAdapter.getItemCount()+"");
+                checkEmpty();
+            }
+
+            void checkEmpty() {
+                if(pagamentiAdapter.getItemCount() == 0) {
+                    lista_pagamenti_vuota.setVisibility(View.VISIBLE);
+                    lista_pagamenti_vuota_text.setVisibility(View.VISIBLE);
+                    listaPagamenti.setVisibility(View.GONE);
+                    Log.d("pagamenti presenti",pagamentiAdapter.getItemCount()+"");
+                }
+                else {
+                    lista_pagamenti_vuota.setVisibility(View.GONE);
+                    lista_pagamenti_vuota_text.setVisibility(View.GONE);
+                    listaPagamenti.setVisibility(View.VISIBLE);
+                    Log.d("pagamenti presenti",pagamentiAdapter.getItemCount()+"");
+                }
 
             }
         });
-        Log.d("observers",pagamentiAdapter.hasObservers()+"");
 
 
+        query.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                pagamentiAdapter.refresh();
+            }
+        });
 
-
+        //todo nella popupclass bisogna aggiustare lo spinner non perfettamente funzionante
 
         //aggiunta button per creare un nuovo documento di pagamento (modifico codice di vito da CalendarFragment)
         FloatingActionButton fab =  view.findViewById(R.id.add_pagamento_floating);
@@ -211,7 +249,7 @@ public class PagamentiFragment extends Fragment implements FirestorePagingAdapte
                                             }
                                         }
 
-                                        PopUpClassNuovoPagamento popUpClassNuovoPagamento = new PopUpClassNuovoPagamento(listaUtentiPagamento,casaId);
+                                        PopUpClassNuovoPagamento popUpClassNuovoPagamento = new PopUpClassNuovoPagamento(listaUtentiPagamento,casaId,pagamentiAdapter);
                                         popUpClassNuovoPagamento.showPopupWindow(view);
                                     } else {
                                         Toast.makeText(view.getContext(),"Errore di connessione", Toast.LENGTH_LONG).show();
@@ -250,7 +288,16 @@ public class PagamentiFragment extends Fragment implements FirestorePagingAdapte
 
 
         nomePagamento.setText(snapshot.getString("nome_pagamento"));
-        scadenzaPagamento.setText(snapshot.getDate("scadenza_pagamento").toLocaleString());
+
+
+
+        Date scadenza_pagamento = snapshot.getDate("scadenza_pagamento");
+        Format formatter = new SimpleDateFormat("dd-MM-yyyy");
+        String scadenza = formatter.format(scadenza_pagamento);
+
+        scadenzaPagamento.setText(scadenza);
+
+
         importoTotalePagamento.setText(snapshot.get("importo_totale").toString());
         importoSingoloPagamento.setText(snapshot.get("importo_singolo").toString());
         Log.d("ARRAY",snapshot.get("interessati").toString());
@@ -261,63 +308,74 @@ public class PagamentiFragment extends Fragment implements FirestorePagingAdapte
         listaInteressati.setLayoutManager(new LinearLayoutManager(this.getContext()));
 
 
+        //confermaPagamento.setClickable(false);
 
-        confermaPagamento.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                boolean utentePresente=false;
-                Log.d("LISTAINTERESSTI",interessatiAdapter.getListaInteressati().toString());
-                ModelloInteressato interessato;
-                Iterator<ModelloInteressato> iterator = interessatiAdapter.getListaInteressati().iterator();
-                while (iterator.hasNext()){
-                    interessato = iterator.next();
-                    Log.d("INTERESSATO", interessato.getId_utente());
-                    Log.d("USERID", userId);
+        //assumo che l'utente non sia interessato dal pagamento
+        boolean utentePresente=false;
+        Log.d("LISTAINTERESSTI",interessatiAdapter.getListaInteressati().toString());
 
-                    //se l'utente che sta utilizzando l'app è tra i vari interessati al pagamento
-                    if(interessato.getId_utente().equals(userId)) {
-                        utentePresente=true;
-                        Log.d("USERPRESENTE", "utente presente");
-                        //salvo interessato in una variabile dummy perchè gli aggiornamenti su firestore vengono fatti in maniera asincrona e quindi il secondo aggiornamento potrebbe lavorare con
-                        // un valore dell'iteratore non corretto (l'iteratore potrebbe essere passato all'interessato successivo al momento di eseguire il secondo aggiornamento)
-                        boolean pagato = interessato.isPagato();
+        //controllo se l'utente è interessato
+        ModelloInteressato interessato;
+        Iterator<ModelloInteressato> iterator = interessatiAdapter.getListaInteressati().iterator();
+        while (iterator.hasNext()){
+            interessato = iterator.next();
+            Log.d("INTERESSATO", interessato.getId_utente());
+            Log.d("USERID", userId);
 
-                        if(pagato) {
+            //se l'utente che sta utilizzando l'app è tra i vari interessati al pagamento
+            if(interessato.getId_utente().equals(userId)) {
 
-                            //main  oppure getContext()?
-                            Toast.makeText(getContext(), "Questo pagamento è stato già saldato", Toast.LENGTH_SHORT).show();
+                utentePresente = true;
+                Log.d("USERPRESENTE", "utente presente");
+
+                boolean pagato = interessato.isPagato();
+
+                if (!pagato) {
+                    //l'utente è interessato e non ha ancora pagato quindi ha la possibilità di premere il tasto per pagare
+                    confermaPagamento.setClickable(true);
+
+                    //salvo interessato in una variabile dummy perchè gli aggiornamenti su firestore vengono fatti in maniera asincrona e quindi il secondo aggiornamento potrebbe lavorare con
+                    // un valore dell'iteratore non corretto (l'iteratore potrebbe essere passato all'interessato successivo al momento di eseguire il secondo aggiornamento)
+                    ModelloInteressato finalInteressato = interessato;
+
+                    confermaPagamento.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            ModelloInteressato interessatoAggiornato = new ModelloInteressato(finalInteressato.getNome_cognome(), finalInteressato.getId_utente(), true);
+                            firebaseFirestore.getInstance()
+                                    .document(snapshot.getReference().getPath())
+                                    .update("interessati", FieldValue.arrayRemove(finalInteressato.convertiInHashMap()), "interessati", FieldValue.arrayUnion(interessatoAggiornato.convertiInHashMap()), "non_pagato", FieldValue.increment(-1))
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Toast.makeText(getContext(), "Il pagamento è stato saldato", Toast.LENGTH_SHORT).show();
+                                            //CONTROLLA SE VENGONO MODIFICATI GLI ELEMENTI sia nel dialog che nel fragment
+                                            //probabilmente verranno aggiornati solo gli elementi nel fragment perchè paga fa riferimento ai dati di firestore
+                                            //mentre interessatiAdapter è un adapter che fa riferimento a dati contenuti al suo interno e che quindi non vengono più aggiornati dopo la sua creazione
+
+
+                                            //aggiorna adapter degli interessati (questo adapter non è di tipo firestore quindi non vedrà gli aggiornamenti in tempo reale)
+                                            interessatiAdapter.setPagato(userId);
+
+                                            //aggiorna adapter pagamenti in background
+                                            //forse non serve più
+                                            //pagamentiAdapter.refresh();
+                                        }
+                                    });
                         }
-                        else {
-                            ModelloInteressato interessatoAggiornato=new ModelloInteressato(interessato.getNome_cognome(),interessato.getId_utente(),true);
-                            firebaseFirestore.getInstance().document(snapshot.getReference().getPath()).update("interessati",FieldValue.arrayRemove(interessato.convertiInHashMap()),"interessati",FieldValue.arrayUnion(interessatoAggiornato.convertiInHashMap()),"non_pagato",FieldValue.increment(-1)).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    Toast.makeText(getContext(), "Il pagamento è stato saldato", Toast.LENGTH_SHORT).show();
-                                    //CONTROLLA SE VENGONO MODIFICATI GLI ELEMENTI sia nel dialog che nel fragment
-                                    //probabilmente verranno aggiornati solo gli elementi nel fragment perchè paga fa riferimento ai dati di firestore
-                                    //mentre interessatiAdapter è un adapter che fa riferimento a dati contenuti al suo interno e che quindi non vengono più aggiornati dopo la sua creazione
-
-
-                                    //aggiorna adapter degli interessati
-                                    interessatiAdapter.setPagato(userId);
-
-                                    //aggiorna adapter pagamenti in background
-                                    pagamentiAdapter.refresh();
-
-
-
-                                }
-                            });
-                        }
-                    }
-                    
+                    });
                 }
-                if(!utentePresente) {
-                    Toast.makeText(getContext(), "Non sei interessato da questo pagamento", Toast.LENGTH_SHORT).show();
+                else {
+                    //l'utente è interessato e ha già pagato quindi non il tasto per pagare è disabilitato
+                    confermaPagamento.setClickable(false);
                 }
-
             }
-        });
+        }
+        if(!utentePresente) {
+            //l'utente non è interessato  quindi non il tasto per pagare è disabilitato
+            confermaPagamento.setClickable(false);
+        }
+
 
         //ATTENZIONE RICORDATI SEMPRE DI MOSTRARE IL DIALOGO
         dialog.show();
@@ -337,7 +395,7 @@ public class PagamentiFragment extends Fragment implements FirestorePagingAdapte
             public void onClick(View v) {
                 snapshot.getReference().delete();
                 dialog.hide();
-                pagamentiAdapter.refresh();
+                //pagamentiAdapter.refresh();
             }
         });
 

@@ -90,8 +90,7 @@ public class SpesaFragment extends Fragment implements FirestoreRecyclerAdapterS
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_spesa, container, false);
-        listaSpesa=(RecyclerView) view.findViewById(R.id.lista_spesa);
-        lista_spesa_vuota = view.findViewById(R.id.lista_spesa_vuota);
+        listaSpesa = (RecyclerView) view.findViewById(R.id.lista_spesa);
 
         firebaseFirestore = FirebaseFirestore.getInstance();
 
@@ -122,6 +121,9 @@ public class SpesaFragment extends Fragment implements FirestoreRecyclerAdapterS
 
 
         //todo controllo lista vuota. se vuota metti immagine di sfondo. capire se fare in questo modo utilizzando un observer o fare override del metodo onattachedtorecyclerview dell'adapter
+        //lista spesa vuota
+        ImageView lista_spesa_vuota = view.findViewById(R.id.lista_spesa_vuota);
+        TextView lista_spesa_vuota_text = view.findViewById(R.id.lista_spesa_vuota_text);
         spesaAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
 
             @Override
@@ -133,11 +135,13 @@ public class SpesaFragment extends Fragment implements FirestoreRecyclerAdapterS
             void checkEmpty() {
                 if(spesaAdapter.getItemCount() == 0) {
                     lista_spesa_vuota.setVisibility(View.VISIBLE);
+                    lista_spesa_vuota_text.setVisibility(View.VISIBLE);
                     listaSpesa.setVisibility(View.GONE);
                     Log.d("elementi recycler spesa",spesaAdapter.getItemCount()+"");
                 }
                 else {
                     lista_spesa_vuota.setVisibility(View.GONE);
+                    lista_spesa_vuota_text.setVisibility(View.GONE);
                     listaSpesa.setVisibility(View.VISIBLE);
                     Log.d("elementi recycler spesa",spesaAdapter.getItemCount()+"");
                 }
@@ -190,7 +194,11 @@ public class SpesaFragment extends Fragment implements FirestoreRecyclerAdapterS
 
     @Override
     public void onArticoloClick(ModelloArticolo articolo, int position) {
-        firebaseFirestore.collection("case").document(casaId).collection("lista_spesa").document(articolo.getArticolo_id()).update("da_comprare",!articolo.getDa_comprare());
+        firebaseFirestore.collection("case")
+                .document(casaId)
+                .collection("lista_spesa")
+                .document(articolo.getArticolo_id())
+                .update("da_comprare",!articolo.getDa_comprare());
     }
 
     @Override

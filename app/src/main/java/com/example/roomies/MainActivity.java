@@ -12,12 +12,16 @@ import android.view.MenuItem;
 import com.example.roomies.home.HomeFragment;
 import com.example.roomies.spesa.SpesaFragment;
 import com.example.roomies.chat.ChatFragment;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import android.widget.Toast;
 import com.example.roomies.calendario.*;
 import com.example.roomies.pagamenti.*;
+import com.google.firebase.firestore.Query;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -25,13 +29,16 @@ public class MainActivity extends AppCompatActivity {
     // parametri inizializzazione PagamentiFragment
     private static final String ARG_USER_ID = "param1";
     private static final String ARG_CASA_ID = "param2";
-
+    private static final String ARG_NOME_USER = "param3";
+    private static final String ARG_COGNOME_USER = "param4";
 
 
     //FirebaseAuth fAuth;
     FirebaseFirestore fStore;
     String userId;
     String casaId;
+    String nomeUser;
+    String cognomeUser;
 
 
 
@@ -42,8 +49,10 @@ public class MainActivity extends AppCompatActivity {
 
         Bundle b = new Bundle();
         b = getIntent().getExtras();
-        userId = b.getString("userID");
-        casaId = b.getString("casaID");
+        userId = b.getString(ARG_USER_ID);
+        casaId = b.getString(ARG_CASA_ID);
+        nomeUser = b.getString(ARG_NOME_USER);
+        cognomeUser = b.getString(ARG_COGNOME_USER);
 
         fStore = FirebaseFirestore.getInstance();
 
@@ -52,8 +61,10 @@ public class MainActivity extends AppCompatActivity {
 
         HomeFragment homeFragment = new HomeFragment();
         Bundle bundle = new Bundle();
-        bundle.putCharSequence(ARG_CASA_ID, casaId);
         bundle.putCharSequence(ARG_USER_ID, userId);
+        bundle.putCharSequence(ARG_CASA_ID, casaId);
+        bundle.putCharSequence(ARG_NOME_USER, nomeUser);
+        bundle.putCharSequence(ARG_COGNOME_USER,cognomeUser);
         homeFragment.setArguments(bundle);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,homeFragment).commit();
 
@@ -70,9 +81,12 @@ public class MainActivity extends AppCompatActivity {
 
                         switch (item.getItemId()) {
                             case R.id.navigation_home:
+
                                 Bundle bundle = new Bundle();
                                 bundle.putCharSequence(ARG_USER_ID, userId);
                                 bundle.putCharSequence(ARG_CASA_ID, casaId);
+                                bundle.putCharSequence(ARG_NOME_USER, nomeUser);
+                                bundle.putCharSequence(ARG_COGNOME_USER,cognomeUser);
                                 Log.d("CASAID",casaId);
                                 selectedFragment = new HomeFragment();
                                 selectedFragment.setArguments(bundle);

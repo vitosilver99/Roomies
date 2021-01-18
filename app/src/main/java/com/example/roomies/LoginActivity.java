@@ -30,28 +30,49 @@ import java.util.regex.Pattern;
 
 //TODO creare un package per le classi dell'autenticazione
 public class LoginActivity extends AppCompatActivity {
+
+    private static final String ARG_USER_ID = "param1";
+    private static final String ARG_CASA_ID = "param2";
+    private static final String ARG_NOME_USER = "param3";
+    private static final String ARG_COGNOME_USER = "param4";
+
+
+
     FirebaseAuth fAuth;
     static LoginActivity activityA;
     FirebaseFirestore fStore;
-    private String userID;
+    private String userId;
+    private String casaId;
+    private String nomeUser;
+    private String cognomeUser;
     FirebaseUser firebaseUser;
+
 
     @Override
     protected void onStart() {
         super.onStart();
+
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
+        /*
         if(firebaseUser!=null){
-            Intent intent =new Intent(getApplicationContext(),MainActivity.class);
+
+            userId=fAuth.getCurrentUser().getUid();
+
             //Log.d("user id :",task.getResult().getUser().getUid());
 
-            fStore.collection("utenti").document(fAuth.getCurrentUser().getUid()).get()
+            fStore.collection("utenti").document(userId).get()
                     .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                         @Override
                         public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            intent.putExtra("userID",fAuth.getCurrentUser().getUid());
-                            intent.putExtra("casaID",documentSnapshot.get("casa").toString());
+                            Intent intent =new Intent(getApplicationContext(),MainActivity.class);
+                            intent.putExtra(ARG_USER_ID,userId);
+                            intent.putExtra(ARG_CASA_ID,documentSnapshot.get("casa").toString());
 
+                            nomeUser = documentSnapshot.getString("nome");
+                            cognomeUser = documentSnapshot.getString("cognome");
+                            intent.putExtra(ARG_NOME_USER,nomeUser);
+                            intent.putExtra(ARG_COGNOME_USER,cognomeUser);
                             startActivity(intent);
                             finish();
                         }
@@ -62,6 +83,8 @@ public class LoginActivity extends AppCompatActivity {
                 }
             });
         }
+
+         */
     }
 
     @Override
@@ -117,20 +140,28 @@ public class LoginActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
 
-                            //Prelevo il codice della casa dell'utente
-                            fStore.collection("utenti").document(task.getResult().getUser().getUid()).get()
+                            userId=fAuth.getCurrentUser().getUid();
+
+                            //Prelevo il codice della casa dell'utente, il nome e il cognome
+                            fStore.collection("utenti").document(userId).get()
                                     .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                         @Override
                                         public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                            String UdCasa = documentSnapshot.get("casa").toString();
+
+                                            casaId = documentSnapshot.get("casa").toString();
 
                                             Toast.makeText(LoginActivity.this,"Utente autenticato correttamente",Toast.LENGTH_SHORT).show();
-                                            Toast.makeText(getApplicationContext(), "casaId:" + UdCasa, Toast.LENGTH_LONG).show();
+                                            Toast.makeText(getApplicationContext(), "casaId:" + casaId, Toast.LENGTH_LONG).show();
 
-                                            Intent intent =new Intent(getApplicationContext(),MainActivity.class);
+                                            Intent intent = new Intent(getApplicationContext(),MainActivity.class);
                                             //Log.d("user id :",task.getResult().getUser().getUid());
-                                            intent.putExtra("userID",task.getResult().getUser().getUid());
-                                            intent.putExtra("casaID",UdCasa);
+                                            intent.putExtra(ARG_USER_ID,task.getResult().getUser().getUid());
+                                            intent.putExtra(ARG_CASA_ID,casaId);
+
+                                            nomeUser = documentSnapshot.getString("nome");
+                                            cognomeUser = documentSnapshot.getString("cognome");
+                                            intent.putExtra(ARG_NOME_USER,nomeUser);
+                                            intent.putExtra(ARG_COGNOME_USER,cognomeUser);
 
                                             startActivity(intent);
                                             finish();

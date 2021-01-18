@@ -48,9 +48,9 @@ public class FirestorePagingAdapterPagamenti extends FirestorePagingAdapter<Mode
         holder.nome_pagamento.setText(model.getNome_pagamento());
         //TODO verifica che toGMTString restituisca la data corretta
 
-        Date data_pagamento = model.getScadenza_pagamento();
+        Date scadenza_pagamento = model.getScadenza_pagamento();
         Format formatter = new SimpleDateFormat("dd-MM-yyyy");
-        String scadenza = formatter.format(data_pagamento);
+        String scadenza = formatter.format(scadenza_pagamento);
         holder.scadenza_pagamento.setText(scadenza);
 
         holder.non_pagato.setText(model.getNon_pagato()+"");
@@ -83,6 +83,11 @@ public class FirestorePagingAdapterPagamenti extends FirestorePagingAdapter<Mode
     @Override
     protected void onLoadingStateChanged(@NonNull LoadingState state) {
         super.onLoadingStateChanged(state);
+
+        //provo a notificare da qui gli osservatori sull'adapter
+        notifyDataSetChanged();
+
+
         switch (state){
             case LOADING_INITIAL:
                 //qui si può mostrare una progressBar
@@ -99,6 +104,10 @@ public class FirestorePagingAdapterPagamenti extends FirestorePagingAdapter<Mode
                 Log.d("PAGING_LOG","Errore nel caricamento dati");
                 break;
             case LOADED:
+
+
+
+
                 //qui si può nascondere la progressBar
                 Log.d("PAGING_LOG","Totale dati caricati"+getItemCount());
                 break;

@@ -32,7 +32,6 @@ import com.example.roomies.calendario.UtentiClass;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.ParseException;
@@ -57,12 +56,16 @@ public class PopUpClassNuovoPagamento implements DatePickerDialog.OnDateSetListe
     RecyclerView myrv;
     View popupView;
 
-    String UdCasa;
+    String casaId;
 
-    public PopUpClassNuovoPagamento(ArrayList<UtentiClass> listaUtenti, String UdCasa)
+
+    FirestorePagingAdapterPagamenti pagamentiAdapter;
+
+    public PopUpClassNuovoPagamento(ArrayList<UtentiClass> listaUtenti, String casaId, FirestorePagingAdapterPagamenti pagamentiAdapter)
     {
         this.listaUtenti = listaUtenti;
-        this.UdCasa = UdCasa;
+        this.casaId = casaId;
+        this.pagamentiAdapter=pagamentiAdapter;
     }
 
     public void showPopupWindow(final View view) {
@@ -182,9 +185,10 @@ public class PopUpClassNuovoPagamento implements DatePickerDialog.OnDateSetListe
                 //modifica mappa
 
 
-                fStore.collection("case").document(UdCasa).collection("pagamenti").add(mappaPagamento).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                fStore.collection("case").document(casaId).collection("pagamenti").add(mappaPagamento).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
+                        //pagamentiAdapter.refresh();
                         popupWindow.dismiss();
                     }
                 }).addOnFailureListener(new OnFailureListener() {

@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -16,13 +15,19 @@ import java.util.List;
 
 public class CheckCasaActivity extends AppCompatActivity {
 
+    private static final String ARG_USER_ID = "param1";
+    private static final String ARG_CASA_ID = "param2";
+    private static final String ARG_NOME_USER = "param3";
+    private static final String ARG_COGNOME_USER = "param4";
+
+
     ViewPager viewPager;
     AdapterCheckCasa adapterCheckCasa;
     List<ModelCheckCasa> modelCheckCasas;
     Integer[] colors = null;
     ArgbEvaluator argbEvaluator = new ArgbEvaluator();
 
-    String userID;
+    String userId;
     String nomeUser;
     String cognomeUser;
 
@@ -37,13 +42,13 @@ public class CheckCasaActivity extends AppCompatActivity {
         b = getIntent().getExtras();
 
         //ottieni identificatore utente dall'activity registrazione
-        userID = b.getString("userID");
-        nomeUser = b.getString("nome");
-        cognomeUser = b.getString("cognome");
+        userId = b.getString(ARG_USER_ID);
+        nomeUser = b.getString(ARG_NOME_USER);
+        cognomeUser = b.getString(ARG_COGNOME_USER);
         Log.d("nome utente", nomeUser);
         Log.d("cognome utente", cognomeUser);
 
-        Log.d("userID restituito", userID);
+        Log.d("userID restituito", userId);
         fStore = FirebaseFirestore.getInstance();
 
         modelCheckCasas = new ArrayList<>();

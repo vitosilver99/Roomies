@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -23,8 +22,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import org.w3c.dom.Document;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -32,9 +29,18 @@ import java.util.regex.Pattern;
 
 public class RegistrazioneActivity extends AppCompatActivity {
 
-    String userID;
+    private static final String ARG_USER_ID = "param1";
+    private static final String ARG_CASA_ID = "param2";
+    private static final String ARG_NOME_USER = "param3";
+    private static final String ARG_COGNOME_USER = "param4";
+
+
+
+    String userId;
     FirebaseFirestore fStore;
     FirebaseAuth mAuth;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,10 +130,10 @@ public class RegistrazioneActivity extends AppCompatActivity {
                             //Toast.makeText(RegistrazioneActivity.this,"Utente creato",Toast.LENGTH_LONG).show();
 
                             //mAuth può restituire ID dell'utente creato. L'ID viene generato automaticamente in FireBase
-                            userID= mAuth.getCurrentUser().getUid();
+                            userId = mAuth.getCurrentUser().getUid();
 
                             //crea un riferimento al documento relativo al nuovo utente
-                            DocumentReference documentReference = fStore.collection("utenti").document(userID);
+                            DocumentReference documentReference = fStore.collection("utenti").document(userId);
 
                             //crea una mappa che contenga tutte le informazioni relative al nuovo utente
                             Map<String,Object> user = new HashMap<>();
@@ -139,13 +145,13 @@ public class RegistrazioneActivity extends AppCompatActivity {
                             documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
-                                    Log.d("Op.Successo" ,"L'utente è stato creato con lo UserId: "+ userID);
+                                    Log.d("Op.Successo" ,"L'utente è stato creato con lo UserId: "+ userId);
                                     Intent intent=new Intent(getApplicationContext(),CheckCasaActivity.class);
 
                                     //passare l'identificatore utente all'activity relativa al controllo della casa
-                                    intent.putExtra("userID", userID);
-                                    intent.putExtra("nome", nome_reg);
-                                    intent.putExtra("cognome",cognome_reg);
+                                    intent.putExtra(ARG_USER_ID, userId);
+                                    intent.putExtra(ARG_NOME_USER, nome_reg);
+                                    intent.putExtra(ARG_COGNOME_USER,cognome_reg);
                                     startActivity(intent);
 
                                     //nascondi barra di caricamento

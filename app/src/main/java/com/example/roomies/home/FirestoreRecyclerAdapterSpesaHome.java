@@ -82,4 +82,9 @@ public class FirestoreRecyclerAdapterSpesaHome extends FirestoreRecyclerAdapter<
         void onArticoloLongClick(ModelloArticoloHome articolo, int position);
     }
 
+    @Override
+    public void onDataChanged() {
+        //quando cambiano i dati di firestore avvisa gli observer
+        notifyDataSetChanged();
+    }
 }

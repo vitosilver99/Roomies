@@ -4,6 +4,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,7 +40,7 @@ public class FirestoreRecyclerAdapterSpesa extends FirestoreRecyclerAdapter<Mode
     protected void onBindViewHolder(@NonNull ArticoloViewHolder holder, int position, @NonNull ModelloArticolo model) {
 
         holder.nome_articolo.setText(model.getNome_articolo());
-        holder.da_comprare.setText(String.valueOf(model.getDa_comprare()));
+        holder.da_comprare.setChecked(model.getDa_comprare());
 
     }
 
@@ -52,7 +53,7 @@ public class FirestoreRecyclerAdapterSpesa extends FirestoreRecyclerAdapter<Mode
 
     public class ArticoloViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         private TextView nome_articolo;
-        private TextView da_comprare;
+        private CheckBox da_comprare;
 
 
         public ArticoloViewHolder(@NonNull View itemView) {

@@ -13,16 +13,13 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
 
-import com.example.roomies.chat.UsersAdapterChat;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -32,6 +29,13 @@ import java.util.Map;
 import static android.content.ContentValues.TAG;
 
 public class AdapterCheckCasa extends PagerAdapter {
+
+
+    private static final String ARG_USER_ID = "param1";
+    private static final String ARG_CASA_ID = "param2";
+    private static final String ARG_NOME_USER = "param3";
+    private static final String ARG_COGNOME_USER = "param4";
+
 
     private List<ModelCheckCasa> modelCheckCasas;
     private LayoutInflater layoutInflater;
@@ -60,10 +64,10 @@ public class AdapterCheckCasa extends PagerAdapter {
 
         ImageView imageView;
         TextView title, desc;
-        TextView fieldCasaID;
+        TextView fieldCasaId;
         Button partecipa_casa;
         Button crea_casa;
-        fieldCasaID = view.findViewById(R.id.textView_indirizzo_Casa);
+        fieldCasaId = view.findViewById(R.id.textView_indirizzo_Casa);
         imageView = view.findViewById(R.id.image);
         title = view.findViewById(R.id.title);
         desc = view.findViewById(R.id.desc);
@@ -78,7 +82,7 @@ public class AdapterCheckCasa extends PagerAdapter {
         imageView.setImageResource(modelCheckCasas.get(position).getImage());
         title.setText(modelCheckCasas.get(position).getTitle());
         desc.setText(modelCheckCasas.get(position).getDesc());
-        fieldCasaID.setHint(modelCheckCasas.get(position).getHintIndirizzoCasa());
+        fieldCasaId.setHint(modelCheckCasas.get(position).getHintIndirizzoCasa());
 
         //Log.d("Valore di position:", ""+position);
 
@@ -86,13 +90,13 @@ public class AdapterCheckCasa extends PagerAdapter {
         {
             crea_casa.setVisibility(View.VISIBLE);
             partecipa_casa.setVisibility(View.INVISIBLE);
-            fieldCasaID.setVisibility(View.INVISIBLE);
+            fieldCasaId.setVisibility(View.INVISIBLE);
         }
 
         partecipa_casa.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String casaID = fieldCasaID.getText().toString();
+                String casaId = fieldCasaId.getText().toString();
                 /*
                 quando un nuovo utente si aggiunge a una casa già esistente bisogna aggiungere
                 l'utente alla raccolta utenti della casa, incrementare il numero di inquilini
@@ -101,9 +105,9 @@ public class AdapterCheckCasa extends PagerAdapter {
 
                 Map<String, Object> map = new HashMap<>();
                 map.put("nome_cognome",context.nomeUser + " " + context.cognomeUser);
-                map.put("user_id",context.userID);
+                map.put("user_id",context.userId);
                 //inserisci il nuovo utente nella raccolta utenti della casa e aggiorna il numero di partecipanti
-                Task<Void> aggiungiUtenteCasa = context.fStore.collection(raccoltaCase).document(casaID)
+                Task<Void> aggiungiUtenteCasa = context.fStore.collection(raccoltaCase).document(casaId)
                         .update(
                                 "utenti", FieldValue.arrayUnion(map),
                                 "numero_utenti" , FieldValue.increment(1)
@@ -112,14 +116,14 @@ public class AdapterCheckCasa extends PagerAdapter {
                             public void onSuccess(Void aVoid) {
 
                                 //aggiungere all'utente la casa appena creata
-                                Task<Void> aggiungiCasaUtente = context.fStore.collection(raccoltaUtenti).document(context.userID)
+                                Task<Void> aggiungiCasaUtente = context.fStore.collection(raccoltaUtenti).document(context.userId)
                                         .update(
-                                                "casa",casaID
+                                                "casa",casaId
                                         ).addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void aVoid) {
 
-                                                creaCasaRealtime(casaID, context.userID, context.nomeUser + " " + context.cognomeUser);
+                                                creaCasaRealtime(casaId, context.userId, context.nomeUser + " " + context.cognomeUser);
 
                                             }
                                         }).addOnFailureListener(new OnFailureListener() {
@@ -149,7 +153,7 @@ public class AdapterCheckCasa extends PagerAdapter {
                 Log.d("nome dentro l'adapter :",nome_cognome);
 
                 map.put("nome_cognome",nome_cognome);
-                map.put("user_id",context.userID);
+                map.put("user_id",context.userId);
 
                 Map<String, Object> data = new HashMap<>();
 
@@ -164,19 +168,19 @@ public class AdapterCheckCasa extends PagerAdapter {
                             @Override
                             public void onSuccess(DocumentReference documentReference) {
 
-                                //ottieni casaID dal riferimento al documento appena creato
-                                String casaID = documentReference.getId();
+                                //ottieni casaId dal riferimento al documento appena creato
+                                String casaId = documentReference.getId();
 
-                                context.fStore.collection(raccoltaUtenti).document(context.userID)
+                                context.fStore.collection(raccoltaUtenti).document(context.userId)
                                         .update(
-                                                "casa",casaID
+                                                "casa",casaId
                                         ).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
                                         Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
 
                                         //creo l'istanza della casa con all'interno l'utente nel db realtime
-                                        creaCasaRealtime(casaID,context.userID, nome_cognome);
+                                        creaCasaRealtime(casaId,context.userId, nome_cognome);
 
 
                                     }
@@ -211,7 +215,7 @@ public class AdapterCheckCasa extends PagerAdapter {
         HashMap<String, String> map = new HashMap<>();
 
         map.put("nome_cognome",nome_cognome);
-        map.put("user_id",context.userID);
+        map.put("user_id",context.userId);
         map.put("image", "default");
 
 
@@ -223,9 +227,10 @@ public class AdapterCheckCasa extends PagerAdapter {
                 if(task.isSuccessful()){
 
                     Intent intent = new Intent(context.getApplicationContext(),MainActivity.class);
-                    intent.putExtra("userID",context.userID);
-                    intent.putExtra("casaID",casaId);
-
+                    intent.putExtra(ARG_USER_ID,context.userId);
+                    intent.putExtra(ARG_CASA_ID,casaId);
+                    intent.putExtra(ARG_NOME_USER,context.nomeUser);
+                    intent.putExtra(ARG_COGNOME_USER,context.cognomeUser);
                     //passa alla MainActivity e chiudi CheckCasaActivity
                     context.startActivity(intent);
                     context.finish();

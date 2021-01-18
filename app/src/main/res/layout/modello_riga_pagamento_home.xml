@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="wrap_content">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -19,27 +20,20 @@
             android:padding="4dp">
 
             <TextView
-                android:id="@+id/textView11"
+                android:id="@+id/non_pagato_home"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="Scadenza"
-                android:textColor="#000000"
-                app:layout_constraintStart_toStartOf="@+id/nome_pagamento"
-                app:layout_constraintTop_toBottomOf="@+id/nome_pagamento" />
-
-            <TextView
-                android:id="@+id/non_pagato"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_marginStart="64dp"
+                android:layout_marginLeft="64dp"
                 android:text="TextView"
                 android:textColor="#000000"
                 app:layout_constraintBottom_toBottomOf="@+id/textView12"
-                app:layout_constraintStart_toStartOf="@+id/scadenza_pagamento"
-                app:layout_constraintTop_toTopOf="@+id/textView12" />
+                app:layout_constraintStart_toEndOf="@+id/textView12"
+                app:layout_constraintTop_toTopOf="@+id/textView12"
+                app:layout_constraintVertical_bias="0.0" />
 
             <TextView
-                android:id="@+id/euro"
+                android:id="@+id/euro_home"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="4dp"
@@ -47,50 +41,37 @@
                 android:text="€"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/importo_totale"
+                app:layout_constraintBottom_toBottomOf="@+id/importo_totale_home"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/importo_totale"
-                app:layout_constraintTop_toTopOf="@+id/importo_totale" />
+                app:layout_constraintTop_toTopOf="@+id/importo_totale_home" />
 
             <TextView
-                android:id="@+id/importo_totale"
+                android:id="@+id/importo_totale_home"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginLeft="16dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
                 android:text="TextView"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/scadenza_pagamento"
+                app:layout_constraintEnd_toStartOf="@+id/euro_home"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/textView12"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:layout_marginBottom="4dp"
                 android:text="Devono ancora pagare"
                 android:textColor="#000000"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/textView11"
-                app:layout_constraintTop_toBottomOf="@+id/textView11" />
+                app:layout_constraintStart_toStartOf="@+id/nome_pagamento_home"
+                app:layout_constraintTop_toBottomOf="@+id/nome_pagamento_home" />
 
             <TextView
-                android:id="@+id/scadenza_pagamento"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="168dp"
-                android:layout_marginLeft="168dp"
-                android:text="TextView"
-                android:textColor="#000000"
-                app:layout_constraintBottom_toBottomOf="@+id/textView11"
-                app:layout_constraintStart_toEndOf="@+id/textView11"
-                app:layout_constraintTop_toTopOf="@+id/textView11"
-                app:layout_constraintVertical_bias="0.0" />
-
-            <TextView
-                android:id="@+id/nome_pagamento"
+                android:id="@+id/nome_pagamento_home"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"

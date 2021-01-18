@@ -8,14 +8,13 @@
     tools:context=".spesa.SpesaFragment" >
 
     <TextView
-        android:id="@+id/lista_spesa_vuota"
+        android:id="@+id/lista_spesa_vuota_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
-        app:layout_constraintBottom_toBottomOf="@+id/lista_spesa"
+        android:text="Il carrello è vuoto"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/lista_spesa"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/lista_spesa_vuota" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/lista_spesa"
@@ -38,5 +37,15 @@
         app:backgroundTint="@color/primary_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <ImageView
+        android:id="@+id/lista_spesa_vuota"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/icon_aggiungi_articolo_empty"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -21,6 +21,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.roomies.LoginActivity;
@@ -29,6 +31,7 @@ import com.example.roomies.R;
 import com.example.roomies.calendario.EventiClass;
 import com.example.roomies.calendario.MansioniClass;
 import com.example.roomies.calendario.UtentiClass;
+import com.example.roomies.pagamenti.ModelloPagamento;
 import com.example.roomies.spesa.FirestoreRecyclerAdapterSpesa;
 import com.example.roomies.spesa.ModelloArticolo;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -61,10 +64,13 @@ public class HomeFragment extends Fragment implements FirestoreRecyclerAdapterSp
 
     private static final String ARG_USER_ID = "param1";
     private static final String ARG_CASA_ID = "param2";
+    private static final String ARG_NOME_USER = "param3";
+    private static final String ARG_COGNOME_USER = "param4";
 
     private String casaId;
     private String userId;
-
+    private String nomeUser;
+    private String cognomeUser;
 
     private FirebaseFirestore firebaseFirestore;
 
@@ -75,15 +81,21 @@ public class HomeFragment extends Fragment implements FirestoreRecyclerAdapterSp
 
     private RecyclerView listaSpesa;
 
+
+    private FirestoreRecyclerAdapterPagamentiHome pagamentiAdapter;
+    private RecyclerView listaPagamenti;
+
     public HomeFragment() {
         // Required empty public constructor
     }
 
-    public static HomeFragment newInstance(String param1, String param2) {
+    public static HomeFragment newInstance(String param1, String param2, String param3,  String param4) {
         HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
         args.putString(ARG_USER_ID, param1);
         args.putString(ARG_CASA_ID, param2);
+        args.putString(ARG_NOME_USER, param3);
+        args.putString(ARG_COGNOME_USER, param4);
         fragment.setArguments(args);
         return fragment;
     }
@@ -92,8 +104,11 @@ public class HomeFragment extends Fragment implements FirestoreRecyclerAdapterSp
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            casaId = getArguments().getString(ARG_CASA_ID);
             userId = getArguments().getString(ARG_USER_ID);
+            casaId = getArguments().getString(ARG_CASA_ID);
+            nomeUser = getArguments().getString(ARG_NOME_USER);
+            cognomeUser = getArguments().getString(ARG_COGNOME_USER);
+
         }
     }
 
@@ -278,21 +293,40 @@ public class HomeFragment extends Fragment implements FirestoreRecyclerAdapterSp
                 .build();
 
         spesaAdapter = new FirestoreRecyclerAdapterSpesaHome(optionsSpesa, this);
+        listaSpesa.setAdapter(spesaAdapter);
 
+        //todo togli la scritta articolo dal modello del singolo articolo (chiedi a vito)
 
-        //todo controllo lista vuota. se vuota metti immagine di sfondo
+        //lista spesa vuota
+        ImageView lista_spesa_vuota = view.findViewById(R.id.lista_spesa_vuota_home);
+        TextView lista_spesa_vuota_text = view.findViewById(R.id.lista_spesa_vuota_home_text);
         spesaAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+
             @Override
-            public void onItemRangeChanged(int positionStart, int itemCount) {
-                super.onItemRangeChanged(positionStart, itemCount);
-                Log.d("CHANGE",itemCount+"");
+            public void onChanged() {
+                super.onChanged();
+                checkEmpty();
+            }
+
+            void checkEmpty() {
+                if(spesaAdapter.getItemCount() == 0) {
+                    lista_spesa_vuota.setVisibility(View.VISIBLE);
+                    lista_spesa_vuota_text.setVisibility(View.VISIBLE);
+                    listaSpesa.setVisibility(View.GONE);
+                    Log.d("elementi recycler spesa",spesaAdapter.getItemCount()+"");
+                }
+                else {
+                    lista_spesa_vuota.setVisibility(View.GONE);
+                    lista_spesa_vuota_text.setVisibility(View.GONE);
+                    listaSpesa.setVisibility(View.VISIBLE);
+                    Log.d("elementi recycler spesa",spesaAdapter.getItemCount()+"");
+                }
+
             }
         });
 
 
-        Log.d("FRAGHOME elementi",spesaAdapter.getItemCount()+"");
-        listaSpesa.setAdapter(spesaAdapter);
-        Log.d("FRAGHOME elementi",spesaAdapter.getItemCount()+"");
+
 
 
 
@@ -315,7 +349,10 @@ public class HomeFragment extends Fragment implements FirestoreRecyclerAdapterSp
 
 
                         for(int i=0;i<spesaAdapter.getItemCount();i++) {
-                            DocumentReference docRef = firebaseFirestore.collection("case").document(casaId).collection("lista_spesa").document(spesaAdapter.getItem(i).getArticolo_id());
+                            DocumentReference docRef = firebaseFirestore.collection("case")
+                                    .document(casaId)
+                                    .collection("lista_spesa")
+                                    .document(spesaAdapter.getItem(i).getArticolo_id());
                             batch.update(docRef,"da_comprare",false);
                         }
 
@@ -342,6 +379,85 @@ public class HomeFragment extends Fragment implements FirestoreRecyclerAdapterSp
 
         //todo fare lista pagamenti
         //modello pagamento nome, importo totale, quanti non hanno ancora pagato
+
+
+
+        listaPagamenti = (RecyclerView) view.findViewById(R.id.lista_pagamenti_home);
+
+        listaPagamenti.setHasFixedSize(true);
+        listaPagamenti.setLayoutManager(new LinearLayoutManager(this.getContext()));
+
+
+
+        HashMap<String,Object> checkUtenteInteressato = new HashMap<>();
+        checkUtenteInteressato.put("id_utente",userId);
+        checkUtenteInteressato.put("pagato",false);
+        checkUtenteInteressato.put("nome_cognome",nomeUser+" "+cognomeUser);
+        Query queryPagamenti = firebaseFirestore.collection("case")
+                .document(casaId)
+                .collection("pagamenti")
+                .whereArrayContains("interessati",checkUtenteInteressato)
+                .whereNotEqualTo("non_pagato",0)
+                .orderBy("non_pagato", Query.Direction.DESCENDING)
+                .orderBy("scadenza_pagamento");
+        //todo modificare il layout con vito in modo che si capisca che i pagamenti sono solo quelli che interessano all'utente
+
+
+        queryPagamenti.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                int sizequery = queryDocumentSnapshots.size();
+                Log.d("query numero pagamenti",sizequery+"");
+            }
+        });
+
+
+        FirestoreRecyclerOptions<ModelloPagamento> optionsPagamenti = new FirestoreRecyclerOptions.Builder<ModelloPagamento>()
+                .setLifecycleOwner(this)
+                .setQuery(queryPagamenti, new SnapshotParser<ModelloPagamento>() {
+                    @NonNull
+                    @Override
+                    public ModelloPagamento parseSnapshot(@NonNull DocumentSnapshot snapshot) {
+
+                        ModelloPagamento pagamento = snapshot.toObject(ModelloPagamento.class);
+                        String pagamento_id = snapshot.getId();
+                        pagamento.setPagamento_id(pagamento_id);
+                        return pagamento;
+                    }
+                })
+                .build();
+
+        pagamentiAdapter = new FirestoreRecyclerAdapterPagamentiHome(optionsPagamenti);
+        listaPagamenti.setAdapter(pagamentiAdapter);
+
+
+        ImageView lista_pagamenti_vuota = view.findViewById(R.id.lista_pagamenti_vuota_home);
+        TextView lista_pagamenti_vuota_text = view.findViewById(R.id.lista_pagamenti_vuota_home_text);
+        pagamentiAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+
+            @Override
+            public void onChanged() {
+                super.onChanged();
+                checkEmpty();
+            }
+
+            void checkEmpty() {
+                if(pagamentiAdapter.getItemCount() == 0) {
+                    lista_pagamenti_vuota.setVisibility(View.VISIBLE);
+                    lista_pagamenti_vuota_text.setVisibility(View.VISIBLE);
+                    listaPagamenti.setVisibility(View.GONE);
+                    Log.d("elementi recycler spesa",pagamentiAdapter.getItemCount()+"");
+                }
+                else {
+                    lista_pagamenti_vuota.setVisibility(View.GONE);
+                    lista_pagamenti_vuota_text.setVisibility(View.GONE);
+                    listaPagamenti.setVisibility(View.VISIBLE);
+                    Log.d("elementi recycler spesa",pagamentiAdapter.getItemCount()+"");
+                }
+
+            }
+        });
 
         // Inflate the layout for this fragment
         return view;
