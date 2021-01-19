@@ -4,21 +4,16 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.roomies.R;
 import com.example.roomies.calendario.EventiClass;
-import com.example.roomies.calendario.RecyclerViewAdapterMansione;
 import com.example.roomies.calendario.UtentiClass;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.Inflater;
 
 public class RecyclerViewAdapterEventoGironaliero extends RecyclerView.Adapter<RecyclerViewAdapterEventoGironaliero.MyViewHolder> {
 
@@ -35,7 +30,7 @@ public class RecyclerViewAdapterEventoGironaliero extends RecyclerView.Adapter<R
     public RecyclerViewAdapterEventoGironaliero.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
         LayoutInflater mInflater = LayoutInflater.from(mContext);
-        view = mInflater.inflate(R.layout.eventi_giornalieri,parent,false);
+        view = mInflater.inflate(R.layout.eventi_giornalieri_home,parent,false);
         return new RecyclerViewAdapterEventoGironaliero.MyViewHolder(view);
     }
 

@@ -575,7 +575,7 @@ public class CalendarFragment extends Fragment {
             queryCalendario(date_q_first,date_q_last);
 
             //calendarView.setDateSelected(CalendarDay.today(),true);
-            calendarView.setSelectionColor(Color.parseColor("#F4A261"));
+            calendarView.setSelectionColor(Color.parseColor("#207FB3"));
 
         } catch (ParseException e) {
             e.printStackTrace();

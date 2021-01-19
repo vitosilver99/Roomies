@@ -32,7 +32,7 @@ public class FirestoreRecyclerAdapterEventiHome extends FirestoreRecyclerAdapter
     @NonNull
     @Override
     public FirestoreRecyclerAdapterEventiHome.EventoHomeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.eventi_giornalieri,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.eventi_giornalieri_home,parent,false);
         return new EventoHomeViewHolder(view);
     }
 

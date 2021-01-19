@@ -21,4 +21,6 @@
     <color name="color2">#207FB3</color>
     <color name="color3">#196188</color>
     <color name="color4">#11425C</color>
+
+    <color name="status_bar_color">#356CA3</color>
 </resources>

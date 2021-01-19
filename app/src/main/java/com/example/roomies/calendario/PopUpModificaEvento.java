@@ -176,6 +176,7 @@ public class PopUpModificaEvento implements DatePickerDialog.OnDateSetListener {
             @Override
             public void onClick(View v) {
 
+
                 Map<String,Object> singolo_evento = new HashMap<>();
                 Date data = new Date();
                 try {
