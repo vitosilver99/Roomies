@@ -160,31 +160,12 @@ public class PopUpMansioneClass implements DatePickerDialog.OnDateSetListener {
             @Override
             public void onClick(View v) {
                 if(seleziona_giorno.getText().equals("dd/mm/yyyy")){
-                    new AlertDialog.Builder(view.getContext())
-                            .setTitle("Errore di inserimento")
-                            .setMessage("Specificare la data dell'evento per aggiungerlo correttamente")
-
-                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-
-                                }
-                            })
-                            .setIcon(android.R.drawable.ic_dialog_alert)
-                            .show();
+                    Toast.makeText(view.getContext(),"Inserire la data dell'evento per aggingerlo correttamente",Toast.LENGTH_LONG).show();
                     return;
                 }
+
                 if(utentiSelezionati.size()==0){
-                    new AlertDialog.Builder(view.getContext())
-                            .setTitle("Errore di inserimento")
-                            .setMessage("Inserire almeno un coinquilino per aggiungere correttamente l'evento")
-
-                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-
-                                }
-                            })
-                            .setIcon(android.R.drawable.ic_dialog_alert)
-                            .show();
+                    Toast.makeText(view.getContext(),"Inserire almeno un coinquilino per aggiungere correttamente l'evento",Toast.LENGTH_LONG).show();
                     return;
                 }
 

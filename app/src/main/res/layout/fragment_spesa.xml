@@ -85,7 +85,9 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/lista_spesa"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:paddingBottom="100dp"
+                android:clipToPadding="false">
 
             </androidx.recyclerview.widget.RecyclerView>
 
