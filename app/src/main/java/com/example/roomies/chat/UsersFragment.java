@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.roomies.AdapterCheckCasa;
 import com.example.roomies.R;
@@ -38,6 +40,9 @@ public class UsersFragment extends Fragment {
     private RecyclerView recyclerView;
     private UsersAdapterChat usersAdapterChat;
     private List<UtentiClass> utentiClasses;
+
+    ImageView immagine_empty;
+    TextView testo_empty;
 
     public UsersFragment() {
         // Required empty public constructor
@@ -71,6 +76,9 @@ public class UsersFragment extends Fragment {
             recyclerView.setHasFixedSize(true);
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
+            immagine_empty = view.findViewById(R.id.imageView_utente_empty);
+            testo_empty = view.findViewById(R.id.textView_utente_empty);
+
             utentiClasses = new ArrayList<>();
 
             readUsers();
@@ -93,16 +101,23 @@ public class UsersFragment extends Fragment {
                     HashMap<String,Object> hashMap = (HashMap<String, Object>) snapshot.getValue();
                     if(hashMap!=null){
                         UtentiClass utente = new UtentiClass(hashMap.get("nome_cognome").toString(),hashMap.get("user_id").toString());
-
                         if(!utente.getUserId().equals(userId)){
                             utentiClasses.add(utente);
                         }
-
-                        usersAdapterChat = new UsersAdapterChat(getContext(),utentiClasses,casaId);
-                        recyclerView.setAdapter(usersAdapterChat);
                     }
 
                 }
+                if(!utentiClasses.isEmpty()){
+                    immagine_empty.setVisibility(View.INVISIBLE);
+                    testo_empty.setVisibility(View.INVISIBLE);
+
+                    usersAdapterChat = new UsersAdapterChat(getContext(),utentiClasses,casaId);
+                    recyclerView.setAdapter(usersAdapterChat);
+                }else{
+                    immagine_empty.setVisibility(View.VISIBLE);
+                    testo_empty.setVisibility(View.VISIBLE);
+                }
+
             }
 
             @Override

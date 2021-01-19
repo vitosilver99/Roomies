@@ -4,4 +4,23 @@
         <item name="android:windowEnterAnimation">@anim/anim_slide_in_left</item>
         <item name="android:windowExitAnimation">@anim/anim_fadeout</item>
     </style>
+
+    <style name="DialogTheme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@color/secondary_color</item>
+    </style>
+
+    <style name="TabLayoutTextStyle">
+        <item name="android:textSize">20sp</item>
+
+    </style>
+
+    <style name="DemoTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/primary_color</item>
+
+        <!-- Defining that new color in ColorPrimaryDark -->
+        <item name="colorPrimaryDark">@color/status_bar_color</item>
+        <item name="colorAccent">@color/primary_color</item>
+    </style>
+
 </resources>

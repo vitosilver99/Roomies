@@ -11,13 +11,15 @@
         android:theme="@style/Theme.Design.Light.NoActionBar"
         >
 
-        <activity android:name=".chat.MessageActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".CheckCasaActivity"  android:screenOrientation="portrait"/>
-        <activity android:name=".MainActivity" android:windowSoftInputMode="adjustPan" android:screenOrientation="portrait"/>
-        <activity android:name=".RegistrazioneActivity" android:screenOrientation="portrait"/>
+
+        <activity android:name=".chat.MessageActivity" android:screenOrientation="portrait" android:theme="@style/DemoTheme"/>
+        <activity android:name=".CheckCasaActivity"  android:screenOrientation="portrait" android:theme="@style/DemoTheme"/>
+        <activity android:name=".MainActivity" android:windowSoftInputMode="adjustPan" android:screenOrientation="portrait" android:theme="@style/DemoTheme"/>
+        <activity android:name=".RegistrazioneActivity" android:screenOrientation="portrait" android:theme="@style/DemoTheme"/>
         <activity
             android:name=".LoginActivity"
             android:screenOrientation="portrait"
+            android:theme="@style/DemoTheme"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

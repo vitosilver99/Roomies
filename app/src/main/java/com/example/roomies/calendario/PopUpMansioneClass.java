@@ -1,7 +1,10 @@
 package com.example.roomies.calendario;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.graphics.drawable.BitmapDrawable;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -89,6 +92,10 @@ public class PopUpMansioneClass implements DatePickerDialog.OnDateSetListener {
 
         //Initialize the elements of our window, install the handler
         Spinner spinner = popupView.findViewById(R.id.spinner_mansioni);
+        NDSpinner spinner_utenti = popupView.findViewById(R.id.spinner_utenti);
+        seleziona_giorno = popupView.findViewById(R.id.seleziona_data);
+        Button btn_aggiungi = popupView.findViewById(R.id.btn_aggiungi);
+
 
         Log.d("sono nel popup",mansioniClasses.size()+"");
         List<String> mansioni = new ArrayList<String>();
@@ -100,7 +107,7 @@ public class PopUpMansioneClass implements DatePickerDialog.OnDateSetListener {
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(dataAdapter);
 
-        NDSpinner spinner_utenti = popupView.findViewById(R.id.spinner_utenti);
+
 
         List<String> utenti = new ArrayList<String>();
         for(int i = 0; i< utentiClasses.size();i++)
@@ -111,7 +118,7 @@ public class PopUpMansioneClass implements DatePickerDialog.OnDateSetListener {
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner_utenti.setAdapter(dataAdapter_utenti);
 
-        seleziona_giorno = popupView.findViewById(R.id.seleziona_data);
+
         seleziona_giorno.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -148,10 +155,39 @@ public class PopUpMansioneClass implements DatePickerDialog.OnDateSetListener {
         });
 
 
-        Button btn_aggiungi = popupView.findViewById(R.id.btn_aggiungi);
+
         btn_aggiungi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(seleziona_giorno.getText().equals("dd/mm/yyyy")){
+                    new AlertDialog.Builder(view.getContext())
+                            .setTitle("Errore di inserimento")
+                            .setMessage("Specificare la data dell'evento per aggiungerlo correttamente")
+
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                }
+                            })
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+                    return;
+                }
+                if(utentiSelezionati.size()==0){
+                    new AlertDialog.Builder(view.getContext())
+                            .setTitle("Errore di inserimento")
+                            .setMessage("Inserire almeno un coinquilino per aggiungere correttamente l'evento")
+
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                }
+                            })
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+                    return;
+                }
+
                 Map<String,Object> singolo_evento = new HashMap<>();
                 Date data = new Date();
                 try {
@@ -213,6 +249,7 @@ public class PopUpMansioneClass implements DatePickerDialog.OnDateSetListener {
     private void showDatePickerDailog(View PopupView){
         DatePickerDialog datePickerDialog = new DatePickerDialog(
                 PopupView.getContext(),
+                R.style.DialogTheme,
                 this,
                 Calendar.getInstance().get(Calendar.YEAR),
                 Calendar.getInstance().get(Calendar.MONTH),

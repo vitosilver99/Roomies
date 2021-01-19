@@ -211,6 +211,7 @@ public class PopUpClassNuovoPagamento implements DatePickerDialog.OnDateSetListe
     private void showDatePickerDailog(View PopupView){
         DatePickerDialog datePickerDialog = new DatePickerDialog(
                 PopupView.getContext(),
+                R.style.DialogTheme,
                 this,
                 Calendar.getInstance().get(Calendar.YEAR),
                 Calendar.getInstance().get(Calendar.MONTH),

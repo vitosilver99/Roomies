@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.roomies.R;
 import com.example.roomies.calendario.UtentiClass;
@@ -35,6 +37,9 @@ public class ChatSecondFragment extends Fragment {
     public String casaId;
 
     private List<ChatList> usersList;
+
+    ImageView immagine_empty;
+    TextView testo_empty;
 
     RecyclerView recyclerView;
 
@@ -68,6 +73,9 @@ public class ChatSecondFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerview_chat_utenti);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        immagine_empty = view.findViewById(R.id.imageView_empty_chat);
+        testo_empty = view.findViewById(R.id.textView_empty_chat);
 
         fuser = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -120,10 +128,20 @@ public class ChatSecondFragment extends Fragment {
                             mUser.add(utente);
                         }
                     }
+
                 }
 
-                usersAdapterChat = new UsersAdapterChat(getContext(),mUser,casaId);
-                recyclerView.setAdapter(usersAdapterChat);
+                if(!mUser.isEmpty()){
+                    immagine_empty.setVisibility(View.INVISIBLE);
+                    testo_empty.setVisibility(View.INVISIBLE);
+
+                    usersAdapterChat = new UsersAdapterChat(getContext(),mUser,casaId);
+                    recyclerView.setAdapter(usersAdapterChat);
+                }else{
+                    immagine_empty.setVisibility(View.VISIBLE);
+                    testo_empty.setVisibility(View.VISIBLE);
+                }
+
             }
 
             @Override

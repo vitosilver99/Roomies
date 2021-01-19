@@ -164,7 +164,7 @@ public class HomeFragment extends Fragment implements FirestoreRecyclerAdapterSp
                     RecyclerView recyclerView = view.findViewById(R.id.recyclerView_home_utenti);
                     recyclerView.setLayoutManager(layoutManager);
 
-                    RecyclerViewAdapterHomeProfili adapterHomeProfili = new RecyclerViewAdapterHomeProfili(getContext(),utentiClasses,utentiClasses.size()-1);
+                    RecyclerViewAdapterHomeProfili adapterHomeProfili = new RecyclerViewAdapterHomeProfili(getContext(),utentiClasses,utentiClasses.size()-1,casaId);
 
                     recyclerView.setAdapter(adapterHomeProfili);
                 }else
