@@ -1,5 +1,6 @@
 package com.example.roomies.pagamenti;
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,7 +38,12 @@ public class InteressatiAdapter extends RecyclerView.Adapter<InteressatiAdapter.
     @Override
     public void onBindViewHolder(@NonNull InteressatoViewHolder holder, int position) {
         holder.nomeCognome.setText(listaInteressati.get(position).getNome_cognome());
-        holder.pagato.setText(listaInteressati.get(position).isPagato()+"");
+        if(listaInteressati.get(position).isPagato()) {
+            holder.nomeCognome.setTextColor(Color.GREEN);
+        }
+        else {
+            holder.nomeCognome.setTextColor(Color.RED);
+        }
     }
 
     @Override
@@ -47,12 +53,11 @@ public class InteressatiAdapter extends RecyclerView.Adapter<InteressatiAdapter.
 
     public class InteressatoViewHolder extends RecyclerView.ViewHolder{
 
-        TextView nomeCognome, pagato;
+        TextView nomeCognome;
 
         public InteressatoViewHolder(@NonNull View itemView) {
             super(itemView);
             nomeCognome = itemView.findViewById(R.id.interessato_nome_cognome);
-            pagato = itemView.findViewById(R.id.interessato_pagato);
         }
     }
 
@@ -82,7 +87,7 @@ public class InteressatiAdapter extends RecyclerView.Adapter<InteressatiAdapter.
         return listaInteressati;
     }
 
-    public boolean setPagato(String userId) {
+    public void setPagato(String userId) {
 
 
 
@@ -94,7 +99,10 @@ public class InteressatiAdapter extends RecyclerView.Adapter<InteressatiAdapter.
                 iterator.set(next);
             }
         }
+
+        //ricrea il layout con i dati aggiornati (sto usando impropriamente questo metodo)
         notifyDataSetChanged();
-        return true;
+
+
     }
 }

@@ -1,6 +1,8 @@
 package com.example.roomies.spesa;
 
 import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -153,6 +155,8 @@ public class SpesaFragment extends Fragment implements FirestoreRecyclerAdapterS
             public void onClick(View v) {
                 Dialog dialog = new Dialog(getContext());
                 dialog.setContentView(R.layout.dialog_aggiungi_articolo);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
                 Button aggiungi_articolo=dialog.findViewById(R.id.button_aggiungi_articolo);
                 TextView nome_articolo_inserito=dialog.findViewById(R.id.inserisci_nome_articolo);
                 aggiungi_articolo.setOnClickListener(new View.OnClickListener() {
@@ -199,6 +203,7 @@ public class SpesaFragment extends Fragment implements FirestoreRecyclerAdapterS
     public void onArticoloLongClick(ModelloArticolo articolo, int position) {
         Dialog dialog = new Dialog(getContext());
         dialog.setContentView(R.layout.dialog_rimuovi_articolo);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
 
         Button rimuovi_articolo= dialog.findViewById(R.id.rimuovi_articolo);

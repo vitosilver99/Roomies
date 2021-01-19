@@ -42,6 +42,7 @@ public class FirestoreRecyclerAdapterSpesa extends FirestoreRecyclerAdapter<Mode
         holder.nome_articolo.setText(model.getNome_articolo());
         holder.da_comprare.setChecked(model.getDa_comprare());
 
+
     }
 
     @NonNull

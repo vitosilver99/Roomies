@@ -44,7 +44,7 @@ public class FirestoreRecyclerAdapterPagamentiHome extends FirestoreRecyclerAdap
             holder.euro_simbolo.setTextColor(Color.GREEN);
         }
 
-        holder.importo_totale.setText(model.getImporto_totale()+"");
+        holder.importo_totale.setText(String.format("%.2f", model.getImporto_totale()));
 
     }
 

@@ -247,7 +247,7 @@ public class PagamentiFragment extends Fragment implements FirestorePagingAdapte
                                             }
                                         }
 
-                                        PopUpClassNuovoPagamento popUpClassNuovoPagamento = new PopUpClassNuovoPagamento(listaUtentiPagamento,casaId,pagamentiAdapter);
+                                        PopUpClassNuovoPagamento popUpClassNuovoPagamento = new PopUpClassNuovoPagamento(listaUtentiPagamento,casaId,getContext());
                                         popUpClassNuovoPagamento.showPopupWindow(view);
                                     } else {
                                         Toast.makeText(view.getContext(),"Errore di connessione", Toast.LENGTH_LONG).show();
@@ -296,8 +296,8 @@ public class PagamentiFragment extends Fragment implements FirestorePagingAdapte
         scadenzaPagamento.setText(scadenza);
 
 
-        importoTotalePagamento.setText(snapshot.get("importo_totale").toString());
-        importoSingoloPagamento.setText(snapshot.get("importo_singolo").toString());
+        importoTotalePagamento.setText(String.format("%.2f", snapshot.get("importo_totale")));
+        importoSingoloPagamento.setText(String.format("%.2f", snapshot.get("importo_singolo")));
         Log.d("ARRAY",snapshot.get("interessati").toString());
 
         //se non funziona this.getContext() prova getActivity();
@@ -313,7 +313,7 @@ public class PagamentiFragment extends Fragment implements FirestorePagingAdapte
         Log.d("LISTAINTERESSTI",interessatiAdapter.getListaInteressati().toString());
 
 
-        //todo nascondere il pulsante pagato se non si deve pagare
+
         //controllo se l'utente è interessato
         ModelloInteressato interessato;
         Iterator<ModelloInteressato> iterator = interessatiAdapter.getListaInteressati().iterator();
@@ -356,9 +356,11 @@ public class PagamentiFragment extends Fragment implements FirestorePagingAdapte
 
                                             //aggiorna adapter degli interessati (questo adapter non è di tipo firestore quindi non vedrà gli aggiornamenti in tempo reale)
                                             interessatiAdapter.setPagato(userId);
-
+                                            confermaPagamento.setClickable(false);
+                                            confermaPagamento.setVisibility(View.GONE);
                                             //aggiorna adapter pagamenti in background
-                                            //forse non serve più
+
+                                            //non serve più
                                             //pagamentiAdapter.refresh();
                                         }
                                     });
@@ -368,13 +370,16 @@ public class PagamentiFragment extends Fragment implements FirestorePagingAdapte
                 else {
                     //l'utente è interessato e ha già pagato quindi non il tasto per pagare è disabilitato
                     confermaPagamento.setClickable(false);
+                    confermaPagamento.setVisibility(View.GONE);
                 }
             }
         }
         if(!utentePresente) {
-            //l'utente non è interessato  quindi non il tasto per pagare è disabilitato
+            //l'utente non è interessato  quindi il tasto per pagare è disabilitato
             confermaPagamento.setClickable(false);
+            confermaPagamento.setVisibility(View.GONE);
         }
+
 
 
         //ATTENZIONE RICORDATI SEMPRE DI MOSTRARE IL DIALOGO
@@ -388,6 +393,8 @@ public class PagamentiFragment extends Fragment implements FirestorePagingAdapte
         //inserisco una finestra di dialogo che mi fornisce i dettagli di un pagamento
         Dialog dialog = new Dialog(getContext());
         dialog.setContentView(R.layout.dialog_rimuovi_pagamento);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
 
         Button rimuovi_pagamento= dialog.findViewById(R.id.rimuovi_pagamento);
         rimuovi_pagamento.setOnClickListener(new View.OnClickListener() {

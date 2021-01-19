@@ -503,6 +503,11 @@ public class CalendarFragment extends Fragment {
                 calendarView.addDecorator(new EventDecorator( Color.parseColor("black"),dates));
 
                 //-65536 colore rosso che stava prima
+
+
+
+
+
             }
         });
 

@@ -3,6 +3,7 @@ package com.example.roomies.home;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -334,8 +335,8 @@ public class HomeFragment extends Fragment implements FirestoreRecyclerAdapterSp
             @Override
             public void onClick(View v) {
                 Dialog dialog = new Dialog(getContext());
-
                 dialog.setContentView(R.layout.dialog_conferma_spesa_fatta);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
                 Button spesa_fatta = dialog.findViewById(R.id.conferma_spesa_fatta);
                 spesa_fatta.setOnClickListener(new View.OnClickListener() {

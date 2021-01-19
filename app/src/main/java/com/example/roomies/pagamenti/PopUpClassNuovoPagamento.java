@@ -5,7 +5,9 @@ package com.example.roomies.pagamenti;
 
 
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -57,15 +59,17 @@ public class PopUpClassNuovoPagamento implements DatePickerDialog.OnDateSetListe
 
     String casaId;
 
-    //todo mettere i controlli sui campi prima di aggiungere un nuovo pagamento
+    Context context;
 
-    FirestorePagingAdapterPagamenti pagamentiAdapter;
 
-    public PopUpClassNuovoPagamento(ArrayList<UtentiClass> listaUtenti, String casaId, FirestorePagingAdapterPagamenti pagamentiAdapter)
+
+
+
+    public PopUpClassNuovoPagamento(ArrayList<UtentiClass> listaUtenti, String casaId, Context context)
     {
         this.listaUtenti = listaUtenti;
         this.casaId = casaId;
-        this.pagamentiAdapter=pagamentiAdapter;
+        this.context = context;
     }
 
     public void showPopupWindow(final View view) {
@@ -155,11 +159,28 @@ public class PopUpClassNuovoPagamento implements DatePickerDialog.OnDateSetListe
             public void onClick(View v) {
                 Map<String,Object> mappaPagamento = new HashMap<>();
                 Date data = new Date();
+                Log.d("scadenza pagamento",data.toString());
                 try {
                     data=new SimpleDateFormat("dd/MM/yyyy").parse(seleziona_giorno.getText().toString());
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
+
+                if(TextUtils.isEmpty(nome.getText().toString())) {
+                    nome.setError("Inserisci il nome del pagamento");
+                    return;
+                }
+                if(TextUtils.isEmpty(importo_totale.getText().toString())) {
+                    importo_totale.setError("Inserisci l'importo totale del pagamento");
+                    return;
+                }
+                if(utentiSelezionati.size()==0) {
+                    Toast.makeText(context,"Inserisci almeno un interessato dal pagamento",Toast.LENGTH_LONG).show();
+                    return;
+                }
+                //nessun controllo sulla data (se non viene inserita dall'utente viene inserita automaticamente la data odierna)
+
+
 
 
                 mappaPagamento.put("nome_pagamento",nome.getText().toString());
@@ -188,7 +209,6 @@ public class PopUpClassNuovoPagamento implements DatePickerDialog.OnDateSetListe
                 fStore.collection("case").document(casaId).collection("pagamenti").add(mappaPagamento).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
-                        //pagamentiAdapter.refresh();
                         popupWindow.dismiss();
                     }
                 }).addOnFailureListener(new OnFailureListener() {

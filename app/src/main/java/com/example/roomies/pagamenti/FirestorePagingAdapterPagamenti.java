@@ -62,7 +62,8 @@ public class FirestorePagingAdapterPagamenti extends FirestorePagingAdapter<Mode
             holder.euro_simbolo.setTextColor(Color.GREEN);
         }
 
-        holder.importo_totale.setText(model.getImporto_totale()+"");
+        //due cifre decimali
+        holder.importo_totale.setText(String.format("%.2f", model.getImporto_totale()));
 
         //qui possiamo ricavare anche l'id del pagamento tramite model.getPagamento_id() se in pagamentoFragment il parser modificato riempie anche quel campo
 
@@ -122,6 +123,8 @@ public class FirestorePagingAdapterPagamenti extends FirestorePagingAdapter<Mode
         private TextView importo_totale;
         private TextView euro_simbolo;
 
+
+        //todo mettere due cifre decimali
         public PagamentoViewHolder(@NonNull View itemView) {
             super(itemView);
             nome_pagamento = itemView.findViewById(R.id.nome_pagamento);
