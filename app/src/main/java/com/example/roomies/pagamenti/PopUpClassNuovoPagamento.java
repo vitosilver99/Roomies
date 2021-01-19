@@ -4,8 +4,10 @@ package com.example.roomies.pagamenti;
 
 
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.drawable.BitmapDrawable;
 import android.text.TextUtils;
 import android.util.Log;
@@ -183,7 +185,10 @@ public class PopUpClassNuovoPagamento implements DatePickerDialog.OnDateSetListe
                     Toast.makeText(context,"Inserisci almeno un interessato dal pagamento",Toast.LENGTH_LONG).show();
                     return;
                 }
-                //nessun controllo sulla data (se non viene inserita dall'utente viene inserita automaticamente la data odierna)
+                if(seleziona_giorno.getText().equals("dd/mm/yyyy")){
+                    Toast.makeText(context,"Inserisci la data di scadenza del pagamento",Toast.LENGTH_LONG).show();
+                    return;
+                }
 
 
 
